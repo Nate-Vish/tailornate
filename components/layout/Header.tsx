@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { profile } from "@/content/profile"
 
 const navLinks = [
   { href: "#about", label: "About" },
@@ -15,33 +14,43 @@ const navLinks = [
 export default function Header() {
   const [activeSection, setActiveSection] = useState("")
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveSection("#" + entry.target.id)
-          }
+          if (entry.isIntersecting) setActiveSection("#" + entry.target.id)
         }
       },
       { rootMargin: "-40% 0px -55% 0px" }
     )
-
-    const sections = document.querySelectorAll("section[id]")
-    sections.forEach((s) => observer.observe(s))
+    document.querySelectorAll("section[id]").forEach((s) => observer.observe(s))
     return () => observer.disconnect()
   }, [])
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/90 backdrop-blur">
+    <header
+      className={`sticky top-0 z-40 transition-all duration-300 ${
+        scrolled
+          ? "border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-xl"
+          : "bg-transparent"
+      }`}
+    >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-        {/* Name/logo */}
+        {/* Logo */}
         <a
           href="#hero"
-          className="font-semibold text-sm text-[var(--foreground)] hover:text-[var(--accent)] transition-colors"
+          className="font-bold text-sm text-gradient hover:opacity-80 transition-opacity"
+          aria-label="Back to top"
         >
-          {profile.name.split(" ")[0]} Hai
+          NH
         </a>
 
         {/* Desktop nav */}
@@ -51,10 +60,10 @@ export default function Header() {
               key={href}
               href={href}
               aria-current={activeSection === href ? "true" : undefined}
-              className={`px-3 py-1.5 rounded text-sm transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${
                 activeSection === href
-                  ? "text-[var(--accent)] font-medium"
-                  : "text-[var(--muted)] hover:text-[var(--foreground)]"
+                  ? "text-[var(--accent)] font-medium bg-[var(--accent)]/8"
+                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)]"
               }`}
             >
               {label}
@@ -62,38 +71,34 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Mobile menu button */}
+        {/* Mobile hamburger */}
         <button
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           onClick={() => setMenuOpen((o) => !o)}
-          className="md:hidden p-2 rounded text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+          className="md:hidden p-2 rounded-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)] transition-colors"
         >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
             {menuOpen ? (
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                d="M3.293 3.293a1 1 0 011.414 0L9 7.586l4.293-4.293a1 1 0 111.414 1.414L10.414 9l4.293 4.293a1 1 0 01-1.414 1.414L9 10.414l-4.293 4.293a1 1 0 01-1.414-1.414L7.586 9 3.293 4.707a1 1 0 010-1.414z"
               />
             ) : (
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M3 5h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2zm0 4h14a1 1 0 010 2H3a1 1 0 010-2z"
-              />
+              <path d="M2 4h14M2 9h14M2 14h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none" />
             )}
           </svg>
         </button>
       </div>
 
-      {/* Mobile nav */}
+      {/* Mobile nav dropdown */}
       {menuOpen && (
         <nav
           id="mobile-menu"
           aria-label="Mobile navigation"
-          className="md:hidden border-t border-[var(--border)] px-4 pb-4 pt-2 flex flex-col gap-1"
+          className="md:hidden border-t border-[var(--border)] bg-[var(--background)]/95 backdrop-blur-xl px-4 pb-4 pt-2 flex flex-col gap-1"
         >
           {navLinks.map(({ href, label }) => (
             <a
@@ -101,10 +106,10 @@ export default function Header() {
               href={href}
               aria-current={activeSection === href ? "true" : undefined}
               onClick={() => setMenuOpen(false)}
-              className={`px-3 py-2 rounded text-sm transition-colors ${
+              className={`px-4 py-2.5 rounded-xl text-sm transition-colors ${
                 activeSection === href
                   ? "text-[var(--accent)] font-medium bg-[var(--card)]"
-                  : "text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card)]"
+                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--card)]"
               }`}
             >
               {label}

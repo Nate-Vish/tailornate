@@ -18,12 +18,21 @@ export default function ChatMessages({ messages, isLoading }: Props) {
       role="log"
       aria-live="polite"
       aria-label="Chat messages"
-      className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0 h-full"
+      className="h-full overflow-y-auto p-4 space-y-3"
     >
       {messages.length === 0 && (
-        <p className="text-sm text-[var(--muted)] text-center pt-4">
-          Ask me anything about Nathan.
-        </p>
+        <div className="h-full flex flex-col items-center justify-center gap-3 py-8">
+          <div
+            className="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-lg"
+            style={{ background: "var(--grad-accent)" }}
+            aria-hidden="true"
+          >
+            ✦
+          </div>
+          <p className="text-sm text-[var(--muted-foreground)] text-center">
+            Ask me anything about Nathan.
+          </p>
+        </div>
       )}
       {messages.map((m) => (
         <div
@@ -33,9 +42,10 @@ export default function ChatMessages({ messages, isLoading }: Props) {
           <div
             className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
               m.role === "user"
-                ? "bg-[var(--accent)] text-white"
+                ? "text-white"
                 : "bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)]"
             }`}
+            style={m.role === "user" ? { background: "var(--grad-accent)" } : {}}
           >
             {getTextContent(m)}
           </div>
@@ -43,12 +53,12 @@ export default function ChatMessages({ messages, isLoading }: Props) {
       ))}
       {isLoading && (
         <div className="flex justify-start" aria-busy="true" aria-label="Nathan&apos;s AI is typing">
-          <div className="bg-[var(--background)] border border-[var(--border)] rounded-2xl px-4 py-2.5">
+          <div className="bg-[var(--background)] border border-[var(--border)] rounded-2xl px-4 py-3">
             <span className="flex gap-1">
               {[0, 1, 2].map((i) => (
                 <span
                   key={i}
-                  className="w-1.5 h-1.5 rounded-full bg-[var(--muted)] animate-bounce"
+                  className="w-1.5 h-1.5 rounded-full bg-[var(--muted-foreground)] animate-bounce"
                   style={{ animationDelay: `${i * 0.15}s` }}
                   aria-hidden="true"
                 />
