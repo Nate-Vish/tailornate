@@ -8,7 +8,7 @@ export const projects: Project[] = [
       "Open-source multi-agent AI development framework. 12 specialized agents with persistent memory, slash-command orchestration, and a shared knowledge system. Agents research documentation before writing code. Used to build every other project on this list.",
     tech: ["Python", "Claude API", "MCP", "Claude Code"],
     status: "live",
-    link: "https://github.com/Nate-Vish",
+    link: "https://github.com/Nate-Vish/Auto-Mates",
     linkLabel: "GitHub",
     highlight: "12 agents · 5-layer memory · dogfooded daily",
   },
@@ -39,7 +39,7 @@ export const projects: Project[] = [
       "AI expense categorizer for credit card statements. Processes unstructured financial text into structured categories using Claude API and prompt engineering.",
     tech: ["Python", "Claude API", "NLP"],
     status: "live",
-    link: "https://github.com/Nate-Vish",
+    link: "https://github.com/Nate-Vish/FinCat",
     linkLabel: "GitHub",
   },
 ]
