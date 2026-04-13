@@ -21,7 +21,6 @@ export const metadata: Metadata = {
     description: "AI Engineer | CS Student | Builder",
     url: "https://tailornate.com",
     siteName: "Nathan Hai Vishnevski",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     locale: "en_US",
     type: "website",
   },
