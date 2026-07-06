@@ -1,4 +1,5 @@
 import { profile } from "@/content/profile"
+import { Shelf, Guitar } from "@/components/decor/HomeOffice"
 
 export default function Hero() {
   return (
@@ -79,6 +80,7 @@ export default function Hero() {
         </div>
 
         <div className="hero-portrait in d3" aria-hidden="true">
+          <Shelf />
           <div className="portrait-ring">
             <div className="portrait-inner">
               <svg viewBox="0 0 180 180" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
@@ -118,6 +120,7 @@ export default function Hero() {
             <span className="pulse" />
             <span>Nathan · {new Date().getFullYear()}</span>
           </div>
+          <Guitar />
         </div>
       </div>
     </section>
