@@ -25,7 +25,7 @@ export default function Footer() {
           </a>
           <a href={`mailto:${profile.email}`}>Email</a>
         </nav>
-        <div>Built with AutoMates. Written in first person.</div>
+        <div>Built with AutoMates. Powered by coffee.</div>
       </div>
     </footer>
   )

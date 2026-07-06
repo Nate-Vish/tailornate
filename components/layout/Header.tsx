@@ -96,7 +96,7 @@ export default function Header() {
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             onClick={() => setMenuOpen((o) => !o)}
-            className="chip md:hidden"
+            className="chip menu-btn"
             style={{ padding: "0 10px" }}
           >
             <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
@@ -115,7 +115,7 @@ export default function Header() {
       </div>
 
       {menuOpen && (
-        <nav id="mobile-menu" aria-label="Mobile navigation" className="mobile-menu md:hidden">
+        <nav id="mobile-menu" aria-label="Mobile navigation" className="mobile-menu">
           {navLinks.map(({ href, label }) => (
             <a
               key={href}
