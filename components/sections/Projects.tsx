@@ -10,7 +10,7 @@ export default function Projects() {
             The <em>Work</em>
           </h2>
           <p className="sec-lead">
-            Four systems — shipped and in-flight. Used daily, not demo-ware.
+            One framework used daily, one product shipped for IBM. Not demo-ware.
           </p>
         </div>
 

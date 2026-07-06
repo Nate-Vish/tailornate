@@ -19,6 +19,9 @@ export default function About() {
             <p style={{ fontSize: "17px", color: "var(--mut)", fontStyle: "italic" }}>
               {profile.languages.join(" · ")}
             </p>
+            <p style={{ fontSize: "17px", color: "var(--mut)", fontStyle: "italic" }}>
+              Off the clock: salsa, guitar, skiing — and good coffee.
+            </p>
           </div>
           <div className="method">
             <h5>Operating principles</h5>
