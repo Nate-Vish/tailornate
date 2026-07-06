@@ -21,9 +21,7 @@ The short version: I built AutoMates, an open-source multi-agent AI framework wi
 
 **Polaris** — A finance insight tool I built for IBM Israel through the Handzone Leaders Program (May 2026). An AI-powered dashboard that analyzes Excel financial data and uses the Gemini API to generate narrative insights — code computes the numbers, AI writes text only. Architected with Claude Code, Claude Design, and AutoMates; deployed on Vercel. Delivered a working MVP within the sprint deadline and presented it to IBM Israel leadership.
 
-**AI Intent Verification Layer** — A concept I co-invented with Daniel Golzman: adding a second layer of human verification at the point of AI action, not just at login. Think 2FA but for what an AI agent actually does. Relevant for EU AI Act Article 14 compliance. There's a warm lead with CrowdStrike.
-
-**Madko** — An adaptive knowledge brain for humans and AI agents. Architecture and tech stack complete, first vertical is DevOps knowledge. Domain is live at madko.ai. Early stage — more coming.
+I'm also currently building an AI-powered solution for the legal industry on top of AutoMates.
 
 ---
 
