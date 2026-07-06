@@ -1447,10 +1447,14 @@ html[data-theme="dark"] .xp-bullets li::before {
 }
 .lamp-decor {
   position: absolute;
-  top: -122px;
+  top: -140px;
   right: 26px;
   z-index: 3;
   pointer-events: none;
+}
+.lamp-decor svg,
+.chat-plant svg {
+  display: block;
 }
 .lamp-light {
   opacity: 0.75;
@@ -1469,7 +1473,7 @@ html[data-theme="dark"] .lamp-light {
 }
 .chat-plant {
   position: absolute;
-  top: -53px;
+  top: -52px;
   left: 44px;
   z-index: 3;
   pointer-events: none;
