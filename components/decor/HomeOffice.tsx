@@ -106,7 +106,6 @@ export function DeskLamp() {
       height="180"
       fill="none"
       aria-hidden="true"
-      className="lamp-decor"
     >
       <defs>
         <radialGradient id="lampGlow" cx="50%" cy="0%" r="90%">
