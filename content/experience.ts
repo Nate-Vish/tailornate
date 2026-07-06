@@ -2,26 +2,25 @@ import type { ExperienceEntry } from "@/types"
 
 export const experience: ExperienceEntry[] = [
   {
-    role: "Intelligence Specialist — Reserves",
+    role: "Target Intelligence Officer — Reserves",
     org: "Israel Defense Forces",
     period: "Nov 2024 — Present",
     bullets: [
-      "Shifted to intelligence role with zero prior experience — became operational within days",
-      "Built automations for database workflows used in real-time operations",
-      "Translates complex data into actionable operational insights",
-      "Earned target intelligence professional certification",
-      "150 days deployed while completing full CS course load",
+      "Built queries and automation workflows across multiple databases, fusing raw operational data into compressed, decision-ready intelligence",
+      "Made real-time data-driven decisions under high operational responsibility; applied structured verification protocols in time-critical windows",
+      "Took ownership of unit operations: recruiting new members, defining work processes, and making personnel decisions to maintain team standards",
+      "Earned the Target Intelligence Professional certification (IDF Intelligence)",
+      "200 days deployed while completing a full CS course load",
     ],
   },
   {
-    role: "Officer",
+    role: "Territorial Defense Officer",
     org: "Israel Defense Forces",
     period: "Nov 2019 — Dec 2023",
     bullets: [
-      "Commanded 25 soldiers at a time, 50 total across service",
-      "Led operations in high-risk environments",
-      "Coordinated security for 18 civilian settlements",
-      "Delivered 1,200+ operational briefings",
+      "Trained and commanded 50 soldiers",
+      "Managed security operations for 18 civilian settlements",
+      "Delivered weekly briefings to over 1,200 soldiers total",
     ],
   },
 ]
