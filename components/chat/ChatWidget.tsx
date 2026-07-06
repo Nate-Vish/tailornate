@@ -9,7 +9,7 @@ const suggestions = [
   "What's AutoMates actually doing?",
   "Tell me about Polaris and IBM",
   "Is Nathan available?",
-  "Walk me through the 2FA idea",
+  "What's his stack?",
 ]
 
 export default function ChatWidget() {
@@ -54,7 +54,9 @@ export default function ChatWidget() {
           <h2 id="chat-heading" className="sec-ti">
             Let&apos;s <em>talk</em>
           </h2>
-          <p className="sec-lead">Don&apos;t fill a form. Just ask.</p>
+          <p className="sec-lead">
+            No forms here. Pull up a chair — the coffee&apos;s already on.
+          </p>
         </div>
 
         <div className="chat">
@@ -123,6 +125,12 @@ export default function ChatWidget() {
             disabled={rateLimited}
           />
         </div>
+
+        <p className="coffee-note">
+          Prefer a real coffee?{" "}
+          <a href="mailto:natan.vish100@gmail.com">natan.vish100@gmail.com</a> · based in Israel ·
+          reading inbox daily
+        </p>
       </div>
     </section>
   )
