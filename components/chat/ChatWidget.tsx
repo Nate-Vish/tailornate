@@ -4,6 +4,7 @@ import { useChat } from "@ai-sdk/react"
 import { useRef, useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 import ChatMessages from "./ChatMessages"
 import ChatInput from "./ChatInput"
+import { DeskLamp, TinyPlant } from "@/components/decor/HomeOffice"
 
 const suggestions = [
   "What's AutoMates actually doing?",
@@ -59,6 +60,13 @@ export default function ChatWidget() {
           </p>
         </div>
 
+        <div className="chat-desk">
+          <div className="lamp-decor" aria-hidden="true">
+            <DeskLamp />
+          </div>
+          <div className="chat-plant" aria-hidden="true">
+            <TinyPlant />
+          </div>
         <div className="chat">
           <div className="chat-bar">
             <div className="trafik" aria-hidden="true">
@@ -124,6 +132,7 @@ export default function ChatWidget() {
             isLoading={isLoading}
             disabled={rateLimited}
           />
+        </div>
         </div>
 
         <p className="coffee-note">
