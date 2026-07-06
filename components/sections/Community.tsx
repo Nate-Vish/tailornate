@@ -1,45 +1,54 @@
-import FadeIn from "@/components/ui/FadeIn"
-
-const items = [
-  { icon: "→", text: "Active in Israel's GenAI developer community" },
-  { icon: "→", text: "AWS meetups · Vega · RunAI CEO lecture · Malanta CEO lecture" },
-  { icon: "→", text: "WhatsApp GenAI dev community groups" },
-  { icon: "→", text: "Building in public on LinkedIn and GitHub" },
-]
-
 export default function Community() {
   return (
-    <section
-      id="community"
-      aria-labelledby="community-heading"
-      className="py-24 px-4 sm:px-6 section-divider"
-    >
-      <div className="max-w-5xl mx-auto">
-        <FadeIn>
-          <p className="text-xs font-semibold tracking-widest uppercase text-[var(--accent)] mb-3">
-            Community
-          </p>
-          <h2 id="community-heading" className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] mb-12">
-            In the<br />
-            <span className="text-gradient">ecosystem.</span>
+    <section id="room" aria-labelledby="room-heading">
+      <div className="wrap">
+        <div className="sec-hd">
+          <span className="sec-idx">07 / NETWORK</span>
+          <h2 id="room-heading" className="sec-ti">
+            In the <em>room</em>
           </h2>
-        </FadeIn>
+          <p className="sec-lead">
+            Not a lurker — plugged into Israel&apos;s GenAI scene, learning and shipping in the
+            same breath.
+          </p>
+        </div>
 
-        <ul className="space-y-3">
-          {items.map((item, i) => (
-            <FadeIn key={i} delay={i * 0.07}>
-              <li className="card-glow flex items-start gap-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] px-6 py-4 text-sm text-[var(--muted-foreground)]">
-                <span
-                  className="text-[var(--accent)] font-bold shrink-0 text-base mt-0.5"
-                  aria-hidden="true"
-                >
-                  {item.icon}
-                </span>
-                {item.text}
-              </li>
-            </FadeIn>
-          ))}
-        </ul>
+        <div className="room-grid">
+          <div className="room">
+            <h5>WhatsApp · daily signal</h5>
+            <p>Active in the groups where new tools and patterns land first.</p>
+            <div className="tags">
+              <span>AIDD</span>
+              <span>GenAI Israel</span>
+              <span>Clawders</span>
+              <span>AI Best Practices</span>
+              <span>בונים AI</span>
+            </div>
+          </div>
+          <div className="room">
+            <h5>Events · in person</h5>
+            <ul>
+              <li>AWS meetups (×3)</li>
+              <li>RunAI CEO lecture — speaker now VP at NVIDIA</li>
+              <li>Vega</li>
+              <li>Malanta CEO lecture</li>
+            </ul>
+          </div>
+          <div className="room">
+            <h5>Build in public</h5>
+            <p>
+              LinkedIn posts and GitHub commits document real projects. Not theory, not
+              think-pieces — shipped work with receipts.
+            </p>
+          </div>
+          <div className="room">
+            <h5>Peer reviews</h5>
+            <p>
+              Delivered structured product reviews for peers using AutoMates — security, UX,
+              market fit. Same rigour I use on my own.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   )

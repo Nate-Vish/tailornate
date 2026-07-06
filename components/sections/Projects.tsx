@@ -1,91 +1,89 @@
-import { Badge } from "@/components/ui/badge"
-import FadeIn from "@/components/ui/FadeIn"
-import { projects } from "@/content/projects"
-
-const statusConfig: Record<string, { label: string; class: string }> = {
-  live:          { label: "Live",        class: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
-  "in-progress": { label: "In Progress", class: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
-  planning:      { label: "Planning",    class: "bg-slate-500/10 text-slate-400 border-slate-500/20" },
-}
+import { projects, statusLabels } from "@/content/projects"
 
 export default function Projects() {
   return (
-    <section
-      id="projects"
-      aria-labelledby="projects-heading"
-      className="py-24 px-4 sm:px-6 section-divider"
-    >
-      <div className="max-w-5xl mx-auto">
-        <FadeIn>
-          <p className="text-xs font-semibold tracking-widest uppercase text-[var(--accent)] mb-3">
-            Projects
-          </p>
-          <h2 id="projects-heading" className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] mb-12">
-            Things I&apos;ve<br />
-            <span className="text-gradient">built and shipped.</span>
+    <section id="work" aria-labelledby="work-heading">
+      <div className="wrap">
+        <div className="sec-hd">
+          <span className="sec-idx">02 / EVIDENCE</span>
+          <h2 id="work-heading" className="sec-ti">
+            The <em>Work</em>
           </h2>
-        </FadeIn>
+          <p className="sec-lead">
+            Four systems — shipped and in-flight. Used daily, not demo-ware.
+          </p>
+        </div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          {projects.map((project, i) => {
-            const status = statusConfig[project.status]
-            return (
-              <FadeIn key={project.id} delay={i * 0.08}>
-                <article className="card-glow group relative rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 flex flex-col gap-4 h-full overflow-hidden">
-                  {/* Gradient accent line */}
-                  <div
-                    className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-300"
-                    aria-hidden="true"
-                  />
-
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-base font-semibold text-[var(--foreground)] leading-snug">
-                      {project.title}
-                    </h3>
-                    <span
-                      className={`shrink-0 text-xs px-2 py-0.5 rounded-full border font-medium ${status.class}`}
-                    >
-                      {status.label}
+        <div className="projects">
+          {projects.map((p) => (
+            <article
+              key={p.id}
+              className="tcard"
+              style={{ "--glow": p.glow, "--glow-bg": p.glowBg } as React.CSSProperties}
+            >
+              <div className="card-inner">
+                <div>
+                  <div className="card-top">
+                    <div className="trafik" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                    <span className="path">
+                      <b>{p.path}</b> · <span className="line-muted">{p.branch}</span>
                     </span>
+                    <span className="status">{statusLabels[p.status]}</span>
                   </div>
-
-                  <p className="text-sm text-[var(--muted-foreground)] leading-relaxed flex-1">
-                    {project.description}
-                  </p>
-
-                  {project.highlight && (
-                    <p className="text-xs text-[var(--accent)] font-medium tracking-wide">
-                      {project.highlight}
-                    </p>
+                  <h3 className="card-title">{p.title}</h3>
+                  <div className="card-tag">{p.tagline}</div>
+                  <p className="card-desc">{p.description}</p>
+                  {p.highlight && (
+                    <>
+                      <div style={{ height: "18px" }} />
+                      <div className="highlight">{p.highlight}</div>
+                    </>
                   )}
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tech.map((t) => (
-                      <Badge
-                        key={t}
-                        variant="outline"
-                        className="text-xs bg-[var(--background)] border-[var(--border)] text-[var(--muted-foreground)] font-normal"
-                      >
-                        {t}
-                      </Badge>
-                    ))}
+                </div>
+                <div className="card-right">
+                  <div>
+                    <div className="card-top" style={{ marginBottom: "12px" }}>
+                      <span style={{ color: "var(--terminal-dim)" }}>stack</span>
+                    </div>
+                    <div className="stack">
+                      {p.tech.map((t) => (
+                        <span key={t}>{t}</span>
+                      ))}
+                    </div>
                   </div>
-
-                  {project.link && (
-                    <a
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${project.title} — ${project.linkLabel} (opens in new tab)`}
-                      className="text-sm text-[var(--accent)] hover:text-[var(--accent-hover)] font-medium transition-colors w-fit"
-                    >
-                      {project.linkLabel} ↗
-                    </a>
-                  )}
-                </article>
-              </FadeIn>
-            )
-          })}
+                  <div className="card-links">
+                    {p.links.map((l) =>
+                      l.href ? (
+                        <a
+                          key={l.label}
+                          href={l.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="link"
+                        >
+                          <span>{l.label}</span>
+                          <span className="arr" aria-hidden="true">
+                            ↗
+                          </span>
+                        </a>
+                      ) : (
+                        <span key={l.label} className="link" style={{ cursor: "default" }}>
+                          <span>{l.label}</span>
+                          <span className="arr" aria-hidden="true">
+                            ·
+                          </span>
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
