@@ -4,7 +4,13 @@ import { useChat } from "@ai-sdk/react"
 import { useRef, useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 import ChatMessages from "./ChatMessages"
 import ChatInput from "./ChatInput"
-import FadeIn from "@/components/ui/FadeIn"
+
+const suggestions = [
+  "What's AutoMates actually doing?",
+  "Tell me about Polaris and IBM",
+  "Is Nathan available?",
+  "Walk me through the 2FA idea",
+]
 
 export default function ChatWidget() {
   const [input, setInput] = useState("")
@@ -21,11 +27,15 @@ export default function ChatWidget() {
 
   const isLoading = status === "submitted" || status === "streaming"
 
+  const send = (text: string) => {
+    if (!text.trim() || isLoading || rateLimited) return
+    sendMessage({ text: text.trim() })
+    setInput("")
+  }
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (!input.trim() || isLoading || rateLimited) return
-    sendMessage({ text: input.trim() })
-    setInput("")
+    send(input)
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -33,69 +43,86 @@ export default function ChatWidget() {
   }
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
   }, [messages])
 
   return (
-    <section
-      id="chat"
-      aria-labelledby="chat-heading"
-      className="py-24 px-4 sm:px-6 section-divider"
-    >
-      <div className="max-w-5xl mx-auto">
-        <FadeIn>
-          <p className="text-xs font-semibold tracking-widest uppercase text-[var(--accent)] mb-3">
-            Ask the AI
-          </p>
-          <h2 id="chat-heading" className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] mb-3">
-            Curious about<br />
-            <span className="text-gradient">Nathan?</span>
+    <section id="chat" aria-labelledby="chat-heading">
+      <div className="wrap">
+        <div className="sec-hd">
+          <span className="sec-idx">08 / CONTACT</span>
+          <h2 id="chat-heading" className="sec-ti">
+            Let&apos;s <em>talk</em>
           </h2>
-          <p className="text-sm text-[var(--muted-foreground)] mb-10 max-w-md">
-            An AI assistant trained on Nathan&apos;s full profile. Ask about his projects, background, or anything you&apos;d ask a recruiter.
-          </p>
-        </FadeIn>
+          <p className="sec-lead">Don&apos;t fill a form. Just ask.</p>
+        </div>
 
-        <FadeIn delay={0.1}>
-          {/* Chat panel */}
-          <div className="card-glow max-w-2xl border border-[var(--border)] rounded-2xl overflow-hidden bg-[var(--card)] flex flex-col">
-            {/* Header */}
-            <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[var(--border)]">
-              <div className="relative">
-                <div className="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true" />
-                <div className="absolute inset-0 w-2 h-2 rounded-full bg-emerald-400 animate-ping opacity-50" aria-hidden="true" />
-              </div>
-              <span className="text-sm font-semibold text-[var(--foreground)]">Nathan&apos;s AI</span>
-              <span className="text-xs text-[var(--muted-foreground)] ml-auto">Powered by Gemma 3</span>
+        <div className="chat">
+          <div className="chat-bar">
+            <div className="trafik" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <span className="host">tailornate.com</span>
+            <span className="sep">~</span>
+            <span>zsh</span>
+            <span className="sep">·</span>
+            <span>ask-nathan</span>
+            <span className="pill-live">● online</span>
+          </div>
+
+          <div className="chat-body" role="log" aria-live="polite">
+            <div className="chat-line">
+              <span className="prompt">$</span>
+              <span className="line-muted">ssh nathan@tailornate.com</span>
+            </div>
+            <div className="chat-line">
+              <span className="prompt green">✓</span>
+              <span className="line-muted">connected. 15 msgs/hr.</span>
             </div>
 
-            {/* Messages */}
-            <div className="h-72 overflow-y-auto">
-              <ChatMessages messages={messages} isLoading={isLoading} />
-              <div ref={bottomRef} aria-hidden="true" />
-            </div>
-
-            {/* Error / rate limit */}
-            {(error || rateLimited) && (
-              <div
-                role="alert"
-                className="mx-4 mb-3 px-4 py-2.5 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-xl"
-              >
-                {rateLimited
-                  ? "Rate limit reached. Come back in an hour."
-                  : "Something went wrong. Please try again."}
-              </div>
+            {messages.length === 0 && (
+              <>
+                <div className="chat-line" style={{ marginTop: "14px" }}>
+                  <span className="prompt">&gt;</span>
+                  <strong>Hey. I&apos;m Nathan&apos;s AI.</strong>
+                </div>
+                <div className="msg">
+                  Ask me about his work, his stack, or whether he&apos;s available. Warm tone. No
+                  forms. Your move
+                  <span className="blink" aria-hidden="true" />
+                </div>
+                <div className="chip-suggest">
+                  {suggestions.map((s) => (
+                    <button key={s} onClick={() => send(s)} disabled={isLoading || rateLimited}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
 
-            <ChatInput
-              value={input}
-              onChange={handleInputChange}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-              disabled={rateLimited}
-            />
+            <ChatMessages messages={messages} isLoading={isLoading} />
+            <div ref={bottomRef} aria-hidden="true" />
           </div>
-        </FadeIn>
+
+          {(error || rateLimited) && (
+            <div role="alert" className="chat-alert">
+              {rateLimited
+                ? "rate limit reached — come back in an hour."
+                : "something went wrong. try again."}
+            </div>
+          )}
+
+          <ChatInput
+            value={input}
+            onChange={handleInputChange}
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            disabled={rateLimited}
+          />
+        </div>
       </div>
     </section>
   )
