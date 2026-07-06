@@ -34,36 +34,6 @@ export const projects: Project[] = [
     links: [{ label: "Handzone Leaders Program · IBM Israel" }],
     highlight: "MVP in one sprint · presented to IBM leadership",
   },
-  {
-    id: "2fa-ai",
-    title: "AI Intent Verification Layer",
-    tagline: "Closing the enterprise AI security gap nobody talks about.",
-    description:
-      "Enterprise 2FA systems verify identity — not intent. This adds a second, separate-device verification layer at the point of AI action, not at login. Co-invented with Daniel Golzman. Addresses EU AI Act Article 14 compliance (enforcement Aug 2026).",
-    tech: ["React", "TypeScript", "Vercel AI SDK", "Security Eng."],
-    status: "in-progress",
-    path: "~/intent-2fa",
-    branch: "r&d",
-    glow: "#5f5f5a",
-    glowBg: "rgba(95,95,90,0.18)",
-    links: [{ label: "private — under evaluation" }],
-    highlight: "CrowdStrike lead engaged · demo in progress",
-  },
-  {
-    id: "madko",
-    title: "Madko",
-    tagline: "Adaptive knowledge brain for humans and AI agents.",
-    description:
-      "SaaS product. Architecture and tech stack complete. First vertical: DevOps knowledge — a live layer that both humans and agents query against as context.",
-    tech: ["SaaS", "Knowledge Graph", "AI"],
-    status: "planning",
-    path: "~/madko",
-    branch: "v0",
-    glow: "#8b6847",
-    glowBg: "rgba(139,104,71,0.15)",
-    links: [{ href: "https://madko.ai", label: "madko.ai" }],
-    highlight: "domain live · architecture complete",
-  },
 ]
 
 export const statusLabels: Record<Project["status"], string> = {
