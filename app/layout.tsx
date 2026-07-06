@@ -1,31 +1,43 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Fraunces, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  axes: ["SOFT", "opsz"],
+  style: ["normal", "italic"],
+  weight: "variable",
 })
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+})
+
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 })
 
 export const metadata: Metadata = {
-  title: "Nathan Hai Vishnevski — AI Engineer & Builder",
+  title: "Tailor Nate — Nathan Hai Vishnevski · AI Engineer",
   description:
-    "Portfolio of Nathan Hai Vishnevski. AI engineer, IDF intelligence officer, CS student at HIT. Builder of AutoMates — a 12-agent AI development framework.",
+    "Nathan Hai Vishnevski — AI engineer and multi-agent systems builder. Creator of AutoMates, an open-source multi-agent AI framework. Built Polaris for IBM Israel. IDF target intelligence officer, CS student at HIT.",
   openGraph: {
-    title: "Nathan Hai Vishnevski",
-    description: "AI Engineer | CS Student | Builder",
+    title: "Tailor Nate — Nathan Hai Vishnevski",
+    description: "I deliver AI systems that ship.",
     url: "https://tailornate.com",
-    siteName: "Nathan Hai Vishnevski",
+    siteName: "Tailor Nate",
     locale: "en_US",
     type: "website",
   },
   metadataBase: new URL("https://tailornate.com"),
 }
+
+const themeInit = `(function(){try{var t=localStorage.getItem('tn.theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t)}}catch(e){}})()`
 
 export default function RootLayout({
   children,
@@ -35,9 +47,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
+      data-theme="light"
+      suppressHydrationWarning
+      className={`${fraunces.variable} ${jakarta.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        {children}
+      </body>
     </html>
   )
 }
