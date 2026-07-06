@@ -8,8 +8,8 @@
    DESIGN TOKENS — "Tailor Nate" warm editorial
    ============================================================ */
 :root {
-  --cream: #e8dfc8;
-  --cream-2: #ddd3b9;
+  --cream: #e0d2b2;
+  --cream-2: #d4c49f;
   --ink: #1a1510;
   --muted-2: #6b5f4e;
   --accent-warm: #5c4a32;
@@ -147,12 +147,17 @@ body::after {
   z-index: 0;
   background: radial-gradient(
       1200px 700px at 15% -10%,
-      rgba(139, 104, 71, 0.18),
+      rgba(139, 104, 71, 0.26),
       transparent 60%
     ),
     radial-gradient(
+      1000px 700px at 85% 20%,
+      rgba(214, 160, 96, 0.14),
+      transparent 65%
+    ),
+    radial-gradient(
       900px 600px at 100% 100%,
-      rgba(45, 90, 61, 0.1),
+      rgba(45, 90, 61, 0.12),
       transparent 60%
     );
 }
