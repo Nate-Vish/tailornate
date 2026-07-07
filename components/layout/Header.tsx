@@ -28,7 +28,7 @@ const navLinks = [
 export default function Header() {
   const [activeSection, setActiveSection] = useState("")
   const [menuOpen, setMenuOpen] = useState(false)
-  const theme = useSyncExternalStore(subscribeTheme, getTheme, () => "light" as const)
+  const theme = useSyncExternalStore(subscribeTheme, getTheme, () => "dark" as const)
 
   const toggleTheme = useCallback(() => {
     const next = theme === "light" ? "dark" : "light"
