@@ -44,6 +44,7 @@ export default function ChatWidget() {
   }
 
   useEffect(() => {
+    if (messages.length === 0) return
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
   }, [messages])
 
@@ -137,8 +138,7 @@ export default function ChatWidget() {
 
         <p className="coffee-note">
           Prefer a real coffee?{" "}
-          <a href="mailto:natan.vish100@gmail.com">natan.vish100@gmail.com</a> · based in Israel ·
-          reading inbox daily
+          <a href="mailto:natan.vish100@gmail.com">natan.vish100@gmail.com</a>
         </p>
       </div>
     </section>
