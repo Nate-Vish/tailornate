@@ -7,10 +7,7 @@ export default function Community() {
           <h2 id="room-heading" className="sec-ti">
             In the <em>room</em>
           </h2>
-          <p className="sec-lead">
-            Not a lurker — plugged into Israel&apos;s GenAI scene, learning and shipping in the
-            same breath.
-          </p>
+          <p className="sec-lead">Plugged into Israel&apos;s GenAI scene.</p>
         </div>
 
         <div className="room-grid">
@@ -36,17 +33,11 @@ export default function Community() {
           </div>
           <div className="room">
             <h5>Build in public</h5>
-            <p>
-              LinkedIn posts and GitHub commits document real projects. Not theory, not
-              think-pieces — shipped work with receipts.
-            </p>
+            <p>LinkedIn posts and GitHub commits — shipped work with receipts.</p>
           </div>
           <div className="room">
             <h5>Peer reviews</h5>
-            <p>
-              Delivered structured product reviews for peers using AutoMates — security, UX,
-              market fit. Same rigour I use on my own.
-            </p>
+            <p>Structured product reviews for peers — security, UX, market fit.</p>
           </div>
         </div>
       </div>

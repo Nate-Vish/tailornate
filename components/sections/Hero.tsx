@@ -7,7 +7,7 @@ export default function Hero() {
       <div className="wrap">
         <div className="hero-text">
           <div className="eyebrow in d1">
-            {profile.name} <span style={{ margin: "0 10px" }}>—</span> CS · HIT · Class of 2027
+            {profile.name} <span style={{ margin: "0 10px" }}>—</span> AI Engineer
           </div>
 
           <h1 id="hero-title" className="in d2">
@@ -21,11 +21,11 @@ export default function Hero() {
           <p className="thesis in d4">{profile.thesis}</p>
 
           <div className="hero-meta in d4">
-            <span>Based in {profile.location}</span>
+            <span>{profile.location}</span>
             <span className="dot" aria-hidden="true" />
-            <span>2nd-year CS, HIT</span>
+            <span>CS @ HIT</span>
             <span className="dot" aria-hidden="true" />
-            <span>AI systems + multi-agent frameworks</span>
+            <span>Multi-agent systems</span>
           </div>
 
           <div className="ctas in d5">
@@ -74,7 +74,7 @@ export default function Hero() {
             </a>
             <span className="avail">
               <span className="pulse" aria-hidden="true" />
-              Open to work · reading inbox daily
+              Open to work
             </span>
           </div>
         </div>

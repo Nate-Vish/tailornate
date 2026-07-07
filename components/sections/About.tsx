@@ -1,4 +1,4 @@
-import { aboutParagraphs, principles, profile } from "@/content/profile"
+import { aboutParagraphs, principles } from "@/content/profile"
 
 export default function About() {
   return (
@@ -17,10 +17,7 @@ export default function About() {
               <p key={i}>{p}</p>
             ))}
             <p style={{ fontSize: "17px", color: "var(--mut)", fontStyle: "italic" }}>
-              {profile.languages.join(" · ")}
-            </p>
-            <p style={{ fontSize: "17px", color: "var(--mut)", fontStyle: "italic" }}>
-              Off the clock: salsa, guitar, skiing — and good coffee.
+              Hebrew · English · Russian — off the clock: salsa, guitar, skiing, good coffee.
             </p>
           </div>
           <div className="method">

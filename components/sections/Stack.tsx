@@ -14,10 +14,7 @@ export default function Stack() {
           <h2 id="stack-heading" className="sec-ti">
             <em>Stack</em>
           </h2>
-          <p className="sec-lead">
-            What I reach for. The eight below are daily drivers — the full catalogue is one tap
-            away.
-          </p>
+          <p className="sec-lead">The daily drivers. Full catalogue one tap away.</p>
         </div>
 
         <div className="pills">

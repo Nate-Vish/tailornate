@@ -9,9 +9,7 @@ export default function Projects() {
           <h2 id="work-heading" className="sec-ti">
             The <em>Work</em>
           </h2>
-          <p className="sec-lead">
-            One framework used daily, one product shipped for IBM. Not demo-ware.
-          </p>
+          <p className="sec-lead">Used daily. Not demo-ware.</p>
         </div>
 
         <div className="projects">
