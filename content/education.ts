@@ -11,13 +11,13 @@ export const education: EducationEntry[] = [
     degree: "AI Driven Development Program",
     institution: "Future HIT",
     period: "2026",
-    note: "Systematic AI-driven methodology, code quality engineering, and AI adoption leadership. Accepted a year early — program targets 3rd year+.",
+    note: "Accepted a year early — program targets 3rd year+.",
   },
   {
     degree: "Handzone Leaders Program",
     institution: "Future HIT · IBM Israel",
     period: "2026",
-    note: "Innovation leadership, MVP sprint, industry showcase. Built Polaris for IBM Israel.",
+    note: "Where Polaris was built.",
   },
   {
     degree: "Target Intelligence Professional",

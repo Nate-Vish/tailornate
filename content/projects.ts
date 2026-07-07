@@ -6,7 +6,7 @@ export const projects: Project[] = [
     title: "AutoMates",
     tagline: "Open-source multi-agent AI development framework.",
     description:
-      "12 AI agents with distinct identities and domain knowledge, coordinated through an Orca routing layer that dispatches tasks and forges new agents on demand. LEARN FIRST protocol loads agents with curated knowledge before generating code. Five automated quality gates (security, legal, UX, brand, release) and cross-session memory. Used daily to build every other project on this page — currently powering an AI solution for the legal industry.",
+      "12 AI agents coordinated through an Orca routing layer — with a LEARN FIRST knowledge protocol, cross-session memory, and five automated quality gates. Used daily to build every other project on this page.",
     tech: ["Claude Code", "TypeScript", "MCP", "Multi-Agent", "Context Engineering"],
     status: "live",
     path: "~/automates",
@@ -24,7 +24,7 @@ export const projects: Project[] = [
     title: "Polaris",
     tagline: "Finance insight tool built for IBM Israel.",
     description:
-      "AI-powered dashboard that analyzes Excel financial data and uses the Gemini API to generate narrative insights. Code computes the numbers; AI writes text only. Architected with Claude Code, Claude Design, and AutoMates as part of the Handzone Leaders Program. Delivered a working MVP within the sprint deadline and presented it to IBM Israel leadership.",
+      "Dashboard that turns Excel financial data into narrative insights with the Gemini API — code computes the numbers, AI writes text only.",
     tech: ["Gemini API", "Next.js", "SheetJS", "Vercel", "AutoMates"],
     status: "shipped",
     path: "~/polaris",

@@ -1,14 +1,16 @@
 import type { SkillCategory } from "@/types"
 
 export const keySkills = [
-  "TypeScript",
-  "Python",
   "Multi-Agent Orchestration",
-  "Claude Code",
-  "Next.js",
+  "Context Engineering",
+  "LLMs",
   "RAG",
   "MCP",
-  "n8n",
+  "Prompt Engineering",
+  "Data-Driven Decisions",
+  "Real-Time Intelligence",
+  "Claude Code",
+  "TypeScript",
 ]
 
 export const skillCategories: SkillCategory[] = [
@@ -21,11 +23,24 @@ export const skillCategories: SkillCategory[] = [
       "RAG",
       "MCP",
       "Prompt Engineering",
+      "Agent Memory Systems",
+      "Automated Quality Gates",
+    ],
+  },
+  {
+    name: "Data & Decisions",
+    items: [
+      "Data-Driven Decision Making",
+      "Real-Time Intelligence",
+      "Data Fusion & Verification",
+      "pandas",
+      "SheetJS",
+      "Zod",
     ],
   },
   {
     name: "AI Tooling",
-    items: ["Claude Code", "Gemini CLI", "Gemini API", "n8n"],
+    items: ["Claude Code", "Gemini CLI", "Gemini API", "Vercel AI SDK", "n8n"],
   },
   {
     name: "Languages",
@@ -34,9 +49,5 @@ export const skillCategories: SkillCategory[] = [
   {
     name: "Web & Infrastructure",
     items: ["Next.js", "React", "Git", "GitHub", "Vercel", "shadcn/ui", "Linux"],
-  },
-  {
-    name: "Data",
-    items: ["SheetJS", "pandas", "Zod"],
   },
 ]
