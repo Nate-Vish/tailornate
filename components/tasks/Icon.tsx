@@ -52,6 +52,9 @@ import {
   BarChart3,
   Filter,
   Unlink,
+  Compass,
+  Clock,
+  FolderOpen,
   type LucideIcon,
 } from "lucide-react"
 
@@ -107,6 +110,9 @@ const MAP: Record<string, LucideIcon> = {
   download: Download,
   "bar-chart": BarChart3,
   filter: Filter,
+  compass: Compass,
+  clock: Clock,
+  folder: FolderOpen,
 }
 
 export function Icon({

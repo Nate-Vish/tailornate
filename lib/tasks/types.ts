@@ -37,6 +37,8 @@ export type Task = {
   dueDate?: string
   createdAt: string
   completedAt?: string
+  // Snoozed tasks hide from the dashboard until this date (YYYY-MM-DD)
+  snoozedUntil?: string
   boost?: { mode: BoostMode; setAt: string; minScore: number } | null
   // Branch: this task is a sub-task of parentId. One level deep only.
   parentId?: string

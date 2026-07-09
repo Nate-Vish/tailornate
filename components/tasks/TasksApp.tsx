@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
-import { useTasksStore } from "@/lib/tasks/store"
+import { useTasksStore, todayISO } from "@/lib/tasks/store"
+import { tipOfTheDay } from "@/lib/tasks/tips"
 import type { Task } from "@/lib/tasks/types"
 import { Icon } from "./Icon"
 import { TodayView } from "./TodayView"
@@ -72,16 +73,19 @@ export function TasksApp() {
 
   if (!mounted) {
     return (
-      <div className="sidra flex min-h-dvh items-center justify-center bg-[var(--background)]">
-        <div className="flex flex-col items-center gap-3">
+      <div className="sidra flex min-h-dvh items-center justify-center bg-[var(--background)] px-8">
+        <div className="flex flex-col items-center gap-3 text-center">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 1.6, ease: "linear" }}
             className="flex h-12 w-12 items-center justify-center rounded-full border border-border text-[var(--accent)]"
           >
-            <Icon name="sparkles" size={20} />
+            <Icon name="compass" size={22} />
           </motion.div>
-          <p className="text-[13px] text-muted-foreground">Madko</p>
+          <p className="text-[13px] font-semibold text-foreground">Madko</p>
+          <p suppressHydrationWarning className="max-w-[260px] text-[12px] leading-relaxed text-muted-foreground">
+            {tipOfTheDay(todayISO())}
+          </p>
         </div>
       </div>
     )
@@ -152,7 +156,22 @@ export function TasksApp() {
           </motion.button>
         )}
 
-        <BottomNav onAdd={() => setSheet({ kind: "add-picker" })} />
+        {!aiOpen && (
+          <motion.button
+            onClick={() => setSheet({ kind: "add-picker" })}
+            aria-label="הוספת משימה או שרשרת"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.95 }}
+            className="absolute bottom-24 right-4 z-20 flex h-13 w-13 items-center justify-center rounded-full p-3.5 shadow-xl ring-1 ring-[var(--accent)]"
+            style={{ background: "var(--card)", color: "var(--accent)" }}
+          >
+            <Icon name="plus" size={24} />
+          </motion.button>
+        )}
+
+        <BottomNav />
         <AchievementToast />
 
         <AnimatePresence>

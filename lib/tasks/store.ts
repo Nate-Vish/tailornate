@@ -42,6 +42,7 @@ type State = {
   resetWeights: () => void
   boostTask: (id: string, mode: BoostMode, minScore: number) => void
   clearBoost: (id: string) => void
+  snoozeTask: (id: string, untilISO: string | null) => void
   setView: (v: ViewName) => void
   openDrilldown: (categoryId: string) => void
   setAIOpen: (open: boolean) => void
@@ -257,6 +258,16 @@ export const useTasksStore = create<State>()(
       clearBoost: (id) =>
         set((s) => ({ tasks: s.tasks.map((t) => (t.id === id ? { ...t, boost: null } : t)) })),
 
+      // Snoozing also drops any manual boost — "not now" beats "top of list".
+      snoozeTask: (id, untilISO) =>
+        set((s) => ({
+          tasks: s.tasks.map((t) =>
+            t.id === id
+              ? { ...t, snoozedUntil: untilISO ?? undefined, boost: untilISO ? null : t.boost }
+              : t,
+          ),
+        })),
+
       setView: (v) => set({ view: v, drilldownCategoryId: null }),
       openDrilldown: (categoryId) => set({ view: "projects", drilldownCategoryId: categoryId }),
       setAIOpen: (open) => set({ aiOpen: open }),
@@ -283,14 +294,39 @@ export function selectSortedActive(s: Pick<State, "tasks" | "weights">): Task[] 
     .map(({ t }) => t)
 }
 
+export function todayISO(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+}
+
+// Local calendar date of a UTC timestamp. Comparing raw ISO prefixes breaks
+// near midnight (Israel evening = previous day in UTC).
+export function localDateOf(iso: string): string {
+  const d = new Date(iso)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+}
+
+export function isSnoozed(t: Task): boolean {
+  return !!t.snoozedUntil && t.snoozedUntil > todayISO()
+}
+
 // The "today" list: top-level tasks only (children render nested under their
-// parent), and for chains only the current actionable step surfaces.
+// parent), chains surface only their current step, snoozed tasks wait it out.
 export function selectTodayList(s: Pick<State, "tasks" | "weights">): Task[] {
   return selectSortedActive(s).filter((t) => {
     if (t.parentId) return false
     if (t.chainId && isChainLocked(t, s.tasks)) return false
+    if (isSnoozed(t)) return false
     return true
   })
+}
+
+// Completed today — the dashboard's "already done" strip.
+export function selectDoneToday(s: Pick<State, "tasks">): Task[] {
+  const today = todayISO()
+  return s.tasks
+    .filter((t) => t.status === "completed" && t.completedAt && localDateOf(t.completedAt) === today)
+    .sort((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? ""))
 }
 
 export function childrenOf(tasks: Task[], parentId: string): Task[] {

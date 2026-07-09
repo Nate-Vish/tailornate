@@ -27,6 +27,7 @@ export const aiActionSchema = z.discriminatedUnion("type", [
       size: sizeSchema.optional(),
       status: z.enum(["not_started", "in_progress", "blocked"]).optional(),
       dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+      snoozedUntil: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
       categoryId: z.string().optional(),
       tagId: z.string().nullable().optional(),
     }),

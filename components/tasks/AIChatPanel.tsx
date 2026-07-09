@@ -148,6 +148,8 @@ export function AIChatPanel() {
             if (action.patch.size) patch.size = action.patch.size
             if (action.patch.status) patch.status = action.patch.status
             if (action.patch.dueDate !== undefined) patch.dueDate = action.patch.dueDate ?? undefined
+            if (action.patch.snoozedUntil !== undefined)
+              patch.snoozedUntil = action.patch.snoozedUntil ?? undefined
             if (action.patch.categoryId) patch.categoryId = action.patch.categoryId
             if (action.patch.tagId !== undefined) patch.tagId = action.patch.tagId ?? undefined
             store.updateTask(t.id, patch)

@@ -6,8 +6,8 @@ import { useTasksStore } from "@/lib/tasks/store"
 import type { ViewName } from "@/lib/tasks/types"
 
 const right: { id: ViewName; icon: string; label: string }[] = [
-  { id: "today", icon: "zap", label: "היום" },
-  { id: "squad", icon: "users", label: "תחומים" },
+  { id: "squad", icon: "bar-chart", label: "סטטוס" },
+  { id: "projects", icon: "folder", label: "תחומים" },
 ]
 
 const left: { id: ViewName; icon: string; label: string }[] = [
@@ -18,7 +18,7 @@ const left: { id: ViewName; icon: string; label: string }[] = [
 function NavButton({ id, icon, label }: { id: ViewName; icon: string; label: string }) {
   const view = useTasksStore((s) => s.view)
   const setView = useTasksStore((s) => s.setView)
-  const active = view === id || (id === "squad" && view === "projects")
+  const active = view === id
   return (
     <button
       onClick={() => setView(id)}
@@ -34,9 +34,13 @@ function NavButton({ id, icon, label }: { id: ViewName; icon: string; label: str
   )
 }
 
-// Center "+" sits raised in the middle of the bar — the easiest thumb reach
-// when holding a phone one-handed.
-export function BottomNav({ onAdd }: { onAdd: () => void }) {
+// Center compass = home. It opens the dashboard — the "95% of visits" screen.
+// Spins a full turn on hover (desktop) and on tap (mobile has no hover).
+export function BottomNav() {
+  const view = useTasksStore((s) => s.view)
+  const setView = useTasksStore((s) => s.setView)
+  const isHome = view === "today"
+
   return (
     <nav
       className="absolute bottom-0 left-0 right-0 border-t border-border bg-card/95 backdrop-blur"
@@ -48,12 +52,20 @@ export function BottomNav({ onAdd }: { onAdd: () => void }) {
         ))}
         <div className="relative flex flex-1 justify-center">
           <button
-            onClick={onAdd}
-            aria-label="הוספת משימה או שרשרת"
-            className="-mt-7 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-lg transition-transform hover:scale-105 active:scale-95"
-            style={{ background: "var(--accent)" }}
+            onClick={() => setView("today")}
+            aria-label="מצפן — הדשבורד הראשי"
+            aria-current={isHome ? "page" : undefined}
+            className={clsx(
+              "group -mt-7 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95",
+              isHome ? "text-white" : "text-[var(--accent)] ring-1 ring-[var(--accent)]",
+            )}
+            style={{ background: isHome ? "var(--accent)" : "var(--card)" }}
           >
-            <Icon name="plus" size={26} />
+            <Icon
+              name="compass"
+              size={27}
+              className="transition-transform duration-700 ease-out group-hover:rotate-[360deg] group-active:rotate-[360deg]"
+            />
           </button>
         </div>
         {left.map((it) => (

@@ -95,7 +95,7 @@ Action objects:
 - {"type":"create_task","title":"...","priority":"urgent|high|medium|low","size":"short|medium|long","categoryId":"<existing category id>","tagId":"<existing tag id, optional>","dueDate":"YYYY-MM-DD (optional)","completed":true (optional — ONLY to log work that already happened)}
 - {"type":"complete_task","taskId":"<existing task id>"}   // completing a parent completes its sub-tasks
 - {"type":"reopen_task","taskId":"<id of a completed task>"}
-- {"type":"update_task","taskId":"<id>","patch":{...any of title/priority/size/status/dueDate/categoryId/tagId}}
+- {"type":"update_task","taskId":"<id>","patch":{...any of title/priority/size/status/dueDate/snoozedUntil/categoryId/tagId}}  // "תדחה את X למחר" → snoozedUntil=tomorrow (hides from today until then); null clears the snooze
 - {"type":"delete_task","taskId":"<id>"}
 - {"type":"boost_task","taskId":"<id>"}  // manually push a task to the top
 - {"type":"show_top","taskIds":["id1","id2","id3"]}  // when the user asks what to do / what's urgent

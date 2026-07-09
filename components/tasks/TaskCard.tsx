@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import { clsx } from "clsx"
 import { Icon } from "./Icon"
 import { PriorityPill, ColorPill, scoreColor, cvar } from "./pills"
-import { useTasksStore, childrenOf, chainProgress } from "@/lib/tasks/store"
+import { useTasksStore, childrenOf, chainProgress, isSnoozed } from "@/lib/tasks/store"
 import { calcScore, formatRelativeDue, statusLabel } from "@/lib/tasks/scoring"
 import type { Task } from "@/lib/tasks/types"
 
@@ -138,6 +138,12 @@ export function TaskCard({
               <span className="text-[10px] text-muted-foreground">· {statusLabel[task.status]}</span>
             )}
             {due && <span className="text-[10px] text-muted-foreground">· {due}</span>}
+            {isSnoozed(task) && (
+              <span className="flex items-center gap-0.5 text-[10px] font-medium" style={{ color: "var(--warning)" }}>
+                <Icon name="clock" size={10} />
+                נדחה עד {task.snoozedUntil!.slice(5).split("-").reverse().join(".")}
+              </span>
+            )}
             {boosted && (
               <button
                 onClick={() => clearBoost(task.id)}

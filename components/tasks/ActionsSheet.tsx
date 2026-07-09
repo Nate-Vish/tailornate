@@ -1,9 +1,16 @@
 "use client"
 
+import { useState } from "react"
 import { Sheet, SheetButton } from "./Sheet"
-import { useTasksStore } from "@/lib/tasks/store"
+import { useTasksStore, todayISO, isSnoozed } from "@/lib/tasks/store"
 import { googleCalendarUrl } from "@/lib/tasks/ics"
 import type { Task } from "@/lib/tasks/types"
+
+function tomorrowISO(): string {
+  const d = new Date()
+  d.setDate(d.getDate() + 1)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+}
 
 export type TaskSheetAction = "edit" | "branch" | "chain"
 
@@ -20,7 +27,10 @@ export function ActionsSheet({
   const boostTask = useTasksStore((s) => s.boostTask)
   const clearBoost = useTasksStore((s) => s.clearBoost)
   const toggleComplete = useTasksStore((s) => s.toggleComplete)
+  const snoozeTask = useTasksStore((s) => s.snoozeTask)
+  const [snoozeDateOpen, setSnoozeDateOpen] = useState(false)
   const completed = task.status === "completed"
+  const snoozed = isSnoozed(task)
 
   return (
     <Sheet title={task.title} onClose={onClose}>
@@ -51,6 +61,57 @@ export function ActionsSheet({
             onClick={() => onPick("chain")}
           />
         )}
+        {!completed &&
+          (snoozed ? (
+            <SheetButton
+              icon="clock"
+              label="בטל דחייה"
+              sub={`נדחה עד ${task.snoozedUntil}`}
+              color="var(--warning)"
+              onClick={() => {
+                snoozeTask(task.id, null)
+                onClose()
+              }}
+            />
+          ) : snoozeDateOpen ? (
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2.5">
+              <span className="text-[13px] text-muted-foreground">דחה עד:</span>
+              <input
+                type="date"
+                autoFocus
+                min={todayISO()}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    snoozeTask(task.id, e.target.value)
+                    onClose()
+                  }
+                }}
+                className="flex-1 rounded-lg border border-border bg-card px-2 py-1.5 text-[13px] text-foreground outline-none"
+              />
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <SheetButton
+                  icon="clock"
+                  label="דחה למחר"
+                  color="var(--warning)"
+                  onClick={() => {
+                    snoozeTask(task.id, tomorrowISO())
+                    onClose()
+                  }}
+                />
+              </div>
+              <div className="flex-1">
+                <SheetButton
+                  icon="calendar-clock"
+                  label="דחה לתאריך…"
+                  color="var(--warning)"
+                  onClick={() => setSnoozeDateOpen(true)}
+                />
+              </div>
+            </div>
+          ))}
         {task.dueDate && (
           <a href={googleCalendarUrl(task)} target="_blank" rel="noopener noreferrer" className="block">
             <SheetButton icon="calendar-plus" label="הוסף ליומן Google" onClick={() => {}} />

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react"
 import { clsx } from "clsx"
 import { Icon } from "./Icon"
 import { ColorPill, PriorityPill, scoreColor } from "./pills"
-import { useTasksStore, taskXP, isChainLocked } from "@/lib/tasks/store"
+import { useTasksStore, taskXP, isChainLocked, isSnoozed } from "@/lib/tasks/store"
 import { calcScore, priorityLabel, sizeLabel, statusLabel } from "@/lib/tasks/scoring"
 import type { AIRequestBody, AIResponse } from "@/lib/tasks/ai"
 import type { Task } from "@/lib/tasks/types"
@@ -344,7 +344,7 @@ export function TableView({ onActions }: { onActions: (task: Task) => void }) {
                     <PriorityPill priority={t.priority} />
                   </td>
                   <td className="whitespace-nowrap border-b border-border px-2 py-2 text-muted-foreground">
-                    {locked ? "ממתין בשרשרת" : statusLabel[t.status]}
+                    {locked ? "ממתין בשרשרת" : !done && isSnoozed(t) ? `נדחה עד ${t.snoozedUntil}` : statusLabel[t.status]}
                   </td>
                   <td className="whitespace-nowrap border-b border-border px-2 py-2 text-muted-foreground">
                     {fmtDate(t.dueDate)}
