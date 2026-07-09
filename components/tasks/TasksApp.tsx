@@ -14,24 +14,26 @@ import { AddTaskDialog } from "./AddTaskDialog"
 import { AchievementToast } from "./AchievementToast"
 import { AIChatPanel } from "./AIChatPanel"
 
-// Self-sufficient theme toggle: flips the `dark` class on <html> and remembers
-// the choice. Works with or without a site-wide theme provider.
+// Sidra's theme is scoped to the app wrapper (.sidra-dark class), independent
+// of however the host site manages its own theme. Initial value follows the
+// stored choice, then the site's current theme, then the OS preference.
 function useDarkToggle() {
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
     const stored = localStorage.getItem("sidra-theme")
+    const html = document.documentElement
+    const siteIsDark =
+      html.classList.contains("dark") || html.getAttribute("data-theme") === "dark"
     const initial = stored
       ? stored === "dark"
-      : document.documentElement.classList.contains("dark")
-    document.documentElement.classList.toggle("dark", initial)
+      : siteIsDark || window.matchMedia("(prefers-color-scheme: dark)").matches
     setIsDark(initial)
   }, [])
 
   const toggle = useCallback(() => {
     setIsDark((prev) => {
       const next = !prev
-      document.documentElement.classList.toggle("dark", next)
       localStorage.setItem("sidra-theme", next ? "dark" : "light")
       return next
     })
@@ -52,7 +54,7 @@ export function TasksApp() {
 
   if (!mounted) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-background">
+      <div className="sidra flex min-h-dvh items-center justify-center bg-[var(--background)]">
         <div className="flex flex-col items-center gap-3">
           <motion.div
             animate={{ rotate: 360 }}
@@ -70,7 +72,7 @@ export function TasksApp() {
   return (
     <div
       dir="rtl"
-      className="flex min-h-dvh items-stretch justify-center bg-background sm:items-center sm:py-8"
+      className={`sidra ${isDark ? "sidra-dark" : ""} flex min-h-dvh items-stretch justify-center bg-[var(--background)] sm:items-center sm:py-8`}
     >
       <div className="fixed left-4 top-4 z-50 hidden flex-col gap-2 sm:flex" dir="ltr">
         <Link

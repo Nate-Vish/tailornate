@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Rubik } from "next/font/google"
+import "./sidra.css"
 
 const rubik = Rubik({
   variable: "--font-rubik",
