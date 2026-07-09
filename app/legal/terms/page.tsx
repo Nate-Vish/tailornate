@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-export const metadata = { title: "תנאי שימוש | Sidra" }
+export const metadata = { title: "תנאי שימוש | Madko" }
 
 const updated = "9 ביולי 2026"
 
@@ -8,14 +8,14 @@ export default function TermsPage() {
   return (
     <article className="space-y-5 text-[15px] leading-relaxed text-foreground">
       <header>
-        <h1 className="text-[24px] font-semibold">תנאי שימוש — Sidra</h1>
+        <h1 className="text-[24px] font-semibold">תנאי שימוש — Madko</h1>
         <p className="mt-1 text-[12px] text-muted-foreground">עודכן לאחרונה: {updated}</p>
       </header>
 
       <section>
         <h2 className="mb-1 text-[17px] font-semibold">השירות</h2>
         <p>
-          Sidra היא אפליקציית ניהול משימות בשלב ניסוי מוקדם (Beta). השימוש בה אישי ובאחריות
+          Madko היא אפליקציית ניהול משימות בשלב ניסוי מוקדם (Beta). השימוש בה אישי ובאחריות
           המשתמש. השירות עשוי להשתנות, להיפסק או להתאפס ללא הודעה מוקדמת בשלב זה.
         </p>
       </section>
@@ -52,7 +52,7 @@ export default function TermsPage() {
 
       <section className="text-[13px] text-muted-foreground">
         <p>
-          English summary: Sidra is an early-stage beta provided as-is, without warranty. Data
+          English summary: Madko is an early-stage beta provided as-is, without warranty. Data
           lives on your device — back it up via the in-app CSV/ICS export. AI output may be
           wrong and is not professional advice. Israeli law governs.
         </p>
@@ -64,7 +64,7 @@ export default function TermsPage() {
         </Link>
         <span className="mx-2 text-muted-foreground">·</span>
         <Link href="/tasks" className="underline">
-          חזרה ל-Sidra
+          חזרה ל-Madko
         </Link>
         <span className="mx-2 text-muted-foreground">·</span>
         <Link href="/portfolio" className="underline">

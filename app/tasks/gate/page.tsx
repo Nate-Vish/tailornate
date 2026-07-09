@@ -54,7 +54,7 @@ function GateForm() {
       </div>
       <h1 className="mt-3 text-[18px] font-semibold text-foreground">אזור פרטי</h1>
       <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-        Sidra היא מערכת המשימות האישית של נתן.
+        Madko היא מערכת המשימות האישית של נתן.
         <br />
         יש לך קוד? יאללה.
       </p>

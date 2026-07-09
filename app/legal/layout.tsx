@@ -9,7 +9,7 @@ const rubik = Rubik({
 })
 
 export const metadata: Metadata = {
-  title: "משפטי | Sidra — Tailornate",
+  title: "משפטי | Madko — Tailornate",
   robots: { index: true, follow: true },
 }
 

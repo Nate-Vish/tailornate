@@ -152,7 +152,7 @@ export function SettingsView() {
           תנאי שימוש
         </a>
         <span aria-hidden="true">·</span>
-        <span>Sidra Beta</span>
+        <span>Madko Beta</span>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-export const metadata = { title: "מדיניות פרטיות | Sidra" }
+export const metadata = { title: "מדיניות פרטיות | Madko" }
 
 const updated = "9 ביולי 2026"
 
@@ -8,14 +8,14 @@ export default function PrivacyPage() {
   return (
     <article className="space-y-5 text-[15px] leading-relaxed text-foreground">
       <header>
-        <h1 className="text-[24px] font-semibold">מדיניות פרטיות — Sidra</h1>
+        <h1 className="text-[24px] font-semibold">מדיניות פרטיות — Madko</h1>
         <p className="mt-1 text-[12px] text-muted-foreground">עודכן לאחרונה: {updated}</p>
       </header>
 
       <section>
-        <h2 className="mb-1 text-[17px] font-semibold">מה זה Sidra</h2>
+        <h2 className="mb-1 text-[17px] font-semibold">מה זה Madko</h2>
         <p>
-          Sidra היא אפליקציית ניהול משימות אישית הפועלת בכתובת tailornate.com/tasks. זהו מוצר
+          Madko היא אפליקציית ניהול משימות אישית הפועלת בכתובת tailornate.com/tasks. זהו מוצר
           בשלב ניסוי מוקדם, המופעל על ידי נתן חי וישנבסקי.
         </p>
       </section>
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
 
       <section className="text-[13px] text-muted-foreground">
         <p>
-          English summary: Sidra stores all task data locally on your device only. AI requests
+          English summary: Madko stores all task data locally on your device only. AI requests
           (text/voice snapshots) are processed via Google Gemini and are not stored by us. One
           functional cookie (access gate), no analytics, no ads. Contact:
           natan.vish100@gmail.com.
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
         </Link>
         <span className="mx-2 text-muted-foreground">·</span>
         <Link href="/tasks" className="underline">
-          חזרה ל-Sidra
+          חזרה ל-Madko
         </Link>
         <span className="mx-2 text-muted-foreground">·</span>
         <Link href="/portfolio" className="underline">

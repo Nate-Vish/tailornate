@@ -20,7 +20,7 @@ import { ActionsSheet, type TaskSheetAction } from "./ActionsSheet"
 import { BranchSheet } from "./BranchSheet"
 import { ChainSheet } from "./ChainSheet"
 
-// Sidra's theme is scoped to the app wrapper (.sidra-dark class), independent
+// Madko's theme is scoped to the app wrapper (.sidra-dark legacy class), independent
 // of however the host site manages its own theme. Initial value follows the
 // stored choice, then the site's current theme, then the OS preference.
 function useDarkToggle() {
@@ -81,7 +81,7 @@ export function TasksApp() {
           >
             <Icon name="sparkles" size={20} />
           </motion.div>
-          <p className="text-[13px] text-muted-foreground">Sidra</p>
+          <p className="text-[13px] text-muted-foreground">Madko</p>
         </div>
       </div>
     )

@@ -1,7 +1,7 @@
 {
-  "name": "Sidra — משימות שמתקתקות",
-  "short_name": "Sidra",
-  "description": "מנהל משימות חכם עם AI — מתעדף את היום שלך ושומר על איזון בין התחומים.",
+  "name": "Madko — מדקו למשימות",
+  "short_name": "Madko",
+  "description": "מנווט המשימות שלך — AI שמצביע על הצעד הבא ושומר על איזון בין התחומים.",
   "id": "/tasks",
   "start_url": "/tasks",
   "scope": "/",
@@ -12,8 +12,8 @@
   "background_color": "#14100c",
   "theme_color": "#5c4a32",
   "icons": [
-    { "src": "/icons/sidra-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/sidra-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/sidra-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/icons/madko-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/madko-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/madko-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

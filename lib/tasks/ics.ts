@@ -21,21 +21,21 @@ export function tasksToICS(tasks: Task[], categories: Category[]): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Sidra//Tasks//HE",
+    "PRODID:-//Madko//Tasks//HE",
     "CALSCALE:GREGORIAN",
-    "X-WR-CALNAME:Sidra Tasks",
+    "X-WR-CALNAME:Madko Tasks",
   ]
   for (const t of withDue) {
     const cat = categories.find((c) => c.id === t.categoryId)
     lines.push(
       "BEGIN:VEVENT",
-      `UID:${t.id}@sidra.tailornate.com`,
+      `UID:${t.id}@madko.tailornate.com`,
       `DTSTAMP:${icsDate(t.createdAt.slice(0, 10))}T000000Z`,
       `DTSTART;VALUE=DATE:${icsDate(t.dueDate!)}`,
       `DTEND;VALUE=DATE:${icsDate(nextDay(t.dueDate!))}`,
       `SUMMARY:${escapeICS(t.title)}`,
       `DESCRIPTION:${escapeICS(
-        `Sidra · ${cat?.name ?? ""} · ${priorityLabel[t.priority]} · ${statusLabel[t.status]}`,
+        `Madko · ${cat?.name ?? ""} · ${priorityLabel[t.priority]} · ${statusLabel[t.status]}`,
       )}`,
       "END:VEVENT",
     )
@@ -49,7 +49,7 @@ export function downloadICS(tasks: Task[], categories: Category[]): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
   a.href = url
-  a.download = "sidra-tasks.ics"
+  a.download = "madko-tasks.ics"
   a.click()
   URL.revokeObjectURL(url)
 }
@@ -61,7 +61,7 @@ export function googleCalendarUrl(task: Task): string {
     action: "TEMPLATE",
     text: task.title,
     dates: `${icsDate(date)}/${icsDate(nextDay(date))}`,
-    details: "מתוך Sidra — tailornate.com/tasks",
+    details: "מתוך Madko — tailornate.com/tasks",
   })
   return `https://calendar.google.com/calendar/render?${params.toString()}`
 }

@@ -9,17 +9,17 @@ const rubik = Rubik({
 })
 
 export const metadata: Metadata = {
-  title: "Sidra — משימות שמתקתקות | Tailornate",
+  title: "Madko — מדקו למשימות | Tailornate",
   description:
-    "Smart task manager with AI — prioritizes your day, balances your life, speaks Hebrew and English. Built by Nathan Hai Vishnevski.",
+    "Madko (מד קואורדינטות) — AI task navigator that points to your next move and keeps your life areas balanced. Hebrew-first. Built by Nathan Hai Vishnevski.",
   robots: { index: false, follow: false },
   manifest: "/tasks-manifest.webmanifest",
   icons: {
-    apple: "/icons/sidra-180.png",
+    apple: "/icons/madko-180.png",
   },
   appleWebApp: {
     capable: true,
-    title: "Sidra",
+    title: "Madko",
     statusBarStyle: "black-translucent",
   },
 }
