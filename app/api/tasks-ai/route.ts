@@ -46,10 +46,25 @@ function isRateLimited(ip: string): boolean {
 }
 
 function buildPrompt(body: AIRequestBody): string {
-  const { state, messages, mode } = body
+  const { state, messages, mode, calendar } = body
   const history = messages
     .map((m) => `${m.role === "user" ? "USER" : "ASSISTANT"}: ${m.content}`)
     .join("\n")
+
+  const calendarSection = calendar
+    ? calendar.connected
+      ? `
+## The user's calendar (read-only feed, window: last 7 days to next 21 days)
+Events: ${JSON.stringify(calendar.events ?? [])}
+Calendar rules:
+- "תוסיף משימות מהיומן / לשבוע" → create_task for each relevant UPCOMING event that has no matching existing task (match by meaning). Use the event date as dueDate, size "short", the most fitting category; keep the event title, cleaned up.
+- "כל מה שביומן התבצע / תסמן שהכל נעשה" (possibly with exclusions like "חוץ מהקניות") → for each calendar event in the range the user described: if a matching OPEN task exists → complete_task; if none exists → create_task with completed:true so the done work is recorded and earns XP. SKIP events the user excluded, and skip events that are clearly not tasks (e.g. someone else's birthday) unless asked.
+- Never duplicate: before creating, check the task list for a matching title/meaning.
+- Respect the user's date range exactly (e.g. ראשון עד שבת of the current week, computed from today's date).`
+      : `
+## The user's calendar
+Not connected. If the user asks about their calendar, tell them (in their language) to connect it: הגדרות ← חיבור יומן ← הדבקת הכתובת הסודית של Google Calendar. Return no actions for calendar requests.`
+    : ""
 
   const analyzeExtra =
     mode === "analyze"
@@ -70,13 +85,14 @@ Categories (life areas, "תחומים"): ${JSON.stringify(state.categories)}
 Tags (sub-projects, each belongs to a category): ${JSON.stringify(state.tags)}
 Chains (ordered step-by-step plans; steps unlock one at a time): ${JSON.stringify(state.chains)}
 Tasks (score = computed urgency 0-100; parentId = sub-task of that parent; chainId+chainOrder = chain membership): ${JSON.stringify(state.tasks)}
+${calendarSection}
 
 ## Your job
 Read the conversation and return ONE JSON object (no markdown, no code fences, no extra text) with this exact shape:
 {"reply": "<answer in the user's language>", "actions": [<zero or more action objects>]}
 
 Action objects:
-- {"type":"create_task","title":"...","priority":"urgent|high|medium|low","size":"short|medium|long","categoryId":"<existing category id>","tagId":"<existing tag id, optional>","dueDate":"YYYY-MM-DD (optional)"}
+- {"type":"create_task","title":"...","priority":"urgent|high|medium|low","size":"short|medium|long","categoryId":"<existing category id>","tagId":"<existing tag id, optional>","dueDate":"YYYY-MM-DD (optional)","completed":true (optional — ONLY to log work that already happened)}
 - {"type":"complete_task","taskId":"<existing task id>"}   // completing a parent completes its sub-tasks
 - {"type":"reopen_task","taskId":"<id of a completed task>"}
 - {"type":"update_task","taskId":"<id>","patch":{...any of title/priority/size/status/dueDate/categoryId/tagId}}
@@ -168,6 +184,10 @@ export async function POST(req: NextRequest) {
     ) {
       return new Response("Invalid request", { status: 400 })
     }
+  }
+
+  if (body.calendar?.events && body.calendar.events.length > 200) {
+    return new Response("Invalid request", { status: 400 })
   }
 
   const prompt = buildPrompt(body)

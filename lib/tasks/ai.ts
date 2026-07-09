@@ -12,6 +12,9 @@ export const aiActionSchema = z.discriminatedUnion("type", [
     categoryId: z.string(),
     tagId: z.string().optional(),
     dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    // Log work that already happened (e.g. calendar events that took place):
+    // the task is created directly in completed state and earns its XP.
+    completed: z.boolean().optional(),
   }),
   z.object({ type: z.literal("complete_task"), taskId: z.string() }),
   z.object({ type: z.literal("reopen_task"), taskId: z.string() }),
@@ -64,7 +67,8 @@ export const aiActionSchema = z.discriminatedUnion("type", [
 
 export const aiResponseSchema = z.object({
   reply: z.string().max(2400),
-  actions: z.array(aiActionSchema).max(10).default([]),
+  // Generous cap: bulk calendar operations legitimately touch many tasks.
+  actions: z.array(aiActionSchema).max(24).default([]),
 })
 
 export type AIAction = z.infer<typeof aiActionSchema>
@@ -93,8 +97,14 @@ export type AIStatePayload = {
   }[]
 }
 
+export type CalendarPayload = {
+  connected: boolean
+  events?: { title: string; date: string; time?: string; allDay?: boolean }[]
+}
+
 export type AIRequestBody = {
   messages: { role: "user" | "assistant"; content: string }[]
   state: AIStatePayload
   mode?: "chat" | "analyze"
+  calendar?: CalendarPayload
 }

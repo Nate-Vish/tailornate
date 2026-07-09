@@ -23,10 +23,37 @@ const uid = () => Math.random().toString(36).slice(2, 10)
 
 const suggestions = [
   "מה הכי דחוף לי עכשיו?",
-  "תוסיף משימה: לקנות מתנה למיטל, עד יום שישי",
+  "תבדוק את היומן שלי ותוסיף משימות לשבוע",
   "תפצל את 'לסדר את החדר' לשלבים",
   "נתח לי את ההתקדמות השבוע",
 ]
+
+const CALENDAR_KEYWORDS = /יומן|לוח.{0,2}שנה|calendar|קלנדר/i
+const CALENDAR_URL_KEY = "madko-calendar-ics"
+
+// Short-lived cache so one conversation doesn't refetch the feed per message
+let calendarCache: { at: number; events: unknown[] } | null = null
+
+async function fetchCalendar(): Promise<AIRequestBody["calendar"]> {
+  const url = typeof window !== "undefined" ? localStorage.getItem(CALENDAR_URL_KEY) : null
+  if (!url) return { connected: false }
+  if (calendarCache && Date.now() - calendarCache.at < 10 * 60 * 1000) {
+    return { connected: true, events: calendarCache.events as NonNullable<AIRequestBody["calendar"]>["events"] }
+  }
+  try {
+    const res = await fetch("/api/calendar-feed", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    })
+    if (!res.ok) return { connected: false }
+    const data = (await res.json()) as { events: unknown[] }
+    calendarCache = { at: Date.now(), events: data.events }
+    return { connected: true, events: data.events as NonNullable<AIRequestBody["calendar"]>["events"] }
+  } catch {
+    return { connected: false }
+  }
+}
 
 // Minimal typing for the Web Speech API (not in TS DOM lib everywhere)
 type SpeechRecognitionLike = {
@@ -89,14 +116,19 @@ export function AIChatPanel() {
             title: action.title,
             priority: action.priority,
             size: action.size,
-            status: "not_started",
+            status: action.completed ? "completed" : "not_started",
+            completedAt: action.completed ? new Date().toISOString() : undefined,
             categoryId: validCategory
               ? action.categoryId
               : (tag?.categoryId ?? store.categories[0].id),
             tagId: tag?.id,
             dueDate: action.dueDate,
           })
-          results.push({ label: task.title, kind: "created", taskId: task.id })
+          results.push({
+            label: task.title,
+            kind: action.completed ? "completed" : "created",
+            taskId: task.id,
+          })
           break
         }
         case "complete_task": {
@@ -242,6 +274,9 @@ export function AIChatPanel() {
           .map((m) => ({ role: m.role === "user" ? ("user" as const) : ("assistant" as const), content: m.text }))
 
         const isAnalyze = /נתח|ניתוח|סיכום|סכם|התקדמות|analyz|summar/i.test(text)
+        const wantsCalendar = CALENDAR_KEYWORDS.test(text)
+        const calendar = wantsCalendar ? await fetchCalendar() : undefined
+
         const res = await fetch("/api/tasks-ai", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -249,6 +284,7 @@ export function AIChatPanel() {
             messages: history,
             state: statePayload,
             mode: isAnalyze ? "analyze" : "chat",
+            calendar,
           }),
         })
 

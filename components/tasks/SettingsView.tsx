@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Icon } from "./Icon"
 import { ColorPill, scoreColor, cvar } from "./pills"
 import { useTasksStore, selectSortedActive } from "@/lib/tasks/store"
@@ -102,8 +102,10 @@ export function SettingsView() {
         </div>
       </div>
 
+      <CalendarConnect />
+
       <div className="mt-6 border-t border-border px-4 pt-4">
-        <p className="mb-2 text-[13px] font-medium text-foreground">חיבור ליומן</p>
+        <p className="mb-2 text-[13px] font-medium text-foreground">ייצוא ליומן</p>
         <p className="mb-3 text-[12px] leading-snug text-muted-foreground">
           מוריד קובץ ICS עם כל המשימות הפתוחות שיש להן דדליין. פותחים אותו ב-Google Calendar
           (ייבוא), Apple Calendar או Outlook — והמשימות מופיעות ביומן. בנוסף, לכל משימה עם
@@ -143,7 +145,7 @@ export function SettingsView() {
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-center gap-3 px-4 pb-2 text-[11px] text-muted-foreground">
+      <div className="mt-4 flex items-center justify-center gap-3 px-4 pb-2 text-[11px] text-muted-foreground" id="settings-footer">
         <a href="/legal/privacy" className="hover:text-foreground hover:underline">
           מדיניות פרטיות
         </a>
@@ -154,6 +156,134 @@ export function SettingsView() {
         <span aria-hidden="true">·</span>
         <span>Madko Beta</span>
       </div>
+    </div>
+  )
+}
+
+const CALENDAR_URL_KEY = "madko-calendar-ics"
+
+// Read-only calendar link: the user pastes Google Calendar's "secret address
+// in iCal format" once. It lives in this device's storage only; the server
+// just proxies the fetch per request (CORS blocks doing it from the browser).
+function CalendarConnect() {
+  const [url, setUrl] = useState("")
+  const [saved, setSaved] = useState(false)
+  const [status, setStatus] = useState<{ kind: "idle" | "ok" | "err" | "busy"; text?: string }>({
+    kind: "idle",
+  })
+  const [showHelp, setShowHelp] = useState(false)
+
+  useEffect(() => {
+    const stored = localStorage.getItem(CALENDAR_URL_KEY)
+    if (stored) {
+      setUrl(stored)
+      setSaved(true)
+    }
+  }, [])
+
+  const test = async (candidate: string) => {
+    setStatus({ kind: "busy" })
+    try {
+      const res = await fetch("/api/calendar-feed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: candidate }),
+      })
+      const data = (await res.json()) as { count?: number; error?: string }
+      if (res.ok) {
+        setStatus({ kind: "ok", text: `מחובר! נמצאו ${data.count} אירועים בחלון של חודש` })
+        return true
+      }
+      setStatus({ kind: "err", text: data.error ?? "החיבור נכשל" })
+      return false
+    } catch {
+      setStatus({ kind: "err", text: "בעיית רשת — נסה שוב" })
+      return false
+    }
+  }
+
+  const save = async () => {
+    const candidate = url.trim()
+    if (!candidate) return
+    const ok = await test(candidate)
+    if (ok) {
+      localStorage.setItem(CALENDAR_URL_KEY, candidate)
+      setSaved(true)
+    }
+  }
+
+  const disconnect = () => {
+    localStorage.removeItem(CALENDAR_URL_KEY)
+    setUrl("")
+    setSaved(false)
+    setStatus({ kind: "idle" })
+  }
+
+  return (
+    <div className="mt-6 border-t border-border px-4 pt-4">
+      <p className="mb-2 text-[13px] font-medium text-foreground">חיבור יומן (קריאה)</p>
+      <p className="mb-3 text-[12px] leading-snug text-muted-foreground">
+        חבר את היומן ותוכל להגיד ל-AI דברים כמו &quot;תוסיף משימות מהיומן לשבוע&quot; או
+        &quot;כל מה שביומן השבוע בוצע — תסמן&quot;. הכתובת נשמרת במכשיר שלך בלבד.{" "}
+        <button onClick={() => setShowHelp((v) => !v)} className="underline">
+          איך משיגים את הכתובת?
+        </button>
+      </p>
+
+      {showHelp && (
+        <ol className="mb-3 list-decimal space-y-1 rounded-lg bg-[var(--muted)] px-6 py-3 text-[12px] leading-relaxed text-foreground">
+          <li>Google Calendar במחשב ← ⚙️ הגדרות</li>
+          <li>בחר את היומן שלך מהרשימה משמאל</li>
+          <li>&quot;שילוב היומן&quot; ← &quot;כתובת סודית בפורמט iCal&quot;</li>
+          <li>העתק והדבק כאן</li>
+        </ol>
+      )}
+
+      <div className="flex items-center gap-2">
+        <input
+          value={url}
+          onChange={(e) => {
+            setUrl(e.target.value)
+            setSaved(false)
+          }}
+          dir="ltr"
+          placeholder="https://calendar.google.com/calendar/ical/…/basic.ics"
+          className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-[12px] text-foreground outline-none placeholder:text-muted-foreground/50 focus:border-[var(--accent)]"
+        />
+        {saved ? (
+          <button
+            onClick={disconnect}
+            className="shrink-0 rounded-lg border px-3 py-2.5 text-[12px] transition-colors"
+            style={{ borderColor: "var(--danger)", color: "var(--danger)" }}
+          >
+            נתק
+          </button>
+        ) : (
+          <button
+            onClick={save}
+            disabled={!url.trim() || status.kind === "busy"}
+            className="shrink-0 rounded-lg px-3 py-2.5 text-[12px] font-medium text-[var(--background)] transition-opacity hover:opacity-90 disabled:opacity-40"
+            style={{ background: "var(--accent)" }}
+          >
+            {status.kind === "busy" ? "בודק…" : "חבר"}
+          </button>
+        )}
+      </div>
+
+      {status.text && (
+        <p
+          className="mt-2 text-[12px]"
+          style={{ color: status.kind === "ok" ? "var(--success)" : "var(--danger)" }}
+        >
+          {status.text}
+        </p>
+      )}
+      {saved && status.kind === "idle" && (
+        <p className="mt-2 flex items-center gap-1 text-[12px]" style={{ color: "var(--success)" }}>
+          <Icon name="check" size={12} />
+          יומן מחובר
+        </p>
+      )}
     </div>
   )
 }

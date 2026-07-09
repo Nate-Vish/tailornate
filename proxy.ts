@@ -33,5 +33,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/tasks/:path*", "/api/tasks-ai", "/api/tasks-transcribe"],
+  matcher: ["/tasks/:path*", "/api/tasks-ai", "/api/tasks-transcribe", "/api/calendar-feed"],
 }
