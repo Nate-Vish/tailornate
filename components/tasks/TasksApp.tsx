@@ -90,7 +90,7 @@ export function TasksApp() {
   return (
     <div
       dir="rtl"
-      className={`sidra ${isDark ? "sidra-dark" : ""} flex min-h-dvh items-stretch justify-center bg-[var(--background)] sm:items-center sm:py-8`}
+      className={`sidra ${isDark ? "sidra-dark" : ""} madko-topo flex min-h-dvh items-stretch justify-center bg-[var(--background)] sm:items-center sm:py-8`}
     >
       <div className="fixed left-4 top-4 z-50 hidden flex-col gap-2 sm:flex" dir="ltr">
         <Link

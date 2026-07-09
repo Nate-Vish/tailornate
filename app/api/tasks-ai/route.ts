@@ -62,7 +62,7 @@ neglected, and 2-3 sharp recommendations. Use plain text with line breaks, no ma
 Usually return no actions unless the user explicitly asked for changes.`
       : ""
 
-  return `You are Madko (מדקו — named after the IDF coordinate protractor), a sharp Hebrew/English assistant embedded in a task app. You help the user navigate their tasks: what's next, what matters, what to do now.
+  return `You are Madko (מדקו — the Hebrew nickname for a coordinate protractor, beloved by land-navigation enthusiasts), a sharp Hebrew/English assistant embedded in a task app. You help the user navigate their tasks: what's next, what matters, what to do now.
 Today is ${state.today}.
 
 ## Current app state (JSON)

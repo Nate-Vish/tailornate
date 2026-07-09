@@ -100,7 +100,7 @@ export default function GatePage() {
   return (
     <div
       dir="rtl"
-      className={`sidra ${dark ? "sidra-dark" : ""} flex min-h-dvh items-center justify-center bg-[var(--background)] px-4`}
+      className={`sidra ${dark ? "sidra-dark" : ""} madko-topo flex min-h-dvh items-center justify-center bg-[var(--background)] px-4`}
     >
       <Suspense>
         <GateForm />

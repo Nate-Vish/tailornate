@@ -27,6 +27,15 @@
   --color-border: var(--border);
   --color-accent: var(--accent);
 
+  /* The host site's @theme inline maps utilities to its SOURCE variables
+     (--bg/--fg/--mut/--rule/--accent-warm), which inherit from <html> past
+     this scope. Remap them so every compiled utility resolves in-scope. */
+  --bg: var(--background);
+  --fg: var(--foreground);
+  --mut: var(--muted-foreground);
+  --rule: var(--border);
+  --accent-warm: var(--accent);
+
   color: var(--foreground);
   /* Native form controls (password inputs, selects, date pickers) follow the
      scoped palette, not the host site's color-scheme. */
@@ -110,6 +119,22 @@
 }
 .sidra.sidra-dark .cfill {
   background: color-mix(in srgb, var(--c) 70%, #e8dcc2);
+}
+
+/* ---- Brand backdrop: topographic contours (navigation motif). Light/dark
+   variants generated to match the palette; a soft wash keeps content focal. ---- */
+.sidra.madko-topo {
+  background-image:
+    linear-gradient(rgba(232, 223, 200, 0.62), rgba(232, 223, 200, 0.72)),
+    url("/madko-topo-light.webp");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+.sidra.sidra-dark.madko-topo {
+  background-image:
+    linear-gradient(rgba(20, 16, 12, 0.55), rgba(20, 16, 12, 0.72)),
+    url("/madko-topo-dark.webp");
 }
 
 /* ---- Mobile ergonomics ---- */
