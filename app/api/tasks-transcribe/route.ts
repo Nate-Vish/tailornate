@@ -53,7 +53,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = await generateText({
-      model: google("gemini-2.5-flash"),
+      // Transcription stays on flash regardless of TASKS_AI_MODEL — it's a
+      // fixed, cheap task where a pro model adds cost without accuracy.
+      model: google(process.env.TASKS_TRANSCRIBE_MODEL ?? "gemini-2.5-flash"),
       messages: [
         {
           role: "user",

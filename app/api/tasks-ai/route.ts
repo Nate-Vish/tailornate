@@ -8,8 +8,15 @@ const MAX_MESSAGE_LENGTH = 1000
 const MAX_TASKS = 400
 const RATE = { windowMs: 10 * 60 * 1000, maxRequests: 25 }
 
-// Ordered by capability; first model the key supports wins.
-const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemma-3-27b-it"]
+// Ordered by capability; first model the key supports wins. Set TASKS_AI_MODEL
+// in Vercel env (e.g. gemini-2.5-pro on a paid key) to try a stronger model
+// first — the chain below stays as fallback, so a bad value can't break chat.
+const MODELS = [
+  ...(process.env.TASKS_AI_MODEL ? [process.env.TASKS_AI_MODEL] : []),
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemma-3-27b-it",
+]
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 
