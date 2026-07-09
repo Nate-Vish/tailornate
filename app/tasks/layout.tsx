@@ -12,11 +12,7 @@ export const metadata: Metadata = {
   title: "Sidra — משימות שמתקתקות | Tailornate",
   description:
     "Smart task manager with AI — prioritizes your day, balances your life, speaks Hebrew and English. Built by Nathan Hai Vishnevski.",
-  openGraph: {
-    title: "Sidra — AI Task Manager",
-    description: "Smart scoring, life-balance squad, natural-language AI. Hebrew-first.",
-    url: "https://tailornate.com/tasks",
-  },
+  robots: { index: false, follow: false },
 }
 
 export default function TasksLayout({ children }: { children: React.ReactNode }) {

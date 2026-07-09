@@ -19,6 +19,12 @@ export type Tag = {
   icon: string
 }
 
+// A chain groups tasks into an ordered, step-by-step plan.
+export type Chain = {
+  id: string
+  title: string
+}
+
 export type Task = {
   id: string
   title: string
@@ -32,6 +38,11 @@ export type Task = {
   createdAt: string
   completedAt?: string
   boost?: { mode: BoostMode; setAt: string; minScore: number } | null
+  // Branch: this task is a sub-task of parentId. One level deep only.
+  parentId?: string
+  // Chain: ordered membership in a chain. chainOrder is 0-based.
+  chainId?: string
+  chainOrder?: number
 }
 
 export type Weights = {
@@ -41,4 +52,4 @@ export type Weights = {
   size: number
 }
 
-export type ViewName = "today" | "projects" | "squad" | "settings"
+export type ViewName = "today" | "projects" | "squad" | "settings" | "table"

@@ -11,11 +11,12 @@ import {
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable"
 import { AnimatePresence } from "framer-motion"
-import { useTasksStore, selectSortedActive, selectRecentDone } from "@/lib/tasks/store"
+import { useTasksStore, selectTodayList, selectRecentDone } from "@/lib/tasks/store"
 import { calcScore } from "@/lib/tasks/scoring"
 import { TaskCard } from "./TaskCard"
 import { SquadStrip } from "./SquadStrip"
 import { Icon } from "./Icon"
+import type { Task } from "@/lib/tasks/types"
 
 function greeting(): string {
   const h = new Date().getHours()
@@ -25,12 +26,12 @@ function greeting(): string {
   return "ערב טוב"
 }
 
-export function TodayView({ onAdd }: { onAdd: () => void }) {
+export function TodayView({ onActions }: { onActions: (task: Task) => void }) {
   const tasks = useTasksStore((s) => s.tasks)
   const weights = useTasksStore((s) => s.weights)
   const boostTask = useTasksStore((s) => s.boostTask)
 
-  const active = useMemo(() => selectSortedActive({ tasks, weights }), [tasks, weights])
+  const active = useMemo(() => selectTodayList({ tasks, weights }), [tasks, weights])
   const recentDone = useMemo(() => selectRecentDone({ tasks }, 1), [tasks])
   const [span, setSpan] = useState<"day" | "week" | "month">("day")
 
@@ -59,21 +60,10 @@ export function TodayView({ onAdd }: { onAdd: () => void }) {
   }
 
   return (
-    <div className="pb-28">
+    <div className="pb-32">
       <header className="px-4 pb-3 pt-5">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-[11px] text-muted-foreground">{greeting()}, נתן</p>
-            <h1 className="mt-0.5 text-[19px] font-semibold text-foreground">היום שלי</h1>
-          </div>
-          <button
-            onClick={onAdd}
-            aria-label="הוספת משימה"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:bg-[var(--card-hover)] hover:text-foreground"
-          >
-            <Icon name="plus" size={17} />
-          </button>
-        </div>
+        <p className="text-[11px] text-muted-foreground">{greeting()}, נתן</p>
+        <h1 className="mt-0.5 text-[19px] font-semibold text-foreground">היום שלי</h1>
       </header>
 
       <div className="px-4 pb-3">
@@ -111,7 +101,7 @@ export function TodayView({ onAdd }: { onAdd: () => void }) {
             <AnimatePresence initial={false}>
               <div className="space-y-2">
                 {shown.map((t) => (
-                  <TaskCard key={t.id} task={t} />
+                  <TaskCard key={t.id} task={t} onActions={onActions} />
                 ))}
               </div>
             </AnimatePresence>

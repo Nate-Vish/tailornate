@@ -15,8 +15,9 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           // Control referrer leakage
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // Restrict browser feature access
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          // Restrict browser feature access. Microphone stays available to the
+          // site itself — the tasks AI supports voice input.
+          { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=()" },
           // CSP: frame-ancestors + object-src + base-uri are safe to lock down fully.
           // script-src requires nonce implementation for Next.js hydration scripts —
           // that's a separate task. This gives meaningful protection today.

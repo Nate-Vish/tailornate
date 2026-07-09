@@ -15,7 +15,7 @@ type ChatMsg =
 
 type ActionResult = {
   label: string
-  kind: "created" | "completed" | "updated" | "deleted" | "boosted"
+  kind: "created" | "completed" | "updated" | "deleted" | "boosted" | "branched" | "chained"
   taskId?: string
 }
 
@@ -24,7 +24,8 @@ const uid = () => Math.random().toString(36).slice(2, 10)
 const suggestions = [
   "מה הכי דחוף לי עכשיו?",
   "תוסיף משימה: לקנות מתנה למיטל, עד יום שישי",
-  "סיימתי את הפוסט בלינקדאין",
+  "תפצל את 'לסדר את החדר' לשלבים",
+  "נתח לי את ההתקדמות השבוע",
 ]
 
 // Minimal typing for the Web Speech API (not in TS DOM lib everywhere)
@@ -62,13 +63,11 @@ export function AIChatPanel() {
   const [input, setInput] = useState("")
   const [thinking, setThinking] = useState(false)
   const [listening, setListening] = useState(false)
-  const [speechAvailable, setSpeechAvailable] = useState(false)
+  const [transcribing, setTranscribing] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
-
-  useEffect(() => {
-    setSpeechAvailable(getSpeechRecognition() !== null)
-  }, [])
+  const recorderRef = useRef<MediaRecorder | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
 
   useEffect(() => {
     if (aiOpen && scrollRef.current) {
@@ -140,6 +139,54 @@ export function AIChatPanel() {
           }
           break
         }
+        case "reopen_task": {
+          const t = store.tasks.find((x) => x.id === action.taskId)
+          if (t && t.status === "completed") {
+            store.toggleComplete(t.id)
+            results.push({ label: t.title, kind: "updated", taskId: t.id })
+          }
+          break
+        }
+        case "branch_task": {
+          const t = store.tasks.find((x) => x.id === action.taskId)
+          if (t) {
+            store.branchTask(t.id, action.subtitles)
+            results.push({
+              label: `${t.title} → ${action.subtitles.length} חלקים`,
+              kind: "branched",
+              taskId: t.id,
+            })
+          }
+          break
+        }
+        case "attach_children": {
+          const parent = store.tasks.find((x) => x.id === action.parentId)
+          if (parent) {
+            store.attachChildren(parent.id, action.childIds)
+            results.push({
+              label: `${parent.title} ← ${action.childIds.length} משימות`,
+              kind: "branched",
+              taskId: parent.id,
+            })
+          }
+          break
+        }
+        case "create_chain": {
+          const validCategory = store.categories.some((c) => c.id === action.categoryId)
+          const chainId = store.createChain(
+            action.title,
+            action.steps.map((st) => ({ existingId: st.existingId, title: st.title })),
+            {
+              categoryId: validCategory ? action.categoryId : store.categories[0].id,
+              tagId: action.tagId,
+              priority: action.priority,
+            },
+          )
+          if (chainId) {
+            results.push({ label: `${action.title} (${action.steps.length} שלבים)`, kind: "chained" })
+          }
+          break
+        }
         case "show_top": {
           topIds = action.taskIds.filter((id) => store.tasks.some((t) => t.id === id))
           break
@@ -170,7 +217,8 @@ export function AIChatPanel() {
           today: new Date().toISOString().slice(0, 10),
           categories: store.categories.map((c) => ({ id: c.id, name: `${c.name} / ${c.nameEn}` })),
           tags: store.tags.map((t) => ({ id: t.id, name: t.name, categoryId: t.categoryId })),
-          tasks: [...sorted, ...recentDone].slice(0, 100).map((t) => ({
+          chains: store.chains.map((c) => ({ id: c.id, title: c.title })),
+          tasks: [...sorted, ...recentDone].slice(0, 150).map((t) => ({
             id: t.id,
             title: t.title,
             priority: t.priority,
@@ -179,6 +227,11 @@ export function AIChatPanel() {
             categoryId: t.categoryId,
             tagId: t.tagId,
             dueDate: t.dueDate,
+            createdAt: t.createdAt.slice(0, 10),
+            completedAt: t.completedAt?.slice(0, 10),
+            parentId: t.parentId,
+            chainId: t.chainId,
+            chainOrder: t.chainOrder,
             score: calcScore(t, store.weights),
           })),
         }
@@ -188,10 +241,15 @@ export function AIChatPanel() {
           .slice(-10)
           .map((m) => ({ role: m.role === "user" ? ("user" as const) : ("assistant" as const), content: m.text }))
 
+        const isAnalyze = /נתח|ניתוח|סיכום|סכם|התקדמות|analyz|summar/i.test(text)
         const res = await fetch("/api/tasks-ai", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: history, state: statePayload }),
+          body: JSON.stringify({
+            messages: history,
+            state: statePayload,
+            mode: isAnalyze ? "analyze" : "chat",
+          }),
         })
 
         const data = (await res.json()) as AIResponse
@@ -212,27 +270,107 @@ export function AIChatPanel() {
     [messages, thinking, applyActions],
   )
 
+  const pushError = useCallback((text: string) => {
+    setMessages((prev) => [...prev, { id: uid(), role: "ai", text }])
+  }, [])
+
+  // Fallback path: record audio locally, transcribe on the server (works on
+  // browsers without the Web Speech API — Chrome iOS, Firefox, some Safari).
+  const startRecorder = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      streamRef.current = stream
+      const mime = MediaRecorder.isTypeSupported("audio/webm")
+        ? "audio/webm"
+        : MediaRecorder.isTypeSupported("audio/mp4")
+          ? "audio/mp4"
+          : ""
+      const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined)
+      const chunks: Blob[] = []
+      recorder.ondataavailable = (e) => e.data.size > 0 && chunks.push(e.data)
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop())
+        streamRef.current = null
+        setListening(false)
+        const blob = new Blob(chunks, { type: recorder.mimeType || "audio/webm" })
+        if (blob.size < 1000) return
+        setTranscribing(true)
+        try {
+          const buf = await blob.arrayBuffer()
+          let binary = ""
+          const bytes = new Uint8Array(buf)
+          for (let i = 0; i < bytes.length; i += 0x8000) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
+          }
+          const res = await fetch("/api/tasks-transcribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ audio: btoa(binary), mimeType: blob.type }),
+          })
+          const data = (await res.json()) as { text?: string }
+          if (res.ok && data.text) {
+            send(data.text, "voice")
+          } else {
+            pushError("לא הצלחתי להבין את ההקלטה. נסה שוב או כתוב.")
+          }
+        } catch {
+          pushError("התמלול נכשל. בדוק חיבור ונסה שוב.")
+        } finally {
+          setTranscribing(false)
+        }
+      }
+      recorderRef.current = recorder
+      setListening(true)
+      recorder.start()
+    } catch {
+      pushError("אין גישה למיקרופון. בדוק הרשאות בדפדפן ונסה שוב.")
+      setListening(false)
+    }
+  }, [send, pushError])
+
   const toggleVoice = useCallback(() => {
     if (listening) {
       recognitionRef.current?.stop()
+      if (recorderRef.current?.state === "recording") recorderRef.current.stop()
       return
     }
+
     const SR = getSpeechRecognition()
-    if (!SR) return
+    if (!SR) {
+      void startRecorder()
+      return
+    }
+
+    // Fast path: on-device speech recognition. Falls back to the recorder if
+    // it errors out (blocked, unsupported language, flaky implementation).
     const rec = new SR()
     rec.lang = "he-IL"
     rec.interimResults = false
     rec.maxAlternatives = 1
+    let gotResult = false
     rec.onresult = (event) => {
+      gotResult = true
       const transcript = event.results[0]?.[0]?.transcript
       if (transcript) send(transcript, "voice")
     }
-    rec.onend = () => setListening(false)
-    rec.onerror = () => setListening(false)
+    rec.onend = () => {
+      setListening(false)
+      if (!gotResult) pushError("לא קלטתי כלום. נסה לדבר קרוב יותר או כתוב.")
+    }
+    rec.onerror = () => {
+      setListening(false)
+      recognitionRef.current = null
+      void startRecorder()
+    }
     recognitionRef.current = rec
     setListening(true)
-    rec.start()
-  }, [listening, send])
+    try {
+      rec.start()
+    } catch {
+      setListening(false)
+      void startRecorder()
+    }
+  }, [listening, send, startRecorder, pushError])
 
   return (
     <AnimatePresence>
@@ -317,28 +455,27 @@ export function AIChatPanel() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && send(input)}
-                  placeholder={listening ? "מקשיב…" : "כתוב או דבר…"}
+                  placeholder={listening ? "מקשיב…" : transcribing ? "מתמלל…" : "כתוב או דבר…"}
                   className="min-w-0 flex-1 rounded-full border border-border bg-card px-3 py-2 text-[13px] text-foreground outline-none placeholder:text-muted-foreground/60 focus:border-[var(--accent)]"
                 />
-                {speechAvailable && (
-                  <button
-                    aria-label={listening ? "עצור הקלטה" : "דבר"}
-                    onClick={toggleVoice}
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-transform active:scale-95"
-                    style={{ background: listening ? "var(--danger)" : "var(--accent)" }}
-                  >
-                    {listening ? (
-                      <motion.div
-                        animate={{ scale: [1, 1.15, 1] }}
-                        transition={{ repeat: Infinity, duration: 0.9 }}
-                      >
-                        <Icon name="mic" size={18} />
-                      </motion.div>
-                    ) : (
+                <button
+                  aria-label={listening ? "עצור הקלטה ושלח" : "דבר"}
+                  onClick={toggleVoice}
+                  disabled={transcribing}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-transform active:scale-95 disabled:opacity-50"
+                  style={{ background: listening ? "var(--danger)" : "var(--accent)" }}
+                >
+                  {listening || transcribing ? (
+                    <motion.div
+                      animate={{ scale: [1, 1.15, 1] }}
+                      transition={{ repeat: Infinity, duration: 0.9 }}
+                    >
                       <Icon name="mic" size={18} />
-                    )}
-                  </button>
-                )}
+                    </motion.div>
+                  ) : (
+                    <Icon name="mic" size={18} />
+                  )}
+                </button>
                 <button
                   aria-label="שלח"
                   onClick={() => send(input)}
@@ -362,6 +499,8 @@ const kindLabel: Record<ActionResult["kind"], string> = {
   updated: "עודכן",
   deleted: "נמחק",
   boosted: "הוקפץ",
+  branched: "פוצל",
+  chained: "שרשרת",
 }
 
 const kindColor: Record<ActionResult["kind"], string> = {
@@ -370,6 +509,8 @@ const kindColor: Record<ActionResult["kind"], string> = {
   updated: "var(--accent)",
   deleted: "var(--danger)",
   boosted: "var(--warning)",
+  branched: "var(--accent)",
+  chained: "var(--accent)",
 }
 
 function MessageBubble({ msg }: { msg: ChatMsg }) {

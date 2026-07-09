@@ -5,8 +5,8 @@ import { aiResponseSchema, type AIRequestBody } from "@/lib/tasks/ai"
 
 const MAX_MESSAGES = 16
 const MAX_MESSAGE_LENGTH = 1000
-const MAX_TASKS = 120
-const RATE = { windowMs: 10 * 60 * 1000, maxRequests: 20 }
+const MAX_TASKS = 400
+const RATE = { windowMs: 10 * 60 * 1000, maxRequests: 25 }
 
 // Ordered by capability; first model the key supports wins.
 const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemma-3-27b-it"]
@@ -39,39 +39,57 @@ function isRateLimited(ip: string): boolean {
 }
 
 function buildPrompt(body: AIRequestBody): string {
-  const { state, messages } = body
+  const { state, messages, mode } = body
   const history = messages
     .map((m) => `${m.role === "user" ? "USER" : "ASSISTANT"}: ${m.content}`)
     .join("\n")
+
+  const analyzeExtra =
+    mode === "analyze"
+      ? `
+## Analysis mode
+The user asked for an analysis of their tasks. Look at completion dates, categories, priorities,
+overdue items, and balance between life areas. Write an insightful, concrete summary (5-12 short
+lines, in the user's language): what got done, what's stuck and for how long, which areas are
+neglected, and 2-3 sharp recommendations. Use plain text with line breaks, no markdown headers.
+Usually return no actions unless the user explicitly asked for changes.`
+      : ""
 
   return `You are Sidra, a sharp Hebrew/English task-management assistant embedded in a task app.
 Today is ${state.today}.
 
 ## Current app state (JSON)
-Categories: ${JSON.stringify(state.categories)}
+Categories (life areas, "תחומים"): ${JSON.stringify(state.categories)}
 Tags (sub-projects, each belongs to a category): ${JSON.stringify(state.tags)}
-Tasks (score = computed urgency 0-100, higher = more urgent): ${JSON.stringify(state.tasks)}
+Chains (ordered step-by-step plans; steps unlock one at a time): ${JSON.stringify(state.chains)}
+Tasks (score = computed urgency 0-100; parentId = sub-task of that parent; chainId+chainOrder = chain membership): ${JSON.stringify(state.tasks)}
 
 ## Your job
 Read the conversation and return ONE JSON object (no markdown, no code fences, no extra text) with this exact shape:
-{"reply": "<short answer in the user's language>", "actions": [<zero or more action objects>]}
+{"reply": "<answer in the user's language>", "actions": [<zero or more action objects>]}
 
 Action objects:
 - {"type":"create_task","title":"...","priority":"urgent|high|medium|low","size":"short|medium|long","categoryId":"<existing category id>","tagId":"<existing tag id, optional>","dueDate":"YYYY-MM-DD (optional)"}
-- {"type":"complete_task","taskId":"<existing task id>"}
+- {"type":"complete_task","taskId":"<existing task id>"}   // completing a parent completes its sub-tasks
+- {"type":"reopen_task","taskId":"<id of a completed task>"}
 - {"type":"update_task","taskId":"<id>","patch":{...any of title/priority/size/status/dueDate/categoryId/tagId}}
 - {"type":"delete_task","taskId":"<id>"}
 - {"type":"boost_task","taskId":"<id>"}  // manually push a task to the top
 - {"type":"show_top","taskIds":["id1","id2","id3"]}  // when the user asks what to do / what's urgent
+- {"type":"branch_task","taskId":"<id>","subtitles":["sub 1","sub 2"]}  // split a task into sub-tasks; parent completes when all subs complete
+- {"type":"attach_children","parentId":"<id>","childIds":["id1","id2"]}  // group EXISTING standalone tasks under a parent task
+- {"type":"create_chain","title":"<plan name>","steps":[{"existingId":"<id>"} or {"title":"new step"}],"categoryId":"<id>","tagId":"optional","priority":"medium"}  // ordered plan, 2-12 steps, steps unlock in order
 
 ## Rules
 - Match tasks by meaning, not exact wording. "הפוסט בלינקדאין" matches the LinkedIn post task.
 - When creating: infer priority from words like דחוף/urgent/חשוב, infer category+tag from context (e.g. "Polaris" → tag_polaris). Default priority "medium", size "short".
 - Relative dates: מחר = tomorrow, מחרתיים = +2 days, בעוד שבוע = +7 days. Compute from today's date.
-- Keep "reply" short and natural (1-2 sentences), in the language the user wrote in (Hebrew gets Hebrew).
+- "תפצל/תפרק את X" → branch_task. "תעשה תוכנית/שלבים/שרשרת" or step-by-step flows → create_chain (order matters).
+- Keep "reply" short and natural (1-2 sentences) unless analysis was requested, in the language the user wrote in (Hebrew gets Hebrew).
 - If the user asks a question that needs no action (e.g. "מה דחוף?"), use show_top with the 3 highest-score task ids and summarize briefly in reply.
-- If you're not sure which task the user means, ask in "reply" and return no actions.
+- Do NOT complete/delete/modify tasks the user didn't clearly refer to. If unsure which task, ask in "reply" and return no actions.
 - NEVER invent task/category/tag ids that are not in the state above.
+${analyzeExtra}
 
 ## Conversation
 ${history}
@@ -146,6 +164,7 @@ export async function POST(req: NextRequest) {
   }
 
   const prompt = buildPrompt(body)
+  const isAnalyze = body.mode === "analyze"
   let lastError: unknown = null
 
   for (const model of MODELS) {
@@ -153,8 +172,8 @@ export async function POST(req: NextRequest) {
       const result = await generateText({
         model: google(model),
         prompt,
-        temperature: 0.2,
-        maxOutputTokens: 1200,
+        temperature: isAnalyze ? 0.4 : 0.2,
+        maxOutputTokens: isAnalyze ? 2400 : 1400,
       })
       const parsed = aiResponseSchema.safeParse(extractJson(result.text))
       if (!parsed.success) {

@@ -11,7 +11,7 @@ import {
   levelFor,
 } from "@/lib/tasks/store"
 
-export function ProjectsView() {
+export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/tasks/types").Task) => void }) {
   const categories = useTasksStore((s) => s.categories)
   const tags = useTasksStore((s) => s.tags)
   const tasks = useTasksStore((s) => s.tasks)
@@ -25,7 +25,9 @@ export function ProjectsView() {
   const sortedInCat = useMemo(
     () =>
       category
-        ? selectSortedActive({ tasks, weights }).filter((t) => t.categoryId === category.id)
+        ? selectSortedActive({ tasks, weights }).filter(
+            (t) => t.categoryId === category.id && !t.parentId,
+          )
         : [],
     [tasks, weights, category],
   )
@@ -35,7 +37,7 @@ export function ProjectsView() {
       <div className="pb-28">
         <header className="px-4 pb-4 pt-5">
           <p className="text-[11px] text-muted-foreground">מבט על</p>
-          <h1 className="text-[19px] font-semibold text-foreground">כל הקטגוריות</h1>
+          <h1 className="text-[19px] font-semibold text-foreground">כל התחומים</h1>
         </header>
 
         <div className="space-y-2 px-4">
@@ -104,7 +106,7 @@ export function ProjectsView() {
           <Icon name="chevron-right" size={18} />
         </button>
         <div className="flex-1">
-          <p className="text-[11px] text-muted-foreground">קטגוריה</p>
+          <p className="text-[11px] text-muted-foreground">תחום</p>
           <h1 className="text-[17px] font-semibold text-foreground">{category.name}</h1>
         </div>
         <div
@@ -183,11 +185,11 @@ export function ProjectsView() {
         <p className="mb-3 text-[13px] font-medium text-foreground">משימות פעילות</p>
         <div className="space-y-2">
           {sortedInCat.map((t) => (
-            <TaskCard key={t.id} task={t} draggable={false} />
+            <TaskCard key={t.id} task={t} draggable={false} onActions={onActions} />
           ))}
           {sortedInCat.length === 0 && (
             <p className="rounded-lg bg-[var(--muted)] px-3 py-4 text-center text-[12px] text-muted-foreground">
-              אין משימות פעילות בקטגוריה 🎉
+              אין משימות פעילות בתחום 🎉
             </p>
           )}
         </div>

@@ -23,12 +23,12 @@ export function SquadStrip() {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between px-4">
-        <p className="text-[12px] text-muted-foreground">הצוות שלך</p>
+        <p className="text-[12px] text-muted-foreground">התחומים שלך</p>
         <button
           onClick={() => setView("squad")}
           className="text-[12px] font-medium text-[var(--accent)] hover:underline"
         >
-          הפרופיל המלא ←
+          התמונה המלאה ←
         </button>
       </div>
 
@@ -84,7 +84,7 @@ export function SquadStrip() {
         >
           <Icon name="info" size={14} className="mt-0.5 shrink-0" />
           <p className="text-[12px] leading-snug">
-            &quot;{laggard.cat.name}&quot; ברמה {laggard.level} בלבד — הצוות לא מאוזן. אולי הזמן להשלים שם משהו קטן?
+            &quot;{laggard.cat.name}&quot; ברמה {laggard.level} בלבד — התחומים לא מאוזנים. אולי הזמן להשלים שם משהו קטן?
           </p>
         </div>
       )}

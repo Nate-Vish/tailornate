@@ -5,6 +5,7 @@ import { Icon } from "./Icon"
 import { ColorPill, scoreColor } from "./pills"
 import { useTasksStore, selectSortedActive } from "@/lib/tasks/store"
 import { calcScore } from "@/lib/tasks/scoring"
+import { downloadICS } from "@/lib/tasks/ics"
 import type { Weights } from "@/lib/tasks/types"
 
 const rows: { key: keyof Weights; label: string; color: string; icon: string }[] = [
@@ -62,9 +63,14 @@ export function SettingsView() {
         style={{ background: "color-mix(in srgb, var(--accent) 10%, transparent)" }}
       >
         <Icon name="lightbulb" size={16} className="mt-0.5 shrink-0" />
-        <p className="text-[12px] leading-snug text-foreground">
-          הציון של כל משימה מחושב מ-4 גורמים. שנה את המשקולות לפי איך שאתה חושב — הרשימה תסתדר מחדש מיד.
-        </p>
+        <div className="text-[12px] leading-snug text-foreground">
+          <p>הציון של כל משימה מחושב מ-4 גורמים. שנה את המשקולות — הרשימה תסתדר מחדש מיד.</p>
+          <p className="mt-1.5 text-muted-foreground">
+            <b className="text-foreground">דחיפות</b> = כמה המשימה חשובה, לפי מה שאתה קבעת (דחוף/גבוה/בינוני/נמוך).
+            <br />
+            <b className="text-foreground">דדליין</b> = כמה התאריך קרוב, מחושב אוטומטית. משימה &quot;נמוכה&quot; עם דדליין מחר עדיין תטפס למעלה.
+          </p>
+        </div>
       </div>
 
       <div className="px-4">
@@ -94,6 +100,22 @@ export function SettingsView() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-6 border-t border-border px-4 pt-4">
+        <p className="mb-2 text-[13px] font-medium text-foreground">חיבור ליומן</p>
+        <p className="mb-3 text-[12px] leading-snug text-muted-foreground">
+          מוריד קובץ ICS עם כל המשימות הפתוחות שיש להן דדליין. פותחים אותו ב-Google Calendar
+          (ייבוא), Apple Calendar או Outlook — והמשימות מופיעות ביומן. בנוסף, לכל משימה עם
+          דדליין יש כפתור &quot;הוסף ליומן Google&quot; בתפריט הפעולות שלה.
+        </p>
+        <button
+          onClick={() => downloadICS(tasks, categories)}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-border py-2.5 text-[13px] text-foreground transition-colors hover:bg-[var(--card-hover)]"
+        >
+          <Icon name="calendar-plus" size={15} />
+          הורד קובץ יומן (ICS)
+        </button>
       </div>
 
       <div className="mt-6 border-t border-border px-4 pt-4">

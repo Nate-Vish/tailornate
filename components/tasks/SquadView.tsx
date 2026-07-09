@@ -8,6 +8,7 @@ export function SquadView() {
   const categories = useTasksStore((s) => s.categories)
   const tags = useTasksStore((s) => s.tags)
   const tasks = useTasksStore((s) => s.tasks)
+  const openDrilldown = useTasksStore((s) => s.openDrilldown)
 
   const totalDone = tasks.filter((t) => t.status === "completed").length
   const enriched = categories.map((cat) => {
@@ -20,7 +21,7 @@ export function SquadView() {
     <div className="pb-28">
       <header className="px-4 pb-3 pt-5">
         <p className="text-[11px] text-muted-foreground">איזון החיים</p>
-        <h1 className="text-[19px] font-semibold text-foreground">הצוות שלך</h1>
+        <h1 className="text-[19px] font-semibold text-foreground">התחומים שלך</h1>
       </header>
 
       <div className="mx-4 mb-4 grid grid-cols-3 gap-2 rounded-xl bg-[var(--muted)] p-3">
@@ -43,7 +44,7 @@ export function SquadView() {
       </div>
 
       <div className="px-4">
-        <p className="mb-2 text-[12px] text-muted-foreground">איזון בין הקטגוריות</p>
+        <p className="mb-2 text-[12px] text-muted-foreground">איזון בין התחומים</p>
         <div className="rounded-xl border border-border bg-card p-3">
           {enriched.map(({ cat, count, level }) => {
             const pct = Math.round((count / maxDone) * 100)
@@ -70,12 +71,13 @@ export function SquadView() {
       </div>
 
       <div className="mt-4 px-4">
-        <p className="mb-2 text-[12px] text-muted-foreground">כל הדמויות</p>
+        <p className="mb-2 text-[12px] text-muted-foreground">כל התחומים</p>
         <div className="grid grid-cols-2 gap-2">
           {enriched.map(({ cat, level, count, progress }) => (
-            <div
+            <button
               key={cat.id}
-              className="rounded-xl border border-border bg-card p-3"
+              onClick={() => openDrilldown(cat.id)}
+              className="rounded-xl border border-border bg-card p-3 text-start transition-colors hover:bg-[var(--card-hover)]"
               style={{ borderTopWidth: 3, borderTopColor: cat.color }}
             >
               <div className="flex items-start justify-between">
@@ -102,7 +104,7 @@ export function SquadView() {
               <p className="mt-1 text-[10px] text-muted-foreground">
                 {Math.round(progress)}% לרמה {level + 1}
               </p>
-            </div>
+            </button>
           ))}
         </div>
       </div>

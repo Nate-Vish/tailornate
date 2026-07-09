@@ -26,9 +26,13 @@
   --color-accent: var(--accent);
 
   color: var(--foreground);
+  /* Native form controls (password inputs, selects, date pickers) follow the
+     scoped palette, not the host site's color-scheme. */
+  color-scheme: light;
 }
 
 .sidra.sidra-dark {
+  color-scheme: dark;
   --background: #171310;
   --foreground: #e8dfc8;
   --muted-foreground: #a89880;
