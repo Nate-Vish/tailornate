@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Icon } from "./Icon"
-import { tint } from "./pills"
+import { cvar } from "./pills"
 import { Sheet } from "./Sheet"
 import { useTasksStore } from "@/lib/tasks/store"
 import { googleCalendarUrl } from "@/lib/tasks/ics"
@@ -128,12 +128,8 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
                   setCategoryId(c.id)
                   setTagId("")
                 }}
-                className="shrink-0 rounded-full border px-3 py-1 text-[12px] transition-colors"
-                style={
-                  categoryId === c.id
-                    ? { background: tint(c.color), color: c.color, borderColor: c.color }
-                    : { borderColor: "var(--border)", color: "var(--muted-foreground)" }
-                }
+                className={`shrink-0 rounded-full border px-3 py-1 text-[12px] transition-colors ${categoryId === c.id ? "cchip-on" : "cchip"}`}
+                style={cvar(c.color)}
               >
                 {c.name}
               </button>
@@ -149,12 +145,8 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
                 <button
                   key={t.id}
                   onClick={() => setTagId(tagId === t.id ? "" : t.id)}
-                  className="shrink-0 rounded-full border px-3 py-1 text-[12px] transition-colors"
-                  style={
-                    tagId === t.id
-                      ? { background: tint(t.color), color: t.color, borderColor: t.color }
-                      : { borderColor: "var(--border)", color: "var(--muted-foreground)" }
-                  }
+                  className={`shrink-0 rounded-full border px-3 py-1 text-[12px] transition-colors ${tagId === t.id ? "cchip-on" : "cchip"}`}
+                  style={cvar(t.color)}
                 >
                   {t.name}
                 </button>

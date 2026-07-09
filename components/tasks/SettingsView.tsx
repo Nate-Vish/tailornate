@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { Icon } from "./Icon"
-import { ColorPill, scoreColor } from "./pills"
+import { ColorPill, scoreColor, cvar } from "./pills"
 import { useTasksStore, selectSortedActive } from "@/lib/tasks/store"
 import { calcScore } from "@/lib/tasks/scoring"
 import { downloadICS } from "@/lib/tasks/ics"
@@ -118,7 +118,7 @@ export function SettingsView() {
         </button>
       </div>
 
-      <div className="mt-6 border-t border-border px-4 pt-4">
+      <div className="mt-6 border-t border-border px-4 pt-4 pb-2">
         <p className="mb-3 text-[13px] font-medium text-foreground">תצוגה מקדימה — הכי דחוף עכשיו</p>
         <div className="space-y-2">
           {top3.map((t) => {
@@ -129,8 +129,8 @@ export function SettingsView() {
             return (
               <div
                 key={t.id}
-                className="flex items-center gap-2.5 rounded-lg border border-border bg-card px-3 py-2.5"
-                style={{ borderInlineEndWidth: 3, borderInlineEndColor: stripe }}
+                className="cstripe flex items-center gap-2.5 rounded-lg border border-border bg-card px-3 py-2.5"
+                style={{ borderInlineEndWidth: 3, ...cvar(stripe) }}
               >
                 <span className="text-[16px] font-semibold" style={{ color: scoreColor(score) }}>
                   {score}
@@ -141,6 +141,18 @@ export function SettingsView() {
             )
           })}
         </div>
+      </div>
+
+      <div className="mt-4 flex items-center justify-center gap-3 px-4 pb-2 text-[11px] text-muted-foreground">
+        <a href="/legal/privacy" className="hover:text-foreground hover:underline">
+          מדיניות פרטיות
+        </a>
+        <span aria-hidden="true">·</span>
+        <a href="/legal/terms" className="hover:text-foreground hover:underline">
+          תנאי שימוש
+        </a>
+        <span aria-hidden="true">·</span>
+        <span>Sidra Beta</span>
       </div>
     </div>
   )

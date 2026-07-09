@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Icon } from "./Icon"
-import { tint } from "./pills"
+import { cvar } from "./pills"
 import { useTasksStore, selectDoneCount, levelFor, progressInLevel } from "@/lib/tasks/store"
 
 export function SquadStrip() {
@@ -45,10 +45,9 @@ export function SquadStrip() {
               transition={{ delay: i * 0.04 }}
             >
               <div
-                className="relative flex h-12 w-12 items-center justify-center rounded-full transition-transform hover:scale-105"
+                className="cicon relative flex h-12 w-12 items-center justify-center rounded-full transition-transform hover:scale-105"
                 style={{
-                  background: tint(cat.color),
-                  color: cat.color,
+                  ...cvar(cat.color),
                   boxShadow: isLaggard ? "0 0 0 2px var(--warning)" : undefined,
                 }}
               >

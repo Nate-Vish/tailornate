@@ -14,6 +14,8 @@
   --danger: #8b3a2a;
   --warning: #8b6847;
   --success: #2d5a3d;
+  /* Mix target for lightening user colors in dark mode */
+  --tint-base: #1a1510;
 
   /* Cover both Tailwind v4 theme modes: utilities that reference the
      --color-* indirection resolve to the scoped values too. */
@@ -33,15 +35,96 @@
 
 .sidra.sidra-dark {
   color-scheme: dark;
-  --background: #171310;
-  --foreground: #e8dfc8;
-  --muted-foreground: #a89880;
-  --card: #221e17;
-  --card-hover: #2a261e;
-  --border: rgba(232, 223, 200, 0.12);
-  --accent: #c4a882;
-  --muted: #2e2a22;
-  --danger: #c05040;
-  --warning: #b08050;
-  --success: #3d7a55;
+  /* Dark palette tuned for contrast: darker canvas, brighter ink, and
+     semantic colors lifted ~2 steps so pills and scores stay readable. */
+  --background: #14100c;
+  --foreground: #f2ead8;
+  --muted-foreground: #b7a78d;
+  --card: #241e16;
+  --card-hover: #2e271d;
+  --border: rgba(242, 234, 216, 0.17);
+  --accent: #d6ba93;
+  --muted: #322b20;
+  --danger: #e57a60;
+  --warning: #dda368;
+  --success: #6cb586;
+}
+
+/* ---- Theme-aware colored UI built on user-defined category/tag colors.
+   Elements set `--c` inline; light mode uses the raw color, dark mode mixes
+   it toward cream so mid-tone colors don't turn muddy on dark surfaces. ---- */
+
+.sidra .cpill {
+  background: color-mix(in srgb, var(--c) 13%, transparent);
+  color: var(--c);
+}
+.sidra.sidra-dark .cpill {
+  background: color-mix(in srgb, var(--c) 30%, transparent);
+  color: color-mix(in srgb, var(--c) 40%, #f6efdc);
+}
+
+.sidra .cicon {
+  background: color-mix(in srgb, var(--c) 13%, transparent);
+  color: var(--c);
+}
+.sidra.sidra-dark .cicon {
+  background: color-mix(in srgb, var(--c) 26%, transparent);
+  color: color-mix(in srgb, var(--c) 35%, #f6efdc);
+}
+
+/* Selectable chips (category/tag pickers in sheets) */
+.sidra .cchip {
+  border-color: var(--border);
+  color: var(--muted-foreground);
+}
+.sidra .cchip-on {
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  border-color: var(--c);
+  color: var(--c);
+}
+.sidra.sidra-dark .cchip-on {
+  background: color-mix(in srgb, var(--c) 30%, transparent);
+  border-color: color-mix(in srgb, var(--c) 55%, #f6efdc);
+  color: color-mix(in srgb, var(--c) 35%, #f6efdc);
+}
+
+/* Colored text on neutral/dark surfaces */
+.sidra .ctext {
+  color: var(--c);
+}
+.sidra.sidra-dark .ctext {
+  color: color-mix(in srgb, var(--c) 40%, #f6efdc);
+}
+
+/* Colored stripe on task cards — lifted in dark so it reads clearly */
+.sidra .cstripe {
+  border-inline-end-color: var(--c);
+}
+.sidra.sidra-dark .cstripe {
+  border-inline-end-color: color-mix(in srgb, var(--c) 60%, #d8cbb0);
+}
+
+/* Solid colored fills (level badges, progress bars) */
+.sidra .cfill {
+  background: var(--c);
+}
+.sidra.sidra-dark .cfill {
+  background: color-mix(in srgb, var(--c) 70%, #e8dcc2);
+}
+
+/* ---- Mobile ergonomics ---- */
+@media (max-width: 640px) {
+  /* iOS Safari zooms the page when a focused input's font-size is below
+     16px. Keep controls at 16px on phones to prevent the jump. */
+  .sidra input,
+  .sidra select,
+  .sidra textarea {
+    font-size: 16px;
+  }
+}
+
+/* Visible focus for keyboard users without hurting the touch experience */
+.sidra :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

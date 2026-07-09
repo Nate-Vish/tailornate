@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { Icon } from "./Icon"
-import { tint } from "./pills"
+import { cvar } from "./pills"
 import { TaskCard } from "./TaskCard"
 import {
   useTasksStore,
@@ -49,23 +49,20 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
               <button
                 key={c.id}
                 onClick={() => openDrilldown(c.id)}
-                className="w-full rounded-xl border border-border bg-card p-3 text-start transition-colors hover:bg-[var(--card-hover)]"
-                style={{ borderInlineEndWidth: 4, borderInlineEndColor: c.color }}
+                className="cstripe w-full rounded-xl border border-border bg-card p-3 text-start transition-colors hover:bg-[var(--card-hover)]"
+                style={{ borderInlineEndWidth: 4, ...cvar(c.color) }}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
-                    style={{ background: tint(c.color), color: c.color }}
+                    className="cicon flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+                    style={cvar(c.color)}
                   >
                     <Icon name={c.icon} size={20} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-[14px] font-medium text-foreground">{c.name}</span>
-                      <span
-                        className="rounded-full px-2 py-[1px] text-[10px]"
-                        style={{ background: tint(c.color), color: c.color }}
-                      >
+                      <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(c.color)}>
                         רמה {levelFor(done)}
                       </span>
                     </div>
@@ -110,8 +107,8 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
           <h1 className="text-[17px] font-semibold text-foreground">{category.name}</h1>
         </div>
         <div
-          className="relative flex h-11 w-11 items-center justify-center rounded-full"
-          style={{ background: tint(category.color), color: category.color }}
+          className="cicon relative flex h-11 w-11 items-center justify-center rounded-full"
+          style={cvar(category.color)}
         >
           <Icon name={category.icon} size={20} />
           <span
@@ -148,22 +145,19 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
               return (
                 <div
                   key={t.id}
-                  className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
-                  style={{ borderInlineEndWidth: 4, borderInlineEndColor: t.color }}
+                  className="cstripe flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+                  style={{ borderInlineEndWidth: 4, ...cvar(t.color) }}
                 >
                   <div
-                    className="flex h-9 w-9 items-center justify-center rounded-full"
-                    style={{ background: tint(t.color), color: t.color }}
+                    className="cicon flex h-9 w-9 items-center justify-center rounded-full"
+                    style={cvar(t.color)}
                   >
                     <Icon name={t.icon} size={16} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[13px] font-medium text-foreground">{t.name}</span>
-                      <span
-                        className="rounded-full px-2 py-[1px] text-[10px]"
-                        style={{ background: tint(t.color), color: t.color }}
-                      >
+                      <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(t.color)}>
                         רמה {levelFor(done)}
                       </span>
                     </div>

@@ -5,7 +5,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { motion } from "framer-motion"
 import { clsx } from "clsx"
 import { Icon } from "./Icon"
-import { PriorityPill, ColorPill, scoreColor } from "./pills"
+import { PriorityPill, ColorPill, scoreColor, cvar } from "./pills"
 import { useTasksStore, childrenOf, chainProgress } from "@/lib/tasks/store"
 import { calcScore, formatRelativeDue, statusLabel } from "@/lib/tasks/scoring"
 import type { Task } from "@/lib/tasks/types"
@@ -79,10 +79,10 @@ export function TaskCard({
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        borderInlineEndColor: stripeColor,
+        ...cvar(stripeColor),
       }}
       className={clsx(
-        "relative rounded-xl border border-border bg-card py-3 pe-1 ps-3",
+        "cstripe relative rounded-xl border border-border bg-card py-3 pe-1 ps-3",
         "border-e-[3px]",
         boosted && "border-dashed border-e-4",
         isDragging && "z-50 shadow-lg",

@@ -22,6 +22,7 @@ function NavButton({ id, icon, label }: { id: ViewName; icon: string; label: str
   return (
     <button
       onClick={() => setView(id)}
+      aria-current={active ? "page" : undefined}
       className={clsx(
         "flex flex-1 flex-col items-center gap-0.5 rounded-md py-1.5 transition-colors",
         active ? "text-[var(--accent)]" : "text-muted-foreground hover:text-foreground",
@@ -37,7 +38,10 @@ function NavButton({ id, icon, label }: { id: ViewName; icon: string; label: str
 // when holding a phone one-handed.
 export function BottomNav({ onAdd }: { onAdd: () => void }) {
   return (
-    <nav className="absolute bottom-0 left-0 right-0 border-t border-border bg-card/95 backdrop-blur">
+    <nav
+      className="absolute bottom-0 left-0 right-0 border-t border-border bg-card/95 backdrop-blur"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
       <div className="flex items-end px-2 pb-2 pt-1">
         {right.map((it) => (
           <NavButton key={it.id} {...it} />

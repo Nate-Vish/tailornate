@@ -1,7 +1,18 @@
 "use client"
 
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+
+function useDarkPreference(): boolean {
+  const [dark, setDark] = useState(false)
+  useEffect(() => {
+    const stored = localStorage.getItem("sidra-theme")
+    setDark(
+      stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches,
+    )
+  }, [])
+  return dark
+}
 
 function GateForm() {
   const router = useRouter()
@@ -67,19 +78,30 @@ function GateForm() {
       >
         {busy ? "בודק…" : "כניסה"}
       </button>
-      <a
-        href="/portfolio"
-        className="mt-4 inline-block text-[12px] text-muted-foreground hover:text-foreground"
-      >
-        ← חזרה לאתר
-      </a>
+      <div className="mt-4 flex items-center justify-center gap-3 text-[12px] text-muted-foreground">
+        <a href="/portfolio" className="hover:text-foreground">
+          ← חזרה לאתר
+        </a>
+        <span aria-hidden="true">·</span>
+        <a href="/legal/privacy" className="hover:text-foreground">
+          פרטיות
+        </a>
+        <span aria-hidden="true">·</span>
+        <a href="/legal/terms" className="hover:text-foreground">
+          תנאי שימוש
+        </a>
+      </div>
     </div>
   )
 }
 
 export default function GatePage() {
+  const dark = useDarkPreference()
   return (
-    <div dir="rtl" className="sidra flex min-h-dvh items-center justify-center bg-[var(--background)] px-4">
+    <div
+      dir="rtl"
+      className={`sidra ${dark ? "sidra-dark" : ""} flex min-h-dvh items-center justify-center bg-[var(--background)] px-4`}
+    >
       <Suspense>
         <GateForm />
       </Suspense>

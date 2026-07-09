@@ -1,7 +1,7 @@
 "use client"
 
 import { Icon } from "./Icon"
-import { tint } from "./pills"
+import { cvar } from "./pills"
 import { useTasksStore, selectDoneCount, levelFor, progressInLevel } from "@/lib/tasks/store"
 
 export function SquadView() {
@@ -83,8 +83,8 @@ export function SquadView() {
               <div className="flex items-start justify-between">
                 <div className="relative">
                   <div
-                    className="flex h-11 w-11 items-center justify-center rounded-full"
-                    style={{ background: tint(cat.color), color: cat.color }}
+                    className="cicon flex h-11 w-11 items-center justify-center rounded-full"
+                    style={cvar(cat.color)}
                   >
                     <Icon name={cat.icon} size={20} />
                   </div>
@@ -118,10 +118,7 @@ export function SquadView() {
               <div key={t.id} className="flex items-center gap-2 p-1.5">
                 <div className="h-6 w-6 rounded-full" style={{ background: t.color }} />
                 <span className="flex-1 text-[12px] text-foreground">{t.name}</span>
-                <span
-                  className="rounded-full px-2 py-[1px] text-[10px]"
-                  style={{ background: tint(t.color), color: t.color }}
-                >
+                <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(t.color)}>
                   רמה {levelFor(done)} · {done}
                 </span>
               </div>

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Icon } from "./Icon"
-import { tint } from "./pills"
+import { cvar } from "./pills"
 import { Sheet } from "./Sheet"
 import { useTasksStore, type ChainStepInput } from "@/lib/tasks/store"
 import type { Task } from "@/lib/tasks/types"
@@ -162,12 +162,8 @@ export function ChainSheet({ fromTask, onClose }: { fromTask?: Task; onClose: ()
               <button
                 key={c.id}
                 onClick={() => setCategoryId(c.id)}
-                className="shrink-0 rounded-full border px-3 py-1 text-[12px] transition-colors"
-                style={
-                  categoryId === c.id
-                    ? { background: tint(c.color), color: c.color, borderColor: c.color }
-                    : { borderColor: "var(--border)", color: "var(--muted-foreground)" }
-                }
+                className={`shrink-0 rounded-full border px-3 py-1 text-[12px] transition-colors ${categoryId === c.id ? "cchip-on" : "cchip"}`}
+                style={cvar(c.color)}
               >
                 {c.name}
               </button>

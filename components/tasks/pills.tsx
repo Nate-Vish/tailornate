@@ -1,10 +1,14 @@
 "use client"
 
+import type { CSSProperties } from "react"
 import type { Priority } from "@/lib/tasks/types"
 import { priorityLabel } from "@/lib/tasks/scoring"
 
-export function tint(color: string, alpha = "1f"): string {
-  return `${color}${alpha}`
+// Inline style helper: expose a user color to the theme-aware CSS classes
+// (.cpill/.cicon/.cchip-on/.cstripe/.cfill in sidra.css). Light mode shows the
+// raw color; dark mode lightens it so mid-tones stay readable.
+export function cvar(color: string): CSSProperties {
+  return { "--c": color } as CSSProperties
 }
 
 const priorityColors: Record<Priority, string> = {
@@ -28,10 +32,7 @@ export function PriorityPill({ priority }: { priority: Priority }) {
 
 export function ColorPill({ label, color }: { label: string; color: string }) {
   return (
-    <span
-      className="rounded-full px-2 py-[2px] text-[10px] font-medium"
-      style={{ background: tint(color), color }}
-    >
+    <span className="cpill rounded-full px-2 py-[2px] text-[10px] font-medium" style={cvar(color)}>
       {label}
     </span>
   )

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Icon } from "./Icon"
-import { ColorPill, PriorityPill, scoreColor } from "./pills"
+import { ColorPill, PriorityPill, scoreColor, cvar } from "./pills"
 import { useTasksStore, selectSortedActive } from "@/lib/tasks/store"
 import { calcScore } from "@/lib/tasks/scoring"
 import type { AIAction, AIResponse, AIRequestBody } from "@/lib/tasks/ai"
@@ -438,7 +438,10 @@ export function AIChatPanel() {
               )}
             </div>
 
-            <div className="border-t border-border bg-[var(--muted)] px-3 py-2.5">
+            <div
+              className="border-t border-border bg-[var(--muted)] px-3 py-2.5"
+              style={{ paddingBottom: "calc(0.625rem + env(safe-area-inset-bottom))" }}
+            >
               <div className="mb-2 flex gap-1.5 overflow-x-auto pb-0.5">
                 {suggestions.map((s) => (
                   <button
@@ -554,13 +557,10 @@ function MessageBubble({ msg }: { msg: ChatMsg }) {
               return (
                 <div
                   key={i}
-                  className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-2"
+                  className={`flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-2 ${t ? "cstripe" : ""}`}
                   style={
                     t
-                      ? {
-                          borderInlineEndWidth: 3,
-                          borderInlineEndColor: tag?.color ?? cat?.color ?? "var(--border)",
-                        }
+                      ? { borderInlineEndWidth: 3, ...cvar(tag?.color ?? cat?.color ?? "var(--border)") }
                       : undefined
                   }
                 >
@@ -590,11 +590,8 @@ function MessageBubble({ msg }: { msg: ChatMsg }) {
               return (
                 <div
                   key={t.id}
-                  className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-2"
-                  style={{
-                    borderInlineEndWidth: 3,
-                    borderInlineEndColor: tag?.color ?? cat?.color ?? "var(--border)",
-                  }}
+                  className="cstripe flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-2"
+                  style={{ borderInlineEndWidth: 3, ...cvar(tag?.color ?? cat?.color ?? "var(--border)") }}
                 >
                   <span className="text-[14px] font-semibold" style={{ color: scoreColor(score) }}>
                     {score}
