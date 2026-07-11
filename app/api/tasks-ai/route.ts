@@ -24,13 +24,15 @@ function isDailyCapped(ip: string): boolean {
 }
 
 // Ordered by capability; first model the key supports wins. Set TASKS_AI_MODEL
-// in Vercel env (e.g. gemini-2.5-pro on a paid key) to try a stronger model
-// first — the chain below stays as fallback, so a bad value can't break chat.
+// in Vercel env (e.g. gemini-pro-latest for stronger analysis) to try another
+// model first. The chain below stays as fallback, so a bad value can't break
+// chat. Google retires old model aliases for new keys, so keep these current;
+// a per-model warning logs which one failed and why.
 const MODELS = [
   ...(process.env.TASKS_AI_MODEL ? [process.env.TASKS_AI_MODEL] : []),
-  "gemini-2.5-flash",
-  "gemini-2.0-flash",
-  "gemma-3-27b-it",
+  "gemini-3.5-flash",
+  "gemini-flash-latest",
+  "gemini-3.1-flash-lite",
 ]
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
@@ -229,11 +231,14 @@ export async function POST(req: NextRequest) {
       const parsed = aiResponseSchema.safeParse(extractJson(result.text))
       if (!parsed.success) {
         lastError = parsed.error
+        console.warn(`[tasks-ai] ${model}: responded but JSON parse failed`)
         continue
       }
       return Response.json(parsed.data)
     } catch (err) {
       lastError = err
+      const e = err as { statusCode?: number; message?: string }
+      console.warn(`[tasks-ai] ${model}: ${e?.statusCode ?? "?"} ${String(e?.message ?? err).slice(0, 140)}`)
       continue
     }
   }
