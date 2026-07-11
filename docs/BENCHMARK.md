@@ -20,7 +20,7 @@ Re-run after every significant change; a ❌ blocks deploy.
 ### A3. Task model operations
 - [ ] Create/edit/delete with all fields; delete asks confirmation; children orphaned not deleted
 - [ ] Branch: sub-tasks complete parent when all done; completing parent cascades; XP sums once
-- [ ] Chain: steps unlock strictly in order in dashboard; skip-ahead only via explicit action; empty chains pruned
+- [ ] Chain: steps unlock strictly in order — enforced in the store for every entry point (UI, AI); empty chains pruned
 - [ ] Snoozed/locked tasks cannot be completed accidentally from any view
 - [ ] Boost survives reload; cleared on complete/snooze
 
@@ -42,7 +42,7 @@ Re-run after every significant change; a ❌ blocks deploy.
 - [ ] ICS export imports cleanly into Google Calendar; per-task GCal link prefills correctly
 
 ### A7. Status + Domains views
-- [ ] Levels = done/3 consistently everywhere; balance bars match counts; laggard highlighted
+- [ ] Levels = XP-based (effort-weighted) consistently everywhere; balance bars reflect XP; laggard highlighted
 - [ ] Category drill-down: tag cards accurate; task list excludes children; actions available
 
 ### A8. Visual/interaction quality
@@ -90,7 +90,6 @@ Re-run after every significant change; a ❌ blocks deploy.
 - In-memory rate limits reset per serverless instance (soft speed-bump; hard limits need Redis/KV — accepted at beta scale)
 - No automated tests yet (state machine now centralized in store — add vitest before accounts/sync milestone)
 - Monthly/yearly recurring calendar events expand only their first occurrence
-- Skip-ahead completion of chain steps allowed from table (deliberate escape hatch)
 
 ## Review log
 
