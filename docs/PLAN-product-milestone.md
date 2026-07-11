@@ -57,7 +57,11 @@ Email-OTP and Google login carry real risks; each item below is a task, not a no
 9. [ ] `remindAt` on Task (+ TaskSheet picker with smart defaults: due-date 09:00; AI action patch field) — files: `types.ts`, `TaskSheet.tsx`, `ai.ts`, `route.ts` — verify: set/edit/clear via UI and via AI
 10. [ ] Push plumbing: VAPID keys, service worker (`public/sw.js`), subscribe flow in Settings (+ iOS install-detection guide), `push_subscriptions` upsert — files: `public/sw.js`, `lib/push.ts`, `SettingsView.tsx`, `app/api/push-subscribe/route.ts` — verify: test notification button rings phone + desktop
 11. [ ] Sender: Supabase Edge Function + pg_cron (5 min) → web-push → mark reminded_at; notification deep-links to /tasks — files: `supabase/functions/remind/` — verify: reminder fires ≤5 min after remind_at on installed iOS PWA and Android/desktop
-12. [ ] Notification copy in Hebrew, quiet hours (default 22:00–08:00) — verify: reminder due at night arrives at 08:00
+12. [ ] Quiet hours = a SET-TIME confirmation guard, never a silent mute (Nathan, 2026-07-11):
+    - User-set reminders always fire at their chosen time; if the time falls inside quiet hours (default 22:00-08:00), Madko asks "this is in your quiet hours — sure?" at set-time, then honors it.
+    - Auto-generated reminders (task-due default, planner nudges) never self-schedule into the night — snap to a daytime slot. A task whose deadline is literally at night counts as an explicit time.
+    - Window editable/removable in Settings. Hebrew notification copy.
+    - verify: a 03:00 user reminder rings at 03:00 after confirm; an auto reminder never fires in the window
 
 ### Phase 4 — Recurrence
 13. [ ] Recurrence rule on Task + spawn-on-complete in store (next dueDate/remindAt advanced; recurring badge on cards) — files: `types.ts`, `store.ts` (+tests), `TaskSheet.tsx`, `TaskCard.tsx` — verify: vitest date-advance cases incl. month-end
@@ -80,7 +84,7 @@ Email-OTP and Google login carry real risks; each item below is a task, not a no
 
 ## Decisions (Nathan, 2026-07-11)
 1. Auth: email-OTP + Google login — APPROVED, with the Phase 1.5 security checklist as a blocking gate
-2. Quiet hours: pending Nathan's confirmation (default proposal 22:00–08:00)
+2. Quiet hours: APPROVED as a set-time confirmation guard (never silent) — user-set alerts always fire; auto alerts avoid the night window (default 22:00-08:00, editable)
 3. Supabase region: eu-central-1 Frankfurt — APPROVED
 
 
