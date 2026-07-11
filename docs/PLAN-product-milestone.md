@@ -55,6 +55,7 @@ Email-OTP and Google login carry real risks; each item below is a task, not a no
 
 ### Phase 3 — Reminders
 9. [ ] `remindAt` on Task (+ TaskSheet picker with smart defaults: due-date 09:00; AI action patch field) — files: `types.ts`, `TaskSheet.tsx`, `ai.ts`, `route.ts` — verify: set/edit/clear via UI and via AI
+9a. [ ] **Master notifications toggle** in Settings — "התראות: מופעל/כבוי" — off by default until the user opts in (browser permission is only requested on enable, after a user gesture). When off: no push subscription, no reminders fire, reminder pickers still let you set times (they simply won't ring, with an inline hint). Granular sub-toggles under it (task reminders / planner nudges / quiet-hours window) — verify: toggling off stops all rings; re-enabling restores without re-entering data
 10. [ ] Push plumbing: VAPID keys, service worker (`public/sw.js`), subscribe flow in Settings (+ iOS install-detection guide), `push_subscriptions` upsert — files: `public/sw.js`, `lib/push.ts`, `SettingsView.tsx`, `app/api/push-subscribe/route.ts` — verify: test notification button rings phone + desktop
 11. [ ] Sender: Supabase Edge Function + pg_cron (5 min) → web-push → mark reminded_at; notification deep-links to /tasks — files: `supabase/functions/remind/` — verify: reminder fires ≤5 min after remind_at on installed iOS PWA and Android/desktop
 12. [ ] Quiet hours = a SET-TIME confirmation guard, never a silent mute (Nathan, 2026-07-11):
