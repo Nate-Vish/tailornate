@@ -37,6 +37,17 @@ clean, XP keeps working.
 4. [ ] Auth: email OTP + Google, `@supabase/ssr` session handling in proxy.ts; auth replaces the passcode gate for /tasks + task APIs (passcode stays as env kill-switch until Phase 2 ends) — files: `proxy.ts`, `app/tasks/gate/*` → login page, `lib/supabase/*` — verify: login/logout on two browsers; APIs 401 without session
 5. [ ] Env wiring on Vercel (SUPABASE_URL, ANON_KEY, SERVICE_ROLE) — verify: prod login works
 
+### Phase 1.5 — Auth security hardening (blocks Phase 2)
+Email-OTP and Google login carry real risks; each item below is a task, not a note.
+5a. [ ] **Mailbox = master key**: OTP expiry ≤10 min, single-use, ≤5 verify attempts, send-rate limit per email+IP — verify in Supabase auth config — verify: expired/reused codes rejected
+5b. [ ] **No user enumeration**: login responses identical whether the email exists or not — verify: timing+body diff test
+5c. [ ] **Minimal-content emails**: OTP mail contains code only — never task data, never PII beyond the address; Hebrew template; sender domain SPF/DKIM/DMARC once custom SMTP is added — verify: raw email inspection
+5d. [ ] **OAuth done right**: PKCE flow, strict redirect-URL allowlist (prod + preview + localhost only), Google accounts with unverified emails rejected, account-linking by verified email documented — verify: tampered redirect_uri fails
+5e. [ ] **Session hygiene**: httpOnly+Secure+SameSite cookies, refresh-token rotation, logout revokes server-side, new-device login email notification — verify: stolen-cookie-after-logout test
+5f. [ ] **RLS adversarial test**: second test user attempts read/write of first user's rows via direct PostgREST calls — verify: all denied; SERVICE_ROLE never shipped client-side (grep CI check)
+5g. [ ] **?next open-redirect guard** carried over to the new login page (relative paths only) — verify: external URL in next is ignored
+5h. [ ] **Account deletion**: self-serve delete removes rows + auth user; privacy page documents retention — verify: deleted user's data gone from DB
+
 ### Phase 2 — Sync
 6. [ ] Sync engine: initial upload of local data on first login (idempotent), pull-merge on load (LWW by updated_at), debounced push of dirty ids, tombstone deletes — files: `lib/tasks/sync.ts`, `store.ts` (stamp updatedAt in mutators), `TasksApp.tsx` (sync lifecycle) — verify: phone+laptop two-way edit test; vitest merge cases
 7. [ ] Conflict + offline behavior: queue survives reload; offline edits sync on reconnect — verify: airplane-mode test
@@ -67,7 +78,7 @@ clean, XP keeps working.
 - Login required; passcode gate retired; legal pages updated
 - `pnpm test` green; BENCHMARK scorecard has no ❌ and B3 loses its "zero tests" note
 
-## Open decisions for Nathan
-1. Auth flavor: email-OTP + Google login (recommended) or Google-only?
-2. Quiet-hours default 22:00–08:00 OK?
-3. Supabase region: eu-central (Frankfurt, closest to IL) OK?
+## Decisions (Nathan, 2026-07-11)
+1. Auth: email-OTP + Google login — APPROVED, with the Phase 1.5 security checklist as a blocking gate
+2. Quiet hours: pending Nathan's confirmation (default proposal 22:00–08:00)
+3. Supabase region: eu-central-1 Frankfurt — APPROVED
