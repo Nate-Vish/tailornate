@@ -15,6 +15,9 @@ export const aiActionSchema = z.discriminatedUnion("type", [
     // Log work that already happened (e.g. calendar events that took place):
     // the task is created directly in completed state and earns its XP.
     completed: z.boolean().optional(),
+    // Create with sub-tasks in one action (the model never knows client ids,
+    // so create-then-branch cannot be expressed as two actions).
+    subtasks: z.array(z.string().min(1).max(120)).max(10).optional(),
   }),
   z.object({ type: z.literal("complete_task"), taskId: z.string() }),
   z.object({ type: z.literal("reopen_task"), taskId: z.string() }),

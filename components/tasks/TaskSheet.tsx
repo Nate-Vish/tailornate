@@ -18,6 +18,7 @@ const statusOptions: { value: Status; label: string }[] = [
 // One sheet, two jobs: create a new task (no `task` prop) or edit an existing one.
 export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void }) {
   const addTask = useTasksStore((s) => s.addTask)
+  const branchTask = useTasksStore((s) => s.branchTask)
   const updateTask = useTasksStore((s) => s.updateTask)
   const deleteTask = useTasksStore((s) => s.deleteTask)
   const detachFromParent = useTasksStore((s) => s.detachFromParent)
@@ -37,6 +38,8 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
   const [categoryId, setCategoryId] = useState(task?.categoryId ?? categories[0]?.id ?? "")
   const [tagId, setTagId] = useState(task?.tagId ?? "")
   const [dueDate, setDueDate] = useState(task?.dueDate ?? "")
+  // Creation-time sub-tasks (branch exists on edit via the actions sheet)
+  const [subtasks, setSubtasks] = useState<string[]>([])
   const [confirmDelete, setConfirmDelete] = useState(false)
 
   const availableTags = tags.filter((t) => t.categoryId === categoryId)
@@ -45,6 +48,7 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
 
   const submit = () => {
     if (!title.trim()) return
+    const cleanSubs = subtasks.map((x) => x.trim()).filter(Boolean)
     if (editing && task) {
       updateTask(task.id, {
         title: title.trim(),
@@ -56,7 +60,7 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
         dueDate: dueDate || undefined,
       })
     } else {
-      addTask({
+      const created = addTask({
         title: title.trim(),
         priority,
         size,
@@ -65,6 +69,7 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
         tagId: tagId || undefined,
         dueDate: dueDate || undefined,
       })
+      if (cleanSubs.length > 0) branchTask(created.id, cleanSubs)
     }
     onClose()
   }
@@ -208,6 +213,41 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
                   {o.label}
                 </button>
               ))}
+            </div>
+          </div>
+        )}
+
+        {!editing && (
+          <div>
+            <p className="mb-1.5 text-[11px] text-muted-foreground">תתי־משימות (אופציונלי)</p>
+            <div className="space-y-1.5">
+              {subtasks.map((line, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="w-4 text-center text-[11px] text-muted-foreground">{i + 1}</span>
+                  <input
+                    value={line}
+                    onChange={(e) =>
+                      setSubtasks((prev) => prev.map((l, j) => (j === i ? e.target.value : l)))
+                    }
+                    placeholder={`חלק ${i + 1}`}
+                    className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-[13px] text-foreground outline-none placeholder:text-muted-foreground/50 focus:border-[var(--accent)]"
+                  />
+                  <button
+                    aria-label="הסר"
+                    onClick={() => setSubtasks((prev) => prev.filter((_, j) => j !== i))}
+                    className="text-muted-foreground/60 hover:text-foreground"
+                  >
+                    <Icon name="x" size={14} />
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={() => setSubtasks((prev) => [...prev, ""])}
+                className="flex items-center gap-1.5 text-[12px] text-[var(--accent)] hover:underline"
+              >
+                <Icon name="branch" size={13} />
+                {subtasks.length === 0 ? "פצל לתתי־משימות" : "עוד חלק"}
+              </button>
             </div>
           </div>
         )}

@@ -35,6 +35,8 @@ Re-run after every significant change; a ❌ blocks deploy.
 - [ ] AI sees full task state (incl. parent/chain/snooze) — no blind spots vs UI
 - [ ] Voice: mic works on Chrome desktop + iOS Safari; graceful errors; transcription fallback
 - [ ] Never invents ids; ambiguous requests ask instead of act
+- [ ] Off-scope requests (homework, recipes, general chat) refused in one sentence, zero actions — the AI is a task tool, not a free LLM
+- [ ] Prompt/state exfiltration attempts refused; daily request cap bounds token spend per client
 
 ### A6. Integrations
 - [ ] Calendar feed: valid secret URL connects with event count; invalid URL/host → specific Hebrew error

@@ -127,8 +127,13 @@ export function AIChatPanel() {
             tagId: tag?.id,
             dueDate: action.dueDate,
           })
+          if (action.subtasks?.length && !action.completed) {
+            store.branchTask(task.id, action.subtasks)
+          }
           results.push({
-            label: task.title,
+            label: action.subtasks?.length
+              ? `${task.title} (+${action.subtasks.length} תתי־משימות)`
+              : task.title,
             kind: action.completed ? "completed" : "created",
             taskId: task.id,
           })
