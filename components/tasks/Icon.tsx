@@ -55,6 +55,18 @@ import {
   Compass,
   Clock,
   FolderOpen,
+  Hash,
+  Tag as TagIcon,
+  Circle,
+  Palette,
+  Dumbbell,
+  BookOpen,
+  Plane,
+  ShoppingCart,
+  Music,
+  Coffee,
+  Gamepad2,
+  DollarSign,
   type LucideIcon,
 } from "lucide-react"
 
@@ -113,6 +125,18 @@ const MAP: Record<string, LucideIcon> = {
   compass: Compass,
   clock: Clock,
   folder: FolderOpen,
+  hash: Hash,
+  tag: TagIcon,
+  circle: Circle,
+  palette: Palette,
+  dumbbell: Dumbbell,
+  "book-open": BookOpen,
+  plane: Plane,
+  cart: ShoppingCart,
+  music: Music,
+  coffee: Coffee,
+  gamepad: Gamepad2,
+  dollar: DollarSign,
 }
 
 export function Icon({

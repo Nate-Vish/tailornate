@@ -1,9 +1,11 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
+import { AnimatePresence } from "framer-motion"
 import { Icon } from "./Icon"
 import { cvar } from "./pills"
 import { TaskCard } from "./TaskCard"
+import { CategorySheet, TagSheet } from "./CategoryTagSheets"
 import {
   useTasksStore,
   selectSortedActive,
@@ -11,8 +13,16 @@ import {
   selectBucketXP,
   levelFor,
 } from "@/lib/tasks/store"
+import type { Task } from "@/lib/tasks/types"
 
-export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/tasks/types").Task) => void }) {
+type SheetState =
+  | { kind: "none" }
+  | { kind: "cat-new" }
+  | { kind: "cat-edit"; id: string }
+  | { kind: "tag-new"; categoryId: string }
+  | { kind: "tag-edit"; id: string }
+
+export function ProjectsView({ onActions }: { onActions: (task: Task) => void }) {
   const categories = useTasksStore((s) => s.categories)
   const tags = useTasksStore((s) => s.tags)
   const tasks = useTasksStore((s) => s.tasks)
@@ -20,6 +30,9 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
   const drilldownCategoryId = useTasksStore((s) => s.drilldownCategoryId)
   const openDrilldown = useTasksStore((s) => s.openDrilldown)
   const setView = useTasksStore((s) => s.setView)
+
+  const [sheet, setSheet] = useState<SheetState>({ kind: "none" })
+  const close = () => setSheet({ kind: "none" })
 
   const category = categories.find((c) => c.id === drilldownCategoryId)
 
@@ -31,6 +44,20 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
           )
         : [],
     [tasks, weights, category],
+  )
+
+  const sheets = (
+    <AnimatePresence>
+      {sheet.kind === "cat-new" && <CategorySheet onClose={close} />}
+      {sheet.kind === "cat-edit" && (
+        <CategorySheet category={categories.find((c) => c.id === sheet.id)} onClose={close} />
+      )}
+      {sheet.kind === "tag-new" && <TagSheet categoryId={sheet.categoryId} onClose={close} />}
+      {sheet.kind === "tag-edit" && (() => {
+        const t = tags.find((x) => x.id === sheet.id)
+        return t ? <TagSheet tag={t} categoryId={t.categoryId} onClose={close} /> : null
+      })()}
+    </AnimatePresence>
   )
 
   if (!category) {
@@ -48,23 +75,25 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
             const active = tasks.filter((t) => t.categoryId === c.id && t.status !== "completed").length
             const catTags = tags.filter((t) => t.categoryId === c.id)
             return (
-              <button
+              <div
                 key={c.id}
-                onClick={() => openDrilldown(c.id)}
-                className="cstripe w-full rounded-xl border border-border bg-card p-3 text-start transition-colors hover:bg-[var(--card-hover)]"
+                className="cstripe flex items-center rounded-xl border border-border bg-card"
                 style={{ borderInlineEndWidth: 4, ...cvar(c.color) }}
               >
-                <div className="flex items-center gap-3">
+                <button
+                  onClick={() => openDrilldown(c.id)}
+                  className="flex min-w-0 flex-1 items-center gap-3 p-3 text-start transition-colors hover:bg-[var(--card-hover)]"
+                >
                   <div
                     className="cicon flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
                     style={cvar(c.color)}
                   >
                     <Icon name={c.icon} size={20} />
                   </div>
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[14px] font-medium text-foreground">{c.name}</span>
-                      <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(c.color)}>
+                      <span className="truncate text-[14px] font-medium text-foreground">{c.name}</span>
+                      <span className="cpill shrink-0 rounded-full px-2 py-[1px] text-[10px]" style={cvar(c.color)}>
                         רמה {levelFor(catXp)}
                       </span>
                     </div>
@@ -72,12 +101,28 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
                       {active} פעילות · {catTags.length} תגים · {done} הושלמו
                     </p>
                   </div>
-                  <Icon name="chevron-left" size={18} className="text-muted-foreground/50" />
-                </div>
-              </button>
+                </button>
+                <button
+                  onClick={() => setSheet({ kind: "cat-edit", id: c.id })}
+                  aria-label={`ערוך ${c.name}`}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center text-muted-foreground/60 transition-colors hover:text-foreground"
+                >
+                  <Icon name="pencil" size={15} />
+                </button>
+              </div>
             )
           })}
+
+          <button
+            onClick={() => setSheet({ kind: "cat-new" })}
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border py-3 text-[13px] text-muted-foreground transition-colors hover:bg-[var(--card-hover)] hover:text-foreground"
+          >
+            <Icon name="plus" size={15} />
+            תחום חדש
+          </button>
         </div>
+
+        {sheets}
       </div>
     )
   }
@@ -108,6 +153,13 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
           <p className="text-[11px] text-muted-foreground">תחום</p>
           <h1 className="text-[17px] font-semibold text-foreground">{category.name}</h1>
         </div>
+        <button
+          onClick={() => setSheet({ kind: "cat-edit", id: category.id })}
+          aria-label="ערוך תחום"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-[var(--card-hover)] hover:text-foreground"
+        >
+          <Icon name="pencil" size={16} />
+        </button>
         <div
           className="cicon relative flex h-11 w-11 items-center justify-center rounded-full"
           style={cvar(category.color)}
@@ -135,48 +187,64 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
         </div>
       </div>
 
-      {catTags.length > 0 && (
-        <div className="px-4">
-          <p className="mb-2 text-[12px] text-muted-foreground">תתי פרויקטים (תגים)</p>
-          <div className="mb-4 space-y-2">
-            {catTags.map((t) => {
-              const done = selectDoneCount({ tasks }, { tagId: t.id })
-              const tagXp = selectBucketXP({ tasks }, { tagId: t.id })
-              const active = tasks.filter((x) => x.tagId === t.id && x.status !== "completed").length
-              const universe = active + done || 1
-              const progress = Math.round((done / universe) * 100)
-              return (
-                <div
-                  key={t.id}
-                  className="cstripe flex items-center gap-3 rounded-xl border border-border bg-card p-3"
-                  style={{ borderInlineEndWidth: 4, ...cvar(t.color) }}
-                >
-                  <div
-                    className="cicon flex h-9 w-9 items-center justify-center rounded-full"
-                    style={cvar(t.color)}
-                  >
-                    <Icon name={t.icon} size={16} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[13px] font-medium text-foreground">{t.name}</span>
-                      <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(t.color)}>
-                        רמה {levelFor(tagXp)}
-                      </span>
-                    </div>
-                    <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-[var(--muted)]">
-                      <div className="h-full" style={{ width: `${progress}%`, background: t.color }} />
-                    </div>
-                    <p className="mt-1 text-[10px] text-muted-foreground">
-                      {active} פעילות · {done} הושלמו · {progress}%
-                    </p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+      <div className="px-4">
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-[12px] text-muted-foreground">תתי פרויקטים (תגים)</p>
+          <button
+            onClick={() => setSheet({ kind: "tag-new", categoryId: category.id })}
+            className="flex items-center gap-1 text-[12px] text-[var(--accent)] hover:underline"
+          >
+            <Icon name="plus" size={13} />
+            תג חדש
+          </button>
         </div>
-      )}
+        <div className="mb-4 space-y-2">
+          {catTags.map((t) => {
+            const done = selectDoneCount({ tasks }, { tagId: t.id })
+            const tagXp = selectBucketXP({ tasks }, { tagId: t.id })
+            const active = tasks.filter((x) => x.tagId === t.id && x.status !== "completed").length
+            const universe = active + done || 1
+            const progress = Math.round((done / universe) * 100)
+            return (
+              <div
+                key={t.id}
+                className="cstripe flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+                style={{ borderInlineEndWidth: 4, ...cvar(t.color) }}
+              >
+                <div className="cicon flex h-9 w-9 items-center justify-center rounded-full" style={cvar(t.color)}>
+                  <Icon name={t.icon} size={16} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[13px] font-medium text-foreground">{t.name}</span>
+                    <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(t.color)}>
+                      רמה {levelFor(tagXp)}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-[var(--muted)]">
+                    <div className="h-full" style={{ width: `${progress}%`, background: t.color }} />
+                  </div>
+                  <p className="mt-1 text-[10px] text-muted-foreground">
+                    {active} פעילות · {done} הושלמו · {progress}%
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSheet({ kind: "tag-edit", id: t.id })}
+                  aria-label={`ערוך ${t.name}`}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground/60 transition-colors hover:text-foreground"
+                >
+                  <Icon name="pencil" size={14} />
+                </button>
+              </div>
+            )
+          })}
+          {catTags.length === 0 && (
+            <p className="rounded-lg bg-[var(--muted)] px-3 py-3 text-center text-[12px] text-muted-foreground">
+              אין תגים עדיין — הוסף תת־פרויקט בכפתור &quot;תג חדש&quot;.
+            </p>
+          )}
+        </div>
+      </div>
 
       <div className="border-t border-border px-4 pt-4">
         <p className="mb-3 text-[13px] font-medium text-foreground">משימות פעילות</p>
@@ -191,6 +259,8 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
           )}
         </div>
       </div>
+
+      {sheets}
     </div>
   )
 }

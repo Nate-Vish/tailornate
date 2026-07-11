@@ -43,6 +43,12 @@ type State = {
   boostTask: (id: string, mode: BoostMode, minScore: number) => void
   clearBoost: (id: string) => void
   snoozeTask: (id: string, untilISO: string | null) => void
+  addCategory: (input: { name: string; color: string; icon: string }) => Category
+  updateCategory: (id: string, patch: Partial<Pick<Category, "name" | "color" | "icon">>) => void
+  deleteCategory: (id: string, reassignToId?: string) => void
+  addTag: (input: { name: string; categoryId: string; color: string; icon: string }) => Tag
+  updateTag: (id: string, patch: Partial<Pick<Tag, "name" | "color" | "icon" | "categoryId">>) => void
+  deleteTag: (id: string) => void
   setView: (v: ViewName) => void
   openDrilldown: (categoryId: string) => void
   setAIOpen: (open: boolean) => void
@@ -295,6 +301,65 @@ export const useTasksStore = create<State>()(
               ? { ...t, snoozedUntil: untilISO ?? undefined, boost: untilISO ? null : t.boost }
               : t,
           ),
+        })),
+
+      addCategory: (input) => {
+        const cat: Category = { id: uid("cat"), nameEn: input.name, ...input }
+        set((s) => ({ categories: [...s.categories, cat] }))
+        return cat
+      },
+
+      updateCategory: (id, patch) =>
+        set((s) => ({
+          categories: s.categories.map((c) =>
+            c.id === id
+              ? { ...c, ...patch, nameEn: patch.name ?? c.nameEn }
+              : c,
+          ),
+        })),
+
+      // Deleting a category NEVER orphans data: its tasks and tags move to a
+      // target category (user-picked, else the first other one). The last
+      // category cannot be deleted.
+      deleteCategory: (id, reassignToId) =>
+        set((s) => {
+          const others = s.categories.filter((c) => c.id !== id)
+          if (others.length === 0) return {}
+          const target =
+            (reassignToId && others.find((c) => c.id === reassignToId)?.id) || others[0].id
+          return {
+            categories: others,
+            tasks: s.tasks.map((t) => (t.categoryId === id ? { ...t, categoryId: target } : t)),
+            tags: s.tags.map((t) => (t.categoryId === id ? { ...t, categoryId: target } : t)),
+          }
+        }),
+
+      addTag: (input) => {
+        const tag: Tag = { id: uid("tag"), ...input }
+        set((s) => ({ tags: [...s.tags, tag] }))
+        return tag
+      },
+
+      updateTag: (id, patch) =>
+        set((s) => {
+          const tag = s.tags.find((t) => t.id === id)
+          // Moving a tag to another category takes its tasks with it, so a
+          // task never sits in category A carrying a tag that lives in B.
+          const movedTo = patch.categoryId && tag && patch.categoryId !== tag.categoryId ? patch.categoryId : null
+          return {
+            tags: s.tags.map((t) => (t.id === id ? { ...t, ...patch } : t)),
+            tasks: movedTo
+              ? s.tasks.map((t) => (t.tagId === id ? { ...t, categoryId: movedTo } : t))
+              : s.tasks,
+          }
+        }),
+
+      // Deleting a tag clears it off any task that carried it (the task keeps
+      // its category), so no task is left pointing at a tag that's gone.
+      deleteTag: (id) =>
+        set((s) => ({
+          tags: s.tags.filter((t) => t.id !== id),
+          tasks: s.tasks.map((t) => (t.tagId === id ? { ...t, tagId: undefined } : t)),
         })),
 
       setView: (v) => set({ view: v, drilldownCategoryId: null }),
