@@ -369,6 +369,11 @@ export const useTasksStore = create<State>()(
     }),
     {
       name: "sidra-tasks-v1",
+      // Bump this whenever the persisted shape changes, and add a matching
+      // `if (version < N)` block in migrate() below. The contract: every
+      // release LOADS AND PRESERVES data written by any previous release —
+      // migrations are additive and never drop or replace the user's data.
+      version: 1,
       partialize: (s) => ({
         tasks: s.tasks,
         categories: s.categories,
@@ -376,6 +381,35 @@ export const useTasksStore = create<State>()(
         chains: s.chains,
         weights: s.weights,
       }),
+      migrate: (persisted, version) => {
+        const p = (persisted ?? {}) as {
+          tasks?: Task[]
+          categories?: Category[]
+          tags?: Tag[]
+          chains?: Chain[]
+          weights?: Weights
+        }
+        // Future schema changes go here as additive steps, e.g.:
+        //   if (version < 2) { /* transform p.tasks, keep everything else */ }
+        void version
+        // Preserve the user's data as-is; only backfill true gaps so an older
+        // or partial payload can't crash a newer build. A task's own fields
+        // always win over the defaults — nothing is overwritten.
+        const tasks = (Array.isArray(p.tasks) ? p.tasks : seedTasks).map((t) => ({
+          ...t,
+          // keep the task's own value; fill only if an old payload is missing it
+          priority: t.priority ?? ("medium" as Priority),
+          size: t.size ?? ("short" as Size),
+          status: t.status ?? ("not_started" as Status),
+        }))
+        return {
+          tasks,
+          categories: p.categories?.length ? p.categories : seedCategories,
+          tags: Array.isArray(p.tags) ? p.tags : seedTags,
+          chains: Array.isArray(p.chains) ? p.chains : [],
+          weights: p.weights ?? defaultWeights,
+        }
+      },
     },
   ),
 )

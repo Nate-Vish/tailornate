@@ -85,6 +85,20 @@ Re-run after every significant change; a ❌ blocks deploy.
 - [ ] Table-stakes gaps honestly listed: multi-device sync, reminders/notifications, recurring tasks, offline PWA cache, undo
 - [ ] The one-sentence pitch is defensible: "המצפן שאומר לך מה עכשיו"
 
+### B6. Data durability (a user's tasks survive every update — non-negotiable)
+- [ ] A release LOADS AND PRESERVES data written by any previous release; no
+      update deletes, resets, or silently rewrites a user's real tasks
+- [ ] Persisted store is **versioned** (`version` + `migrate`); every schema
+      change adds a migrate step that is additive and never drops the user's
+      `tasks/categories/tags/chains/weights` — verified by loading an old-shape
+      payload and confirming all records survive
+- [ ] Storage key is stable; it is never renamed without a copy-migration that
+      carries old data forward
+- [ ] Seed/demo data only fills an *empty* store — it never overwrites existing
+      user content (no unconditional reset/removeItem in any code path)
+- [ ] When accounts/DB land: migrations are additive, reversible, tested on a
+      copy, and backed up before running; a user-facing export/restore exists
+
 ## C. Known accepted trade-offs (reviewed, not bugs)
 - localStorage only (single device) until accounts/sync milestone
 - No push reminders (needs service worker + permission model)
@@ -94,6 +108,17 @@ Re-run after every significant change; a ❌ blocks deploy.
 - Monthly/yearly recurring calendar events expand only their first occurrence
 
 ## Review log
+
+**2026-07-12 — data-durability pass (B6).** Persisted store was unversioned —
+schema changes worked only by luck. Added `version: 1` + a non-destructive
+`migrate()` to the Zustand persist config: it backfills gaps (e.g. a missing
+`chains` array, a task with no `status`) but a record's own fields always win,
+so nothing the user wrote is overwritten. Verified live by loading a simulated
+v0 payload (missing `chains`, a task without `status`): both tasks survived,
+`status` backfilled to `not_started`, `priority: high` and `in_progress` kept,
+`chains` → `[]`, version bumped 0→1, no console errors. Established the rule:
+every future schema change adds an additive migrate step; storage key never
+renamed without a copy-migration; seed only fills an empty store.
 
 **2026-07-11 — full audit (2 independent review agents + manual browser pass).** 16 findings; all HIGH/MEDIUM fixed same day:
 - Invariants moved INTO the store (chain lock on complete, one-level nesting, cycle-proof attach, no chain reassignment + prune) — AI path can no longer bypass UI rules
@@ -120,3 +145,4 @@ Re-run after every significant change; a ❌ blocks deploy.
 | B3 Code health | ⚠️ | clean boundaries, zod, strict TS; ZERO automated tests — top debt |
 | B4 Security | ⚠️ | gate+allowlist+caps solid; in-memory rate limits are per-instance on serverless (accepted, documented) |
 | B5 Competitive | ⚠️ | moat = agentic Hebrew AI + calendar bulk ops; blockers to daily-driver: reminders, sync, recurring tasks, backup |
+| B6 Data durability | ✅ | store versioned + non-destructive migrate; old-shape payload survives update (verified 2026-07-12). Export/restore still TODO before DB |
