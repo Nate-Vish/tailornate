@@ -7,10 +7,12 @@ const priorityScore: Record<Task["priority"], number> = {
   low: 15,
 }
 
+// Narrow spread on purpose: size is a quick-win tiebreaker, not a verdict.
+// A wide spread made big important work sink below trivial errands.
 const sizeScore: Record<Task["size"], number> = {
   short: 100,
-  medium: 60,
-  long: 30,
+  medium: 80,
+  long: 60,
 }
 
 const statusScore: Record<Task["status"], number> = {
@@ -24,8 +26,10 @@ function daysUntil(iso?: string): number | null {
   if (!iso) return null
   const now = new Date()
   now.setHours(0, 0, 0, 0)
-  const target = new Date(iso)
-  target.setHours(0, 0, 0, 0)
+  // Parse YYYY-MM-DD as LOCAL midnight — new Date("YYYY-MM-DD") is UTC and
+  // shifts the calendar day for anyone west of UTC.
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number)
+  const target = new Date(y, m - 1, d)
   return Math.round((target.getTime() - now.getTime()) / 86_400_000)
 }
 
@@ -82,6 +86,6 @@ export function formatRelativeDue(iso?: string): string | null {
   if (d === 0) return "היום"
   if (d === 1) return "מחר"
   if (d <= 7) return `בעוד ${d} ימים`
-  const date = new Date(iso)
-  return `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}`
+  const [, mm, dd] = iso.slice(0, 10).split("-")
+  return `${dd}.${mm}`
 }

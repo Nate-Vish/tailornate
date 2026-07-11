@@ -18,6 +18,7 @@ import {
   selectDoneToday,
   taskXP,
   todayISO,
+  isSnoozed,
 } from "@/lib/tasks/store"
 import { calcScore, formatRelativeDue } from "@/lib/tasks/scoring"
 import { tipOfTheDay } from "@/lib/tasks/tips"
@@ -131,6 +132,48 @@ function NextTaskCard({ task, onActions }: { task: Task; onActions: (t: Task) =>
         </button>
       </div>
     </motion.div>
+  )
+}
+
+function SnoozedStrip() {
+  const tasks = useTasksStore((s) => s.tasks)
+  const snoozeTask = useTasksStore((s) => s.snoozeTask)
+  const [open, setOpen] = useState(false)
+  const snoozed = tasks.filter((t) => t.status !== "completed" && isSnoozed(t))
+  if (snoozed.length === 0) return null
+
+  return (
+    <div className="mt-4">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground"
+      >
+        <Icon name="clock" size={13} />
+        נדחו ({snoozed.length})
+        <Icon name={open ? "chevron-up" : "chevron-down"} size={12} />
+      </button>
+      {open && (
+        <div className="mt-2 space-y-1.5">
+          {snoozed.map((t) => (
+            <div
+              key={t.id}
+              className="flex items-center gap-2.5 rounded-lg border border-border bg-card px-3 py-2 opacity-70"
+            >
+              <span className="min-w-0 flex-1 truncate text-[13px] text-muted-foreground">{t.title}</span>
+              <span className="text-[10px] text-muted-foreground">
+                עד {t.snoozedUntil!.slice(5).split("-").reverse().join(".")}
+              </span>
+              <button
+                onClick={() => snoozeTask(t.id, null)}
+                className="shrink-0 text-[11px] text-[var(--accent)] underline"
+              >
+                החזר
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -280,6 +323,7 @@ export function TodayView({ onActions }: { onActions: (task: Task) => void }) {
       )}
 
       <div className="px-4">
+        <SnoozedStrip />
         <DoneTodayStrip />
       </div>
     </div>

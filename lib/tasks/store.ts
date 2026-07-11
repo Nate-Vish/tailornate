@@ -57,12 +57,13 @@ export function taskXP(task: Task): number {
   return sizeXP + priorityBonus
 }
 
-function doneCountInBucket(tasks: Task[], categoryId: string, tagId?: string): number {
-  return tasks.filter(
-    (t) =>
-      t.status === "completed" &&
-      (tagId ? t.tagId === tagId : t.categoryId === categoryId && !t.tagId),
-  ).length
+function bucketXP(tasks: Task[], categoryId: string, tagId?: string): number {
+  return tasks
+    .filter(
+      (t) =>
+        t.status === "completed" && (tagId ? t.tagId === tagId : t.categoryId === categoryId),
+    )
+    .reduce((sum, t) => sum + taskXP(t), 0)
 }
 
 function pruneChains(chains: Chain[], tasks: Task[]): Chain[] {
@@ -105,6 +106,9 @@ export const useTasksStore = create<State>()(
         set((s) => {
           const task = s.tasks.find((t) => t.id === id)
           if (!task) return {}
+          // Chain steps unlock in order — enforced here so no entry point
+          // (UI, AI, future API) can skip ahead.
+          if (task.status !== "completed" && isChainLocked(task, s.tasks)) return {}
           const nowIso = new Date().toISOString()
 
           if (task.status === "completed") {
@@ -135,12 +139,15 @@ export const useTasksStore = create<State>()(
           }
 
           const xp = s.tasks.filter((t) => completeIds.has(t.id)).reduce((sum, t) => sum + taskXP(t), 0)
-          const before = doneCountInBucket(s.tasks, task.categoryId, task.tagId)
-          const after = before + [...completeIds].filter((cid) => {
-            const t = s.tasks.find((x) => x.id === cid)
-            return t && (task.tagId ? t.tagId === task.tagId : t.categoryId === task.categoryId && !t.tagId)
-          }).length
-          const leveledUp = Math.floor(after / 3) > Math.floor(before / 3)
+          const xpBefore = bucketXP(s.tasks, task.categoryId, task.tagId)
+          const xpGained = s.tasks
+            .filter(
+              (t) =>
+                completeIds.has(t.id) &&
+                (task.tagId ? t.tagId === task.tagId : t.categoryId === task.categoryId),
+            )
+            .reduce((sum, t) => sum + taskXP(t), 0)
+          const leveledUp = levelFor(xpBefore + xpGained) > levelFor(xpBefore)
 
           return {
             tasks: s.tasks.map((t) =>
@@ -162,7 +169,8 @@ export const useTasksStore = create<State>()(
       branchTask: (parentId, titles) =>
         set((s) => {
           const parent = s.tasks.find((t) => t.id === parentId)
-          if (!parent) return {}
+          // One level of nesting only — a sub-task cannot become a parent.
+          if (!parent || parent.parentId) return {}
           const nowIso = new Date().toISOString()
           const children: Task[] = titles
             .map((raw) => raw.trim())
@@ -183,13 +191,29 @@ export const useTasksStore = create<State>()(
         }),
 
       attachChildren: (parentId, childIds) =>
-        set((s) => ({
-          tasks: s.tasks.map((t) =>
-            childIds.includes(t.id) && t.id !== parentId && !t.parentId
-              ? { ...t, parentId }
-              : t,
-          ),
-        })),
+        set((s) => {
+          const parent = s.tasks.find((t) => t.id === parentId)
+          // Parent must be top-level; children must be free-standing (no
+          // parent, no chain, no children of their own). Prevents cycles
+          // and >1 level of nesting from any caller, including the AI.
+          if (!parent || parent.parentId) return {}
+          const eligible = new Set(
+            childIds.filter((id) => {
+              const t = s.tasks.find((x) => x.id === id)
+              return (
+                t &&
+                t.id !== parentId &&
+                !t.parentId &&
+                !t.chainId &&
+                !s.tasks.some((x) => x.parentId === t.id)
+              )
+            }),
+          )
+          if (eligible.size === 0) return {}
+          return {
+            tasks: s.tasks.map((t) => (eligible.has(t.id) ? { ...t, parentId } : t)),
+          }
+        }),
 
       detachFromParent: (id) =>
         set((s) => ({
@@ -206,6 +230,10 @@ export const useTasksStore = create<State>()(
           const patched = new Map<string, Partial<Task>>()
           clean.forEach((st, i) => {
             if (st.existingId) {
+              const existing = s.tasks.find((t) => t.id === st.existingId)
+              // A task can belong to one chain; silently re-chaining would
+              // strand its old chain. Skip instead.
+              if (!existing || existing.chainId) return
               patched.set(st.existingId, { chainId, chainOrder: i })
             } else {
               newTasks.push({
@@ -222,12 +250,13 @@ export const useTasksStore = create<State>()(
               })
             }
           })
+          const tasks = [
+            ...newTasks,
+            ...s.tasks.map((t) => (patched.has(t.id) ? { ...t, ...patched.get(t.id) } : t)),
+          ]
           return {
-            chains: [...s.chains, { id: chainId, title: title.trim() }],
-            tasks: [
-              ...newTasks,
-              ...s.tasks.map((t) => (patched.has(t.id) ? { ...t, ...patched.get(t.id) } : t)),
-            ],
+            chains: pruneChains([...s.chains, { id: chainId, title: title.trim() }], tasks),
+            tasks,
           }
         })
         return chainId
@@ -374,10 +403,28 @@ export function selectDoneCount(
   }).length
 }
 
-export function levelFor(count: number): number {
-  return Math.floor(count / 3) + 1
+// Levels are earned by XP, not by task count — three trivial errands no longer
+// equal one hard deliverable, and "balance" measures effort, not frequency.
+const XP_PER_LEVEL = 60
+
+export function selectBucketXP(
+  s: Pick<State, "tasks">,
+  filter: { tagId?: string; categoryId?: string },
+): number {
+  return s.tasks
+    .filter((t) => {
+      if (t.status !== "completed") return false
+      if (filter.tagId) return t.tagId === filter.tagId
+      if (filter.categoryId) return t.categoryId === filter.categoryId
+      return false
+    })
+    .reduce((sum, t) => sum + taskXP(t), 0)
 }
 
-export function progressInLevel(count: number): number {
-  return ((count % 3) / 3) * 100
+export function levelFor(xp: number): number {
+  return Math.floor(xp / XP_PER_LEVEL) + 1
+}
+
+export function progressInLevel(xp: number): number {
+  return ((xp % XP_PER_LEVEL) / XP_PER_LEVEL) * 100
 }

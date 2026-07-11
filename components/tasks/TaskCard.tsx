@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import { clsx } from "clsx"
 import { Icon } from "./Icon"
 import { PriorityPill, ColorPill, scoreColor, cvar } from "./pills"
-import { useTasksStore, childrenOf, chainProgress, isSnoozed } from "@/lib/tasks/store"
+import { useTasksStore, childrenOf, chainProgress, isSnoozed, isChainLocked } from "@/lib/tasks/store"
 import { calcScore, formatRelativeDue, statusLabel } from "@/lib/tasks/scoring"
 import type { Task } from "@/lib/tasks/types"
 
@@ -67,6 +67,7 @@ export function TaskCard({
 
   const chain = task.chainId ? chains.find((c) => c.id === task.chainId) : undefined
   const chainInfo = task.chainId ? chainProgress(tasks, task.chainId) : null
+  const locked = task.status !== "completed" && isChainLocked(task, tasks)
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
@@ -104,17 +105,26 @@ export function TaskCard({
           </button>
         )}
 
-        <button
-          onClick={() => toggleComplete(task.id)}
-          aria-label="סמן כהושלם"
-          title={children.length > 0 ? "משלים גם את כל תתי־המשימות" : undefined}
-          className={clsx(
-            "mt-0.5 h-[22px] w-[22px] shrink-0 rounded-full border-2 transition-colors",
-            task.status === "in_progress"
-              ? "border-[var(--success)]"
-              : "border-border hover:border-muted-foreground",
-          )}
-        />
+        {locked ? (
+          <span
+            className="mt-0.5 flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-2 border-border text-muted-foreground/50"
+            title="נעול — קודם משלימים את השלב הקודם בשרשרת"
+          >
+            <Icon name="lock" size={11} />
+          </span>
+        ) : (
+          <button
+            onClick={() => toggleComplete(task.id)}
+            aria-label="סמן כהושלם"
+            title={children.length > 0 ? "משלים גם את כל תתי־המשימות" : undefined}
+            className={clsx(
+              "mt-0.5 h-[22px] w-[22px] shrink-0 rounded-full border-2 transition-colors",
+              task.status === "in_progress"
+                ? "border-[var(--success)]"
+                : "border-border hover:border-muted-foreground",
+            )}
+          />
+        )}
 
         <div className="min-w-0 flex-1">
           <p className="text-[14px] font-medium leading-tight text-foreground">{task.title}</p>

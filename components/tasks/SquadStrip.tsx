@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import { Icon } from "./Icon"
 import { cvar } from "./pills"
-import { useTasksStore, selectDoneCount, levelFor, progressInLevel } from "@/lib/tasks/store"
+import { useTasksStore, selectBucketXP, levelFor, progressInLevel } from "@/lib/tasks/store"
 
 export function SquadStrip() {
   const categories = useTasksStore((s) => s.categories)
@@ -12,8 +12,8 @@ export function SquadStrip() {
   const setView = useTasksStore((s) => s.setView)
 
   const enriched = categories.map((cat) => {
-    const count = selectDoneCount({ tasks }, { categoryId: cat.id })
-    return { cat, count, level: levelFor(count), progress: progressInLevel(count) }
+    const xp = selectBucketXP({ tasks }, { categoryId: cat.id })
+    return { cat, xp, level: levelFor(xp), progress: progressInLevel(xp) }
   })
 
   const maxLevel = Math.max(...enriched.map((e) => e.level))

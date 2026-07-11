@@ -44,4 +44,6 @@ export const seedTasks: Task[] = [
   { id: "t_done_3", title: "להתקין את הפלאגין החדש", priority: "medium", size: "short", status: "completed", categoryId: "cat_projects", tagId: "tag_automates", createdAt: now(), completedAt: now() },
 ]
 
-export const defaultWeights: Weights = { priority: 35, deadline: 30, status: 20, size: 15 }
+// Priority dominates by design — "what matters" must not be diluted by task
+// size. Size stays a light quick-win nudge.
+export const defaultWeights: Weights = { priority: 45, deadline: 30, status: 15, size: 10 }

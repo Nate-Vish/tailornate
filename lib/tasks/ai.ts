@@ -94,6 +94,7 @@ export type AIStatePayload = {
     parentId?: string
     chainId?: string
     chainOrder?: number
+    snoozedUntil?: string
     score: number
   }[]
 }

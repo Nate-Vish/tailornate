@@ -8,6 +8,7 @@ import {
   useTasksStore,
   selectSortedActive,
   selectDoneCount,
+  selectBucketXP,
   levelFor,
 } from "@/lib/tasks/store"
 
@@ -43,6 +44,7 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
         <div className="space-y-2 px-4">
           {categories.map((c) => {
             const done = selectDoneCount({ tasks }, { categoryId: c.id })
+            const catXp = selectBucketXP({ tasks }, { categoryId: c.id })
             const active = tasks.filter((t) => t.categoryId === c.id && t.status !== "completed").length
             const catTags = tags.filter((t) => t.categoryId === c.id)
             return (
@@ -63,7 +65,7 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
                     <div className="flex items-center gap-2">
                       <span className="text-[14px] font-medium text-foreground">{c.name}</span>
                       <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(c.color)}>
-                        רמה {levelFor(done)}
+                        רמה {levelFor(catXp)}
                       </span>
                     </div>
                     <p className="mt-1 text-[11px] text-muted-foreground">
@@ -81,7 +83,7 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
   }
 
   const catTags = tags.filter((t) => t.categoryId === category.id)
-  const catDone = selectDoneCount({ tasks }, { categoryId: category.id })
+  const catXp = selectBucketXP({ tasks }, { categoryId: category.id })
   const activeInCat = tasks.filter(
     (t) => t.categoryId === category.id && t.status !== "completed",
   ).length
@@ -115,7 +117,7 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
             className="absolute -bottom-1 -end-1 rounded-full px-1.5 py-[1px] text-[10px] font-medium leading-tight text-white"
             style={{ background: category.color }}
           >
-            {levelFor(catDone)}
+            {levelFor(catXp)}
           </span>
         </div>
       </header>
@@ -139,6 +141,7 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
           <div className="mb-4 space-y-2">
             {catTags.map((t) => {
               const done = selectDoneCount({ tasks }, { tagId: t.id })
+              const tagXp = selectBucketXP({ tasks }, { tagId: t.id })
               const active = tasks.filter((x) => x.tagId === t.id && x.status !== "completed").length
               const universe = active + done || 1
               const progress = Math.round((done / universe) * 100)
@@ -158,7 +161,7 @@ export function ProjectsView({ onActions }: { onActions: (task: import("@/lib/ta
                     <div className="flex items-center gap-1.5">
                       <span className="text-[13px] font-medium text-foreground">{t.name}</span>
                       <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(t.color)}>
-                        רמה {levelFor(done)}
+                        רמה {levelFor(tagXp)}
                       </span>
                     </div>
                     <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-[var(--muted)]">

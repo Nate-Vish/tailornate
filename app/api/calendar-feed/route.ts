@@ -73,7 +73,16 @@ export async function POST(req: NextRequest) {
     const res = await fetch(url, {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       headers: { "User-Agent": "Madko-Calendar/1.0" },
+      // A redirect could point anywhere (SSRF); the allowlist only checked
+      // the first hop, so refuse to follow.
+      redirect: "manual",
     })
+    if (res.status >= 300 && res.status < 400) {
+      return Response.json(
+        { error: "הכתובת מפנה למקום אחר — העתק את הכתובת הסודית הישירה מההגדרות של Google Calendar" },
+        { status: 400 },
+      )
+    }
     if (!res.ok) {
       return Response.json(
         { error: `היומן החזיר שגיאה (${res.status}) — בדוק שהכתובת הסודית עדיין בתוקף` },

@@ -106,6 +106,9 @@ export function AIChatPanel() {
     const store = useTasksStore.getState()
     const results: ActionResult[] = []
     let topIds: string[] = []
+    // Blast-radius cap: a single AI reply may delete at most 3 tasks. Bulk
+    // cleanups should go through the user, not one model response.
+    let deletesLeft = 3
 
     for (const action of actions) {
       switch (action.type) {
@@ -146,7 +149,7 @@ export function AIChatPanel() {
             if (action.patch.title) patch.title = action.patch.title
             if (action.patch.priority) patch.priority = action.patch.priority
             if (action.patch.size) patch.size = action.patch.size
-            if (action.patch.status) patch.status = action.patch.status
+            if (action.patch.status && t.status !== "completed") patch.status = action.patch.status
             if (action.patch.dueDate !== undefined) patch.dueDate = action.patch.dueDate ?? undefined
             if (action.patch.snoozedUntil !== undefined)
               patch.snoozedUntil = action.patch.snoozedUntil ?? undefined
@@ -158,6 +161,7 @@ export function AIChatPanel() {
           break
         }
         case "delete_task": {
+          if (deletesLeft-- <= 0) break
           const t = store.tasks.find((x) => x.id === action.taskId)
           if (t) {
             store.deleteTask(t.id)
@@ -195,13 +199,27 @@ export function AIChatPanel() {
         }
         case "attach_children": {
           const parent = store.tasks.find((x) => x.id === action.parentId)
-          if (parent) {
-            store.attachChildren(parent.id, action.childIds)
-            results.push({
-              label: `${parent.title} ← ${action.childIds.length} משימות`,
-              kind: "branched",
-              taskId: parent.id,
+          if (parent && !parent.parentId && !parent.chainId) {
+            // Same eligibility rules as the manual branch sheet: only free,
+            // standalone tasks can become children — no chains, no nesting.
+            const eligible = action.childIds.filter((id) => {
+              const t = store.tasks.find((x) => x.id === id)
+              return (
+                t &&
+                t.id !== parent.id &&
+                !t.parentId &&
+                !t.chainId &&
+                !store.tasks.some((x) => x.parentId === t.id)
+              )
             })
+            if (eligible.length > 0) {
+              store.attachChildren(parent.id, eligible)
+              results.push({
+                label: `${parent.title} ← ${eligible.length} משימות`,
+                kind: "branched",
+                taskId: parent.id,
+              })
+            }
           }
           break
         }
@@ -266,6 +284,7 @@ export function AIChatPanel() {
             parentId: t.parentId,
             chainId: t.chainId,
             chainOrder: t.chainOrder,
+            snoozedUntil: t.snoozedUntil,
             score: calcScore(t, store.weights),
           })),
         }

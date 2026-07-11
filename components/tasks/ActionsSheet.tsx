@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Sheet, SheetButton } from "./Sheet"
-import { useTasksStore, todayISO, isSnoozed } from "@/lib/tasks/store"
+import { useTasksStore, todayISO, isSnoozed, isChainLocked } from "@/lib/tasks/store"
 import { googleCalendarUrl } from "@/lib/tasks/ics"
 import type { Task } from "@/lib/tasks/types"
 
@@ -29,21 +29,34 @@ export function ActionsSheet({
   const toggleComplete = useTasksStore((s) => s.toggleComplete)
   const snoozeTask = useTasksStore((s) => s.snoozeTask)
   const [snoozeDateOpen, setSnoozeDateOpen] = useState(false)
+  const tasks = useTasksStore((s) => s.tasks)
   const completed = task.status === "completed"
   const snoozed = isSnoozed(task)
+  const locked = !completed && isChainLocked(task, tasks)
 
   return (
     <Sheet title={task.title} onClose={onClose}>
       <div className="space-y-2">
-        <SheetButton
-          icon={completed ? "reset" : "check"}
-          label={completed ? "פתח מחדש" : "סמן כהושלם"}
-          color="var(--success)"
-          onClick={() => {
-            toggleComplete(task.id)
-            onClose()
-          }}
-        />
+        {locked ? (
+          <SheetButton
+            icon="lock"
+            label="נעול בשרשרת"
+            sub="קודם משלימים את השלב הקודם"
+            color="var(--warning)"
+            disabled
+            onClick={() => {}}
+          />
+        ) : (
+          <SheetButton
+            icon={completed ? "reset" : "check"}
+            label={completed ? "פתח מחדש" : "סמן כהושלם"}
+            color="var(--success)"
+            onClick={() => {
+              toggleComplete(task.id)
+              onClose()
+            }}
+          />
+        )}
         <SheetButton icon="pencil" label="ערוך" sub="שם, תחום, דחיפות, דדליין, מחיקה" onClick={() => onPick("edit")} />
         {!task.parentId && !completed && (
           <SheetButton

@@ -2,7 +2,7 @@
 
 import { Icon } from "./Icon"
 import { cvar } from "./pills"
-import { useTasksStore, selectDoneCount, levelFor, progressInLevel } from "@/lib/tasks/store"
+import { useTasksStore, selectDoneCount, selectBucketXP, levelFor, progressInLevel } from "@/lib/tasks/store"
 
 export function SquadView() {
   const categories = useTasksStore((s) => s.categories)
@@ -13,9 +13,10 @@ export function SquadView() {
   const totalDone = tasks.filter((t) => t.status === "completed").length
   const enriched = categories.map((cat) => {
     const count = selectDoneCount({ tasks }, { categoryId: cat.id })
-    return { cat, count, level: levelFor(count), progress: progressInLevel(count) }
+    const xp = selectBucketXP({ tasks }, { categoryId: cat.id })
+    return { cat, count, xp, level: levelFor(xp), progress: progressInLevel(xp) }
   })
-  const maxDone = Math.max(...enriched.map((e) => e.count), 1)
+  const maxXP = Math.max(...enriched.map((e) => e.xp), 1)
 
   return (
     <div className="pb-28">
@@ -46,8 +47,8 @@ export function SquadView() {
       <div className="px-4">
         <p className="mb-2 text-[12px] text-muted-foreground">איזון בין התחומים</p>
         <div className="rounded-xl border border-border bg-card p-3">
-          {enriched.map(({ cat, count, level }) => {
-            const pct = Math.round((count / maxDone) * 100)
+          {enriched.map(({ cat, count, xp, level }) => {
+            const pct = Math.round((xp / maxXP) * 100)
             return (
               <div key={cat.id} className="mb-2.5 last:mb-0">
                 <div className="mb-1 flex items-center justify-between">
@@ -56,7 +57,7 @@ export function SquadView() {
                     <span className="text-[12px] text-foreground">{cat.name}</span>
                     <span className="text-[10px] text-muted-foreground">רמה {level}</span>
                   </div>
-                  <span className="text-[11px] text-muted-foreground">{count} הושלמו</span>
+                  <span className="text-[11px] text-muted-foreground">{count} הושלמו · {xp} XP</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-[var(--muted)]">
                   <div
@@ -73,7 +74,7 @@ export function SquadView() {
       <div className="mt-4 px-4">
         <p className="mb-2 text-[12px] text-muted-foreground">כל התחומים</p>
         <div className="grid grid-cols-2 gap-2">
-          {enriched.map(({ cat, level, count, progress }) => (
+          {enriched.map(({ cat, level, xp, progress }) => (
             <button
               key={cat.id}
               onClick={() => openDrilldown(cat.id)}
@@ -95,7 +96,7 @@ export function SquadView() {
                     {level}
                   </span>
                 </div>
-                <span className="text-[10px] text-muted-foreground">{count * 10} XP</span>
+                <span className="text-[10px] text-muted-foreground">{xp} XP</span>
               </div>
               <p className="mt-2 text-[13px] font-medium text-foreground">{cat.name}</p>
               <div className="mt-1 h-1 overflow-hidden rounded-full bg-[var(--muted)]">
@@ -114,12 +115,13 @@ export function SquadView() {
         <div className="rounded-xl border border-border bg-card p-2">
           {tags.map((t) => {
             const done = selectDoneCount({ tasks }, { tagId: t.id })
+            const tagXp = selectBucketXP({ tasks }, { tagId: t.id })
             return (
               <div key={t.id} className="flex items-center gap-2 p-1.5">
                 <div className="h-6 w-6 rounded-full" style={{ background: t.color }} />
                 <span className="flex-1 text-[12px] text-foreground">{t.name}</span>
                 <span className="cpill rounded-full px-2 py-[1px] text-[10px]" style={cvar(t.color)}>
-                  רמה {levelFor(done)} · {done}
+                  רמה {levelFor(tagXp)} · {done}
                 </span>
               </div>
             )

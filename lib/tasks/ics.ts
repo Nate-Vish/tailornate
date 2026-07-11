@@ -6,9 +6,9 @@ function icsDate(iso: string): string {
 }
 
 function nextDay(iso: string): string {
-  const d = new Date(iso)
-  d.setDate(d.getDate() + 1)
-  return d.toISOString().slice(0, 10)
+  const [y, m, day] = iso.slice(0, 10).split("-").map(Number)
+  const d = new Date(y, m - 1, day + 1)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
 }
 
 function escapeICS(text: string): string {
@@ -56,7 +56,9 @@ export function downloadICS(tasks: Task[], categories: Category[]): void {
 
 // Prefilled Google Calendar "create event" link for a single task.
 export function googleCalendarUrl(task: Task): string {
-  const date = task.dueDate ?? new Date().toISOString().slice(0, 10)
+  const now = new Date()
+  const localToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`
+  const date = task.dueDate ?? localToday
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: task.title,

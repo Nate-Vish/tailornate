@@ -30,6 +30,11 @@ function inPeriod(t: Task, period: PeriodFilter): boolean {
 
 function fmtDate(iso?: string): string {
   if (!iso) return "—"
+  // Date-only strings must not go through Date() (UTC shift); timestamps may.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+    const [y, m, d] = iso.split("-")
+    return `${d}.${m}.${y.slice(2)}`
+  }
   const d = new Date(iso)
   return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getFullYear()).slice(2)}`
 }
