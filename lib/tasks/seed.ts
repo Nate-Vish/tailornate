@@ -22,7 +22,8 @@ export const seedTags: Tag[] = [
 const dayISO = (offset: number) => {
   const d = new Date()
   d.setDate(d.getDate() + offset)
-  return d.toISOString().slice(0, 10)
+  // LOCAL date — toISOString() is UTC and would shift the calendar day.
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
 }
 
 const now = () => new Date().toISOString()
@@ -39,6 +40,10 @@ export const seedTasks: Task[] = [
   { id: "t_9", title: "תרגיל בתורת הקומפילציה", priority: "high", size: "long", status: "not_started", categoryId: "cat_studies", tagId: "tag_hit", dueDate: dayISO(4), createdAt: now() },
   { id: "t_10", title: "לסדר את החדר", priority: "low", size: "short", status: "not_started", categoryId: "cat_personal", tagId: "tag_home", createdAt: now() },
   { id: "t_11", title: "להסתפר", priority: "low", size: "short", status: "in_progress", categoryId: "cat_personal", dueDate: dayISO(0), createdAt: now() },
+  { id: "t_12", title: "להגיש דוח רבעוני", priority: "high", size: "medium", status: "not_started", categoryId: "cat_career", dueDate: dayISO(12), createdAt: now() },
+  { id: "t_13", title: "יום הולדת לאבא", priority: "medium", size: "short", status: "not_started", categoryId: "cat_family", dueDate: dayISO(12), createdAt: now() },
+  { id: "t_14", title: "מבחן בקומפילציה", priority: "urgent", size: "long", status: "not_started", categoryId: "cat_studies", tagId: "tag_hit", dueDate: dayISO(18), createdAt: now() },
+  { id: "t_15", title: "לארוז מזוודה", priority: "medium", size: "short", status: "not_started", categoryId: "cat_personal", dueDate: dayISO(25), createdAt: now() },
   { id: "t_done_1", title: "לענות למייל של דנה", priority: "medium", size: "short", status: "completed", categoryId: "cat_career", tagId: "tag_linkedin", createdAt: now(), completedAt: now() },
   { id: "t_done_2", title: "לקבוע ריצה עם אבא", priority: "low", size: "short", status: "completed", categoryId: "cat_family", createdAt: now(), completedAt: now() },
   { id: "t_done_3", title: "להתקין את הפלאגין החדש", priority: "medium", size: "short", status: "completed", categoryId: "cat_projects", tagId: "tag_automates", createdAt: now(), completedAt: now() },
