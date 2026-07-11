@@ -82,3 +82,15 @@ Email-OTP and Google login carry real risks; each item below is a task, not a no
 1. Auth: email-OTP + Google login — APPROVED, with the Phase 1.5 security checklist as a blocking gate
 2. Quiet hours: pending Nathan's confirmation (default proposal 22:00–08:00)
 3. Supabase region: eu-central-1 Frankfurt — APPROVED
+
+
+## Phase 5 — Views + Smart Planner (flagship, after calendar-in-store)
+Design decisions (Nathan, 2026-07-11): month = agenda + infographic heatmap, zoomable month→week→day and back; planner PROPOSES and user approves (never auto); "busy day" = calendar events AND task load, both weighted.
+16. [ ] Real day/week/month views: day=thin today, week=7-day agenda w/ per-day load, month=heatmap calendar (cells by load), click-to-zoom + back — files: TodayView split into DayView/WeekView/MonthView, lib/tasks/load.ts — verify: three genuinely different layouts; heatmap colors match load
+17. [ ] Weighted daily load model: calendar events + task load/scores per day — verify: unit tests over known fixtures
+18. [ ] Smart planner: propose distributing undated/new tasks onto lighter days, backward-plan prep before deadlines/meetings, propose rebalancing on overload — user approves each — files: lib/tasks/planner.ts, AI actions, suggestion UI — verify: travel scenario produces sane spread
+19. [ ] Twice-daily calendar check (cron) feeds the planner; suggestions surface as approvable cards — verify: cron fires, suggestion appears
+
+## Phase 6 — Multimodal & multi-calendar intake
+20. [ ] Multiple calendar feeds with per-category mapping (family cal → משפחה) — files: settings, calendar-feed route, ai payload — verify: two calendars merge, events inherit category
+21. [ ] Image/file intake in AI chat (Gemini vision): extract dates, infer structure (isolated/chain/branch), backward-plan deadlines, judge importance — needs Nathan's real-example calibration — verify: meeting-invite screenshot → prep task with deadline before the meeting
