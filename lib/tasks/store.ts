@@ -78,7 +78,7 @@ function pruneChains(chains: Chain[], tasks: Task[]): Chain[] {
 
 export const useTasksStore = create<State>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       tasks: seedTasks,
       categories: seedCategories,
       tags: seedTags,
@@ -175,8 +175,9 @@ export const useTasksStore = create<State>()(
       branchTask: (parentId, titles) =>
         set((s) => {
           const parent = s.tasks.find((t) => t.id === parentId)
-          // One level of nesting only — a sub-task cannot become a parent.
-          if (!parent || parent.parentId) return {}
+          // One level of nesting only, and a chain step can't also be a branch
+          // parent — a sub-task or chain member cannot be split.
+          if (!parent || parent.parentId || parent.chainId) return {}
           const nowIso = new Date().toISOString()
           const children: Task[] = titles
             .map((raw) => raw.trim())
@@ -304,6 +305,13 @@ export const useTasksStore = create<State>()(
         })),
 
       addCategory: (input) => {
+        // Reuse an existing area with the same name (case-insensitive, name or
+        // nameEn) instead of minting a duplicate.
+        const key = input.name.trim().toLowerCase()
+        const dupe = get().categories.find(
+          (c) => c.name.trim().toLowerCase() === key || c.nameEn.trim().toLowerCase() === key,
+        )
+        if (dupe) return dupe
         const cat: Category = { id: uid("cat"), nameEn: input.name, ...input }
         set((s) => ({ categories: [...s.categories, cat] }))
         return cat
@@ -335,6 +343,12 @@ export const useTasksStore = create<State>()(
         }),
 
       addTag: (input) => {
+        // Reuse an existing tag of the same name in the same category.
+        const key = input.name.trim().toLowerCase()
+        const dupe = get().tags.find(
+          (t) => t.categoryId === input.categoryId && t.name.trim().toLowerCase() === key,
+        )
+        if (dupe) return dupe
         const tag: Tag = { id: uid("tag"), ...input }
         set((s) => ({ tags: [...s.tags, tag] }))
         return tag

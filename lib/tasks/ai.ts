@@ -96,7 +96,7 @@ export type AIResponse = z.infer<typeof aiResponseSchema>
 
 export type AIStatePayload = {
   today: string
-  categories: { id: string; name: string }[]
+  categories: { id: string; name: string; nameEn?: string }[]
   tags: { id: string; name: string; categoryId: string }[]
   chains: { id: string; title: string }[]
   tasks: {

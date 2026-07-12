@@ -58,7 +58,7 @@ export function ActionsSheet({
           />
         )}
         <SheetButton icon="pencil" label="ערוך" sub="שם, תחום, דחיפות, דדליין, מחיקה" onClick={() => onPick("edit")} />
-        {!task.parentId && !completed && (
+        {!task.parentId && !task.chainId && !completed && (
           <SheetButton
             icon="branch"
             label="פצל לתתי־משימות"

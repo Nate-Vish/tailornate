@@ -139,7 +139,22 @@ export function AIChatPanel() {
     const safeColor = (c: string | undefined, name: string) =>
       c && /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : pickColor(name)
 
-    for (const action of actions) {
+    // Blast-radius cap for non-delete mutations (complete/reopen/boost). High
+    // enough for a legitimate calendar "mark everything done" sweep (bounded by
+    // the 24-action schema), low enough to blunt a runaway; over-cap actions are
+    // skipped individually (continue), never dropping unrelated trailing ones.
+    let writesLeft = 16
+
+    // Process category/tag creation FIRST so a create_task/create_chain/update
+    // that references a brand-new area by name resolves regardless of the order
+    // the model emitted the actions in.
+    const ordered = [
+      ...actions.filter((a) => a.type === "create_category"),
+      ...actions.filter((a) => a.type === "create_tag"),
+      ...actions.filter((a) => a.type !== "create_category" && a.type !== "create_tag"),
+    ]
+
+    for (const action of ordered) {
       switch (action.type) {
         case "create_task": {
           const resolvedTagId = resolveTagId(action.tagId)
@@ -173,6 +188,7 @@ export function AIChatPanel() {
         case "complete_task": {
           const t = store.tasks.find((x) => x.id === action.taskId)
           if (t && t.status !== "completed") {
+            if (writesLeft-- <= 0) continue
             store.toggleComplete(t.id)
             results.push({ label: t.title, kind: "completed", taskId: t.id })
           }
@@ -185,12 +201,27 @@ export function AIChatPanel() {
             if (action.patch.title) patch.title = action.patch.title
             if (action.patch.priority) patch.priority = action.patch.priority
             if (action.patch.size) patch.size = action.patch.size
-            if (action.patch.status && t.status !== "completed") patch.status = action.patch.status
+            // Check LIVE status (a reopen_task earlier in this same reply may
+            // have un-completed it; the `store` snapshot is frozen pre-batch).
+            if (action.patch.status) {
+              const liveStatus = useTasksStore.getState().tasks.find((x) => x.id === t.id)?.status
+              if (liveStatus && liveStatus !== "completed") patch.status = action.patch.status
+            }
             if (action.patch.dueDate !== undefined) patch.dueDate = action.patch.dueDate ?? undefined
             if (action.patch.snoozedUntil !== undefined)
               patch.snoozedUntil = action.patch.snoozedUntil ?? undefined
-            if (action.patch.categoryId) patch.categoryId = action.patch.categoryId
-            if (action.patch.tagId !== undefined) patch.tagId = action.patch.tagId ?? undefined
+            // Resolve id | existing-name | batch-new-name; keep the current
+            // category/tag if unresolved (never write a raw name/hallucinated
+            // id, and never strip an existing tag over a fumbled reference).
+            if (action.patch.categoryId) {
+              const rc = resolveCategoryId(action.patch.categoryId)
+              if (rc) patch.categoryId = rc
+            }
+            if (action.patch.tagId === null) patch.tagId = undefined
+            else if (action.patch.tagId) {
+              const rt = resolveTagId(action.patch.tagId)
+              if (rt) patch.tagId = rt
+            }
             store.updateTask(t.id, patch)
             results.push({ label: t.title, kind: "updated", taskId: t.id })
           }
@@ -208,6 +239,7 @@ export function AIChatPanel() {
         case "boost_task": {
           const t = store.tasks.find((x) => x.id === action.taskId)
           if (t) {
+            if (writesLeft-- <= 0) continue
             store.boostTask(t.id, "until_done", 100)
             results.push({ label: t.title, kind: "boosted", taskId: t.id })
           }
@@ -216,6 +248,7 @@ export function AIChatPanel() {
         case "reopen_task": {
           const t = store.tasks.find((x) => x.id === action.taskId)
           if (t && t.status === "completed") {
+            if (writesLeft-- <= 0) continue
             store.toggleComplete(t.id)
             results.push({ label: t.title, kind: "updated", taskId: t.id })
           }
@@ -223,7 +256,10 @@ export function AIChatPanel() {
         }
         case "branch_task": {
           const t = store.tasks.find((x) => x.id === action.taskId)
-          if (t) {
+          // Mirror the store guard: only a top-level task (no parent, no chain)
+          // can be split. Report success only when the store will actually
+          // mutate — never a false "split" chip for a no-op.
+          if (t && !t.parentId && !t.chainId) {
             store.branchTask(t.id, action.subtitles)
             results.push({
               label: `${t.title} → ${action.subtitles.length} חלקים`,
@@ -319,13 +355,20 @@ export function AIChatPanel() {
       try {
         const store = useTasksStore.getState()
         const sorted = selectSortedActive({ tasks: store.tasks, weights: store.weights })
-        const recentDone = store.tasks
-          .filter((t) => t.status === "completed")
-          .slice(0, 10)
+        const isAnalyze = /נתח|ניתוח|סיכום|סכם|התקדמות|analyz|summar/i.test(text)
+        const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString().slice(0, 10)
+        // For analysis, send EVERY completion from the last 7 days (so
+        // completedThisWeek can't undercount); for chat, the 10 most recent.
+        const completed = store.tasks
+          .filter((t) => t.status === "completed" && t.completedAt)
+          .sort((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? ""))
+        const recentDone = isAnalyze
+          ? completed.filter((t) => (t.completedAt ?? "").slice(0, 10) >= weekAgo)
+          : completed.slice(0, 10)
 
         const statePayload: AIRequestBody["state"] = {
           today: new Date().toISOString().slice(0, 10),
-          categories: store.categories.map((c) => ({ id: c.id, name: `${c.name} / ${c.nameEn}` })),
+          categories: store.categories.map((c) => ({ id: c.id, name: c.name, nameEn: c.nameEn })),
           tags: store.tags.map((t) => ({ id: t.id, name: t.name, categoryId: t.categoryId })),
           chains: store.chains.map((c) => ({ id: c.id, title: c.title })),
           tasks: [...sorted, ...recentDone].slice(0, 150).map((t) => ({
@@ -352,7 +395,6 @@ export function AIChatPanel() {
           .slice(-10)
           .map((m) => ({ role: m.role === "user" ? ("user" as const) : ("assistant" as const), content: m.text }))
 
-        const isAnalyze = /נתח|ניתוח|סיכום|סכם|התקדמות|analyz|summar/i.test(text)
         const wantsCalendar = CALENDAR_KEYWORDS.test(text)
         const calendar = wantsCalendar ? await fetchCalendar() : undefined
 
