@@ -110,21 +110,52 @@ export function AIChatPanel() {
     // cleanups should go through the user, not one model response.
     let deletesLeft = 3
 
+    // A category/tag created earlier in this same reply isn't in the `store`
+    // snapshot, so track new ones by name to resolve later references.
+    const newCatByName = new Map<string, string>()
+    const newTagByName = new Map<string, string>()
+    // A batch-new tag isn't in the stale `store` snapshot, so remember which
+    // category it belongs to for resolving a task's category from its tag.
+    const newTagCatById = new Map<string, string>()
+    const norm = (s: string) => s.trim().toLowerCase()
+    const resolveCategoryId = (ref?: string): string | undefined => {
+      if (!ref) return undefined
+      if (store.categories.some((c) => c.id === ref)) return ref
+      const key = norm(ref)
+      return (
+        newCatByName.get(key) ??
+        store.categories.find((c) => norm(c.name) === key || norm(c.nameEn) === key)?.id
+      )
+    }
+    const resolveTagId = (ref?: string): string | undefined => {
+      if (!ref) return undefined
+      if (store.tags.some((t) => t.id === ref)) return ref
+      const key = norm(ref)
+      return newTagByName.get(key) ?? store.tags.find((t) => norm(t.name) === key)?.id
+    }
+    const AI_PALETTE = ["#2f6da8", "#1d8a68", "#6a5acd", "#b25070", "#b07a2a", "#d0662f", "#4a8a3a", "#4b5bbf"]
+    const pickColor = (name: string) =>
+      AI_PALETTE[[...name].reduce((a, ch) => a + ch.charCodeAt(0), 0) % AI_PALETTE.length]
+    const safeColor = (c: string | undefined, name: string) =>
+      c && /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : pickColor(name)
+
     for (const action of actions) {
       switch (action.type) {
         case "create_task": {
-          const validCategory = store.categories.some((c) => c.id === action.categoryId)
-          const tag = action.tagId ? store.tags.find((t) => t.id === action.tagId) : undefined
+          const resolvedTagId = resolveTagId(action.tagId)
+          const tagCategoryId = resolvedTagId
+            ? (store.tags.find((t) => t.id === resolvedTagId)?.categoryId ??
+              newTagCatById.get(resolvedTagId))
+            : undefined
           const task = store.addTask({
             title: action.title,
             priority: action.priority,
             size: action.size,
             status: action.completed ? "completed" : "not_started",
             completedAt: action.completed ? new Date().toISOString() : undefined,
-            categoryId: validCategory
-              ? action.categoryId
-              : (tag?.categoryId ?? store.categories[0].id),
-            tagId: tag?.id,
+            categoryId:
+              resolveCategoryId(action.categoryId) ?? tagCategoryId ?? store.categories[0].id,
+            tagId: resolvedTagId,
             dueDate: action.dueDate,
           })
           if (action.subtasks?.length && !action.completed) {
@@ -229,19 +260,41 @@ export function AIChatPanel() {
           break
         }
         case "create_chain": {
-          const validCategory = store.categories.some((c) => c.id === action.categoryId)
           const chainId = store.createChain(
             action.title,
             action.steps.map((st) => ({ existingId: st.existingId, title: st.title })),
             {
-              categoryId: validCategory ? action.categoryId : store.categories[0].id,
-              tagId: action.tagId,
+              categoryId: resolveCategoryId(action.categoryId) ?? store.categories[0].id,
+              tagId: resolveTagId(action.tagId),
               priority: action.priority,
             },
           )
           if (chainId) {
             results.push({ label: `${action.title} (${action.steps.length} שלבים)`, kind: "chained" })
           }
+          break
+        }
+        case "create_category": {
+          const cat = store.addCategory({
+            name: action.name,
+            color: safeColor(action.color, action.name),
+            icon: action.icon || "folder",
+          })
+          newCatByName.set(norm(action.name), cat.id)
+          results.push({ label: `תחום: ${cat.name}`, kind: "created" })
+          break
+        }
+        case "create_tag": {
+          const categoryId = resolveCategoryId(action.categoryId) ?? store.categories[0].id
+          const tag = store.addTag({
+            name: action.name,
+            categoryId,
+            color: safeColor(action.color, action.name),
+            icon: action.icon || "tag",
+          })
+          newTagByName.set(norm(action.name), tag.id)
+          newTagCatById.set(tag.id, categoryId)
+          results.push({ label: `תג: ${tag.name}`, kind: "created" })
           break
         }
         case "show_top": {

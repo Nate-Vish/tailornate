@@ -67,6 +67,22 @@ export const aiActionSchema = z.discriminatedUnion("type", [
     tagId: z.string().optional(),
     priority: prioritySchema.default("medium"),
   }),
+  // Create a new life-area (category) when none of the existing ones fit.
+  z.object({
+    type: z.literal("create_category"),
+    name: z.string().min(1).max(40),
+    color: z.string().max(9).optional(),
+    icon: z.string().max(30).optional(),
+  }),
+  // Create a new sub-project (tag) inside a category. categoryId may be an
+  // existing id OR the name of a category created earlier in the same reply.
+  z.object({
+    type: z.literal("create_tag"),
+    name: z.string().min(1).max(40),
+    categoryId: z.string(),
+    color: z.string().max(9).optional(),
+    icon: z.string().max(30).optional(),
+  }),
 ])
 
 export const aiResponseSchema = z.object({
