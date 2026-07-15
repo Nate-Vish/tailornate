@@ -9,7 +9,7 @@ Personal portfolio website. Single-page, dark theme, AI chatbot.
 - **Next.js 16** (App Router) + TypeScript
 - **Tailwind CSS v4** + shadcn/ui
 - **Framer Motion** — scroll reveals
-- **Vercel AI SDK** + Google Gemma 3 — AI chatbot
+- **Vercel AI SDK** + Google Gemini (flash-lite) — AI chatbot
 
 ## Local Development
 

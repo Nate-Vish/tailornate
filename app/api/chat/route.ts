@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = streamText({
-      model: google("gemma-3-27b-it"),
+      model: google("gemini-flash-lite-latest"),
       system: SYSTEM_PROMPT,
       messages: await convertToModelMessages(userMessages),
       maxOutputTokens: 512,
