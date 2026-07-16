@@ -16,7 +16,7 @@ export const experience: ExperienceEntry[] = [
     org: "Israel Defense Forces",
     period: "Nov 2019 — Dec 2023",
     bullets: [
-      "Embedded with 18 civilian settlements — learned each community's world, bridged it to army systems and resources",
+      "Embedded with 18 civilian communities — learned each one's world, bridged it to army systems and resources",
       "Trained and commanded 50 soldiers",
       "Weekly briefings reaching 1,200+ soldiers",
     ],

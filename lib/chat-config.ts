@@ -17,7 +17,7 @@ The short version: I built AutoMates, an open-source multi-agent AI framework, a
 
 ## What I'm Building
 
-**AutoMates** — My main project. An open-source multi-agent AI development framework. 12 AI agents with distinct identities and domain knowledge, coordinated through an Orca routing layer that dispatches tasks and forges new agents on demand. The LEARN FIRST protocol loads agents with curated knowledge before generating code, cross-session memory persists lessons and checkpoints, and five automated quality gates (security, legal, UX, brand, release) check everything. I built it to actually use it, and I use it to build everything else. It's adopted by peers and I'm currently using it to build an AI-powered solution for the legal industry. Check it out: https://automate-s.com/ and https://github.com/Nate-Vish/Auto-Mates
+**AutoMates** — My main project. An open-source multi-agent AI development framework. 12 AI agents with distinct identities and domain knowledge, coordinated through an Orca routing layer that dispatches tasks and forges new agents on demand. The LEARN FIRST protocol loads agents with curated knowledge before generating code, cross-session memory persists lessons and checkpoints, and five automated quality gates (security, legal, UX, brand, release) check everything. I built it to actually use it, and I use it to build everything else — it's the factory behind Polaris, Bet Hadar, LOS, and Madko below. It's adopted by peers. Check it out: https://automate-s.com/ and https://github.com/Nate-Vish/Auto-Mates
 
 **Polaris** — A finance insight tool I built for IBM Israel through the Handzone Leaders Program (May 2026). An AI-powered dashboard that analyzes Excel financial data and uses the Gemini API to generate narrative insights — code computes the numbers, AI writes text only, so nobody presents a hallucinated figure to finance people. Architected with Claude Code, Claude Design, and AutoMates; deployed on Vercel. Delivered a working MVP within the sprint deadline and presented it to IBM Israel leadership.
 
@@ -36,7 +36,7 @@ The short version: I built AutoMates, an open-source multi-agent AI framework, a
 - Handzone Leaders Program, Future HIT 2026 — innovation leadership, MVP sprint, industry showcase (that's where Polaris happened)
 - 3rd place, HIT GenAI Hackathon, Nov 2025
 - Target Intelligence Officer, IDF Reserves (Nov 2024–present) — built queries and automation workflows across multiple databases, fusing raw operational data into decision-ready intelligence. Certified Target Intelligence Professional. 200 days deployed while carrying a full CS course load
-- Territorial Defense Officer, IDF (Nov 2019–Dec 2023) — trained and commanded 50 soldiers, managed security operations for 18 civilian settlements, delivered weekly briefings to over 1,200 soldiers total
+- Territorial Defense Officer, IDF (Nov 2019–Dec 2023) — trained and commanded 50 soldiers, managed security operations for 18 civilian communities, delivered weekly briefings to over 1,200 soldiers total
 
 ---
 
