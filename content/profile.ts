@@ -13,8 +13,9 @@ export const profile: Profile = {
 }
 
 export const aboutParagraphs = [
-  "CS student at HIT, focused on AI systems and developer tooling. I build the things I use — AutoMates started as a personal workflow problem and now ships everything else on this page.",
-  "Same year: full course load, a 200-day intelligence reserves deployment, and Polaris shipped for IBM Israel. I find the problems nobody named yet, and processes that repeat become code.",
+  "For four years my job was walking into other people's worlds — eighteen civilian settlements, each with its own people, its own fears, its own map — and building the bridge between what they needed and what the system could deliver. I didn't know the title for it back then. Turns out it's the job description I've been living ever since.",
+  "Today I ship AI systems into places software rarely reaches gracefully: an IBM boardroom, a medical center's intranet, a Hebrew-speaking law office. I build the things I use — AutoMates started as my own workflow problem and is now the factory that ships everything else on this page.",
+  "Same year: full CS course load, a 200-day intelligence deployment, Polaris delivered to IBM Israel. That's not a hero story — it's how I'm wired. Depth when there's time, speed when there isn't. And any process that repeats twice becomes code the third time.",
 ]
 
 export const principles = [

@@ -23,6 +23,7 @@ const navLinks = [
   { href: "#education", label: "education" },
   { href: "#room", label: "community" },
   { href: "#chat", label: "ask ai" },
+  { href: "/resume", label: "resume" },
 ]
 
 export default function Header() {

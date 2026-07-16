@@ -9,7 +9,7 @@ export default function Experience() {
           <h2 id="service-heading" className="sec-ti">
             Under <em>pressure</em>
           </h2>
-          <p className="sec-lead">Data work — real-time, high-stakes.</p>
+          <p className="sec-lead">Real-time, high-stakes — where the delivery instinct was forged.</p>
         </div>
 
         <div className="xp-list">
