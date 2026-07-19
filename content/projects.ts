@@ -6,7 +6,7 @@ export const projects: Project[] = [
     title: "AutoMates",
     tagline: "Open-source multi-agent AI development framework.",
     description:
-      "Specialized AI agents in a structured pipeline (spec → plan → build → verify), with knowledge-first protocols, cross-session memory, and automated quality gates. Continuously evolved as the field moves. Started as my own workflow problem, and now it's the factory that ships every other project on this page.",
+      "Specialized AI agents in a structured pipeline (spec, plan, build, verify), with knowledge-first protocols, cross-session memory, and automated quality gates. Continuously evolved as the field moves. Started as my own workflow problem, and now it's the factory that ships every other project on this page.",
     tech: ["Claude Code", "TypeScript", "MCP", "Multi-Agent", "Context Engineering"],
     status: "live",
     path: "~/automates",

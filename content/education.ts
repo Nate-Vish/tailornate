@@ -11,7 +11,7 @@ export const education: EducationEntry[] = [
     degree: "AI Driven Development Program",
     institution: "Future HIT",
     period: "2026",
-    note: "Accepted a year early; the program targets 3rd year+.",
+    note: "Accepted a year early. The program targets 3rd year+.",
   },
   {
     degree: "Handzone Leaders Program",

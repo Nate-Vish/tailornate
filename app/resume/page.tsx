@@ -19,7 +19,7 @@ const RESUME_WORK = [
   {
     title: "AutoMates",
     status: "live · open source",
-    line: "Multi-agent AI development framework: specialized agents, a structured pipeline (spec → plan → build → verify), automated quality gates. Continuously evolved as the field moves. The factory that ships every other project on this list, adopted by peers.",
+    line: "Multi-agent AI development framework: specialized agents, a structured pipeline (spec, plan, build, verify), automated quality gates. Continuously evolved as the field moves. The factory that ships every other project on this list, adopted by peers.",
   },
   {
     title: "Polaris - IBM Israel",
@@ -75,7 +75,7 @@ export default function ResumePage() {
   return (
     <div className="resume-page">
       <a href="/" className="resume-back">
-        ← back to tailornate.com
+        back to tailornate.com
       </a>
       <PrintButton />
       <article className="resume-sheet">
