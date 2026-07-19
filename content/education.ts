@@ -22,7 +22,7 @@ export const education: EducationEntry[] = [
   {
     degree: "Target Intelligence Professional",
     institution: "IDF Intelligence Certification",
-    period: "2024",
+    period: "2025",
   },
   {
     degree: "3rd Place, GenAI Hackathon",

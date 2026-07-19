@@ -62,7 +62,7 @@ const RESUME_EDUCATION = [
   { line: "B.Sc. Computer Science - HIT, Holon Institute of Technology", period: "2024 - 2027 (exp.)" },
   { line: "AI Driven Development Program - Future HIT · accepted a year early", period: "2026" },
   { line: "Handzone Leaders Program - Future HIT · IBM Israel (where Polaris was built)", period: "2026" },
-  { line: "Target Intelligence Professional - IDF certification · 3rd place, HIT GenAI Hackathon", period: "2024 · 2025" },
+  { line: "Target Intelligence Professional - IDF certification · 3rd place, HIT GenAI Hackathon", period: "2025" },
 ]
 
 const RESUME_SKILLS = [
