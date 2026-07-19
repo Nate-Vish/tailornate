@@ -14,7 +14,7 @@ export const profile: Profile = {
 
 export const aboutParagraphs = [
   "For four years my job was walking into other people's worlds — eighteen civilian communities, each with its own people, its own fears, its own map — and building the bridge between what they needed and what the system could deliver. I didn't know the title for it back then. Turns out it's the job description I've been living ever since.",
-  "Today I ship AI systems into places software rarely reaches gracefully: an IBM boardroom, a medical center's intranet, a Hebrew-speaking law office. I build the things I use — AutoMates started as my own workflow problem and is now the factory that ships everything else on this page.",
+  "Today I ship systems into places software rarely reaches gracefully: an IBM boardroom, a medical center's intranet, a Hebrew-speaking law office. AI is my specialty and my toolbox — but the point is always the delivery. I build the things I use: AutoMates started as my own workflow problem and is now the factory that ships everything else on this page.",
   "Same year: full CS course load, a 200-day intelligence deployment, Polaris delivered to IBM Israel. That's not a hero story — it's how I'm wired. Depth when there's time, speed when there isn't. And any process that repeats twice becomes code the third time.",
 ]
 
