@@ -23,11 +23,11 @@ const jetbrains = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Tailor Nate — Nathan Hai Vishnevski · AI Engineer",
+  title: "Tailor Nate | Nathan Hai Vishnevski · AI Engineer",
   description:
-    "Nathan Hai Vishnevski — AI engineer shipping multi-agent systems into the real world: IBM Israel, a medical center, law offices. Creator of AutoMates, an open-source multi-agent AI framework. IDF target intelligence officer, CS student at HIT.",
+    "Nathan Hai Vishnevski, an AI engineer shipping multi-agent systems into the real world: IBM Israel, a medical center, law offices. Creator of AutoMates, an open-source multi-agent AI framework. IDF target intelligence officer, CS student at HIT.",
   openGraph: {
-    title: "Tailor Nate — Nathan Hai Vishnevski",
+    title: "Tailor Nate | Nathan Hai Vishnevski",
     description: "I deliver AI systems that ship.",
     url: "https://tailornate.com",
     siteName: "Tailor Nate",

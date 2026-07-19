@@ -26,18 +26,18 @@ export default function Community() {
             <h5>Events · in person</h5>
             <ul>
               <li>AWS meetups (×3)</li>
-              <li>RunAI CEO lecture — speaker now VP at NVIDIA</li>
+              <li>RunAI CEO lecture (speaker now VP at NVIDIA)</li>
               <li>Vega</li>
               <li>Malanta CEO lecture</li>
             </ul>
           </div>
           <div className="room">
             <h5>Build in public</h5>
-            <p>LinkedIn posts and GitHub commits — shipped work with receipts.</p>
+            <p>LinkedIn posts and GitHub commits. Shipped work, with receipts.</p>
           </div>
           <div className="room">
             <h5>Peer reviews</h5>
-            <p>Structured product reviews for peers — security, UX, market fit.</p>
+            <p>Structured product reviews for peers: security, UX, market fit.</p>
           </div>
         </div>
       </div>

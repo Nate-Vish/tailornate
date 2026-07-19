@@ -6,7 +6,7 @@ export const projects: Project[] = [
     title: "AutoMates",
     tagline: "Open-source multi-agent AI development framework.",
     description:
-      "Specialized AI agents in a structured pipeline — spec → plan → build → verify — with knowledge-first protocols, cross-session memory, and automated quality gates. Continuously evolved as the field moves; started as my own workflow problem, now it's the factory that ships every other project on this page.",
+      "Specialized AI agents in a structured pipeline (spec → plan → build → verify), with knowledge-first protocols, cross-session memory, and automated quality gates. Continuously evolved as the field moves. Started as my own workflow problem, and now it's the factory that ships every other project on this page.",
     tech: ["Claude Code", "TypeScript", "MCP", "Multi-Agent", "Context Engineering"],
     status: "live",
     path: "~/automates",
@@ -24,7 +24,7 @@ export const projects: Project[] = [
     title: "Polaris",
     tagline: "Finance insight tool built for IBM Israel.",
     description:
-      "A dashboard that reads raw Excel financials and writes the story behind the numbers. One rule I refused to break: code computes every figure, AI writes text only — nobody presents a hallucinated number to finance people.",
+      "A dashboard that reads raw Excel financials and writes the story behind the numbers. One rule I refused to break: code computes every figure, AI writes text only. Nobody presents a hallucinated number to finance people.",
     tech: ["Gemini API", "Next.js", "SheetJS", "Vercel", "AutoMates"],
     status: "shipped",
     path: "~/polaris",
@@ -39,7 +39,7 @@ export const projects: Project[] = [
     title: "Bet Hadar Portal",
     tagline: "Procedures portal for a medical center.",
     description:
-      "Their procedures index lived in one shared Excel file that locked whenever two people opened it. I replaced it with an intranet portal — instant Hebrew search, a read-tracking audit trail with CSV export, manager roles — built to run on infrastructure they already own.",
+      "Their procedures index lived in one shared Excel file that locked whenever two people opened it. I replaced it with an intranet portal: instant Hebrew search, a read-tracking audit trail with CSV export, manager roles. Built to run on infrastructure they already own.",
     tech: ["ASP.NET Core", "C#", "Hebrew RTL", "IIS", "AutoMates"],
     status: "in-progress",
     path: "~/bet-hadar",
@@ -54,7 +54,7 @@ export const projects: Project[] = [
     title: "LOS",
     tagline: "Agentic legal operating system for lawyers.",
     description:
-      "Building with a founding team: a Hebrew-first team of seven AI agents that does a small law firm's routine work end-to-end — drafting, research, review, office ops. AI drafts, the lawyer decides: hard legal-safety rules mean the AI never pretends to be the lawyer.",
+      "Building with a founding team: a Hebrew-first team of seven AI agents that does a small law firm's routine work end-to-end: drafting, research, review, office ops. AI drafts, the lawyer decides. Hard legal-safety rules mean the AI never pretends to be the lawyer.",
     tech: ["Next.js", "TypeScript", "Multi-Agent", "Hebrew RTL", "AutoMates"],
     status: "in-progress",
     path: "~/los",
@@ -69,7 +69,7 @@ export const projects: Project[] = [
     title: "Madko",
     tagline: "The task manager this site runs on.",
     description:
-      "Full-stack task-management product with an AI layer — task analysis, voice capture, calendar feed, gamified XP — that runs my actual life. You're looking at it right now: tailornate.com is Madko's home. Next milestone: accounts, multi-device sync, web-push reminders.",
+      "A full-stack task-management product that runs my actual life, with an AI layer for task analysis, voice capture, a calendar feed and gamified XP. You're looking at it right now: tailornate.com is Madko's home. Next milestone: accounts, multi-device sync, web-push reminders.",
     tech: ["Next.js 16", "TypeScript", "Vercel AI SDK", "PWA", "Zustand"],
     status: "live",
     path: "~/madko",

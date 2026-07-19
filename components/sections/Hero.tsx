@@ -7,7 +7,7 @@ export default function Hero() {
       <div className="wrap">
         <div className="hero-text">
           <div className="eyebrow in d1">
-            {profile.name} <span style={{ margin: "0 10px" }}>—</span> AI Engineer
+            {profile.name} <span style={{ margin: "0 10px" }}>·</span> AI Engineer
           </div>
 
           <h1 id="hero-title" className="in d2">

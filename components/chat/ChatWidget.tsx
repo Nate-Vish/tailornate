@@ -57,7 +57,7 @@ export default function ChatWidget() {
             Let&apos;s <em>talk</em>
           </h2>
           <p className="sec-lead">
-            No forms here. Pull up a chair — the coffee&apos;s already on.
+            No forms here. Pull up a chair, the coffee&apos;s already on.
           </p>
         </div>
 
@@ -121,7 +121,7 @@ export default function ChatWidget() {
           {(error || rateLimited) && (
             <div role="alert" className="chat-alert">
               {rateLimited
-                ? "rate limit reached — come back in an hour."
+                ? "rate limit reached. come back in an hour."
                 : "something went wrong. try again."}
             </div>
           )}

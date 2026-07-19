@@ -17,7 +17,7 @@ export default function About() {
               <p key={i}>{p}</p>
             ))}
             <p style={{ fontSize: "17px", color: "var(--mut)", fontStyle: "italic" }}>
-              Hebrew · English · Russian — off the clock: salsa, guitar, skiing, good coffee.
+              Hebrew · English · Russian. Off the clock: salsa, guitar, skiing, good coffee.
             </p>
           </div>
           <div className="method">

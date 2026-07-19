@@ -15,7 +15,7 @@ export default function Stack() {
             <em>Stack</em>
           </h2>
           <p className="sec-lead">
-            AI systems and data-driven decisions — sharpest tools first.
+            AI systems and data-driven decisions. Sharpest tools first.
           </p>
         </div>
 
