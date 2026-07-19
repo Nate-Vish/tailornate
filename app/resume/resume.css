@@ -107,6 +107,20 @@
   color: #4a4237;
 }
 
+.resume-item p.resume-line {
+  margin: 2px 0 0;
+  color: #33291d;
+}
+
+.resume-item-tight {
+  margin-bottom: 6px;
+}
+
+.resume-edu {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+}
+
 .resume-item ul {
   margin: 4px 0 0;
   padding-left: 18px;
@@ -179,12 +193,58 @@
     border-radius: 0;
     max-width: none;
     padding: 0;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .resume-hd h1 {
+    font-size: 24px;
+  }
+  .resume-hd .resume-role {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  .resume-contact {
+    font-size: 9.5px;
+  }
+  .resume-summary {
+    margin-top: 10px;
+    font-size: 11px;
+  }
+  .resume-sec {
+    margin-top: 14px;
+  }
+  .resume-sec > h2 {
+    font-size: 9px;
+    padding-bottom: 3px;
+    margin-bottom: 8px;
+  }
+  .resume-item {
+    margin-bottom: 8px;
+  }
+  .resume-item-tight {
+    margin-bottom: 3px;
+  }
+  .resume-item-hd h3 {
+    font-size: 12px;
+  }
+  .resume-edu {
+    font-size: 11px !important;
+  }
+  .resume-period {
+    font-size: 9px;
+  }
+  .resume-highlight {
+    font-size: 9px;
+  }
+  .resume-skills {
+    gap: 3px;
   }
   .resume-print,
   .resume-back {
     display: none;
   }
   @page {
-    margin: 14mm;
+    size: A4;
+    margin: 11mm 13mm;
   }
 }

@@ -1,9 +1,5 @@
 import type { Metadata } from "next"
 import { profile } from "@/content/profile"
-import { projects, statusLabels } from "@/content/projects"
-import { experience } from "@/content/experience"
-import { education } from "@/content/education"
-import { skillCategories } from "@/content/skills"
 import PrintButton from "./PrintButton"
 import "./resume.css"
 
@@ -13,8 +9,67 @@ export const metadata: Metadata = {
     "Resume of Nathan Hai Vishnevski — AI engineer, multi-agent systems. AutoMates, Polaris (IBM Israel), Bet Hadar, LOS, Madko.",
 }
 
+// One-page constraint: this page condenses the site content into resume
+// density. Titles/dates/contacts come from content/*, the one-line proofs
+// are maintained here.
 const RESUME_SUMMARY =
-  "AI engineer specializing in multi-agent systems, with a delivery record across real organizations: a finance insight tool presented to IBM Israel leadership, a procedures portal for a medical center, and a legal-industry product built with a founding team — all shipped through AutoMates, my open-source multi-agent framework. Four years as an IDF officer embedding with 18 civilian communities, now a target intelligence officer in reserves. I walk into other people's worlds, learn them fast, and build what they need."
+  "AI engineer specializing in multi-agent systems, with a delivery record across real organizations: a finance tool presented to IBM Israel leadership, a procedures portal for a medical center, an agentic legal operating system built with a founding team — all shipped through AutoMates, my open-source multi-agent framework. Four years as an IDF officer embedded with 18 civilian communities, now a target intelligence officer in reserves. I walk into other people's worlds, learn them fast, and build what they need."
+
+const RESUME_WORK = [
+  {
+    title: "AutoMates",
+    status: "live · open source",
+    line: "Multi-agent AI development framework — specialized agents, structured pipeline (spec → plan → build → verify), automated quality gates; continuously evolved as the field moves. The factory that ships every other project on this list. Adopted by peers.",
+  },
+  {
+    title: "Polaris — IBM Israel",
+    status: "shipped",
+    line: "Finance dashboard turning raw Excel into narrative insights (Gemini API). MVP in one sprint, presented to IBM Israel leadership. Design rule: code computes every figure, AI writes text only.",
+  },
+  {
+    title: "Bet Hadar Portal — medical center client",
+    status: "delivering",
+    line: "Replaced a lock-prone shared Excel with an intranet portal: instant Hebrew search, read-tracking audit trail with CSV export, manager roles. ASP.NET Core on the client's own IIS.",
+  },
+  {
+    title: "LOS — Lawyers Operating System",
+    status: "in development",
+    line: "With a founding team: an agentic legal operating system for small Israeli law firms — a Hebrew-first team of seven AI agents doing the routine work end-to-end; the lawyer approves every output.",
+  },
+  {
+    title: "Madko",
+    status: "live",
+    line: "Full-stack task-management product live at tailornate.com — AI assistant, voice capture, calendar feed, gamified XP; my daily driver.",
+  },
+]
+
+const RESUME_SERVICE = [
+  {
+    role: "Target Intelligence Officer — Reserves",
+    org: "IDF",
+    period: "2024 — Present",
+    line: "Automation fusing multi-database operational data into decision-ready intelligence; real-time calls in time-critical windows. 200 days deployed alongside a full CS course load.",
+  },
+  {
+    role: "Territorial Defense Officer",
+    org: "IDF",
+    period: "2019 — 2023",
+    line: "Embedded with 18 civilian communities, bridging their needs to army systems. Commanded 50 soldiers; weekly briefings reaching 1,200+.",
+  },
+]
+
+const RESUME_EDUCATION = [
+  { line: "B.Sc. Computer Science — HIT, Holon Institute of Technology", period: "2024 — 2027 (exp.)" },
+  { line: "AI Driven Development Program — Future HIT · accepted a year early", period: "2026" },
+  { line: "Handzone Leaders Program — Future HIT · IBM Israel (where Polaris was built)", period: "2026" },
+  { line: "Target Intelligence Professional — IDF certification · 3rd place, HIT GenAI Hackathon", period: "2024 · 2025" },
+]
+
+const RESUME_SKILLS = [
+  { name: "AI & Agents", items: "Multi-agent orchestration, context engineering, LLMs, RAG, MCP, prompt engineering, evals & quality gates" },
+  { name: "Code", items: "TypeScript, Python, Java, C/C++, SQL · Next.js, React, Node, ASP.NET Core" },
+  { name: "Tooling & Infra", items: "Claude Code, Gemini API, Vercel AI SDK, n8n · Git, Vercel, IIS, Linux, Docker" },
+]
 
 export default function ResumePage() {
   return (
@@ -33,10 +88,10 @@ export default function ResumePage() {
               <a href={`mailto:${profile.email}`}>{profile.email}</a>
             </li>
             <li>
-              <a href={profile.linkedin}>LinkedIn</a>
+              <a href={profile.linkedin}>LinkedIn: nathan-hai-vishnevski</a>
             </li>
             <li>
-              <a href={profile.github}>GitHub</a>
+              <a href={profile.github}>GitHub: Nate-Vish</a>
             </li>
             <li>
               <a href="https://www.tailornate.com">tailornate.com</a>
@@ -47,23 +102,20 @@ export default function ResumePage() {
 
         <section className="resume-sec">
           <h2>Selected Work</h2>
-          {projects.map((p) => (
-            <div key={p.id} className="resume-item">
+          {RESUME_WORK.map((w) => (
+            <div key={w.title} className="resume-item">
               <div className="resume-item-hd">
-                <h3>
-                  {p.title} <span>— {p.tagline}</span>
-                </h3>
-                <span className="resume-period">{statusLabels[p.status]}</span>
+                <h3>{w.title}</h3>
+                <span className="resume-period">{w.status}</span>
               </div>
-              <p className="resume-tagline">{p.description}</p>
-              {p.highlight && <div className="resume-highlight">{p.highlight}</div>}
+              <p className="resume-line">{w.line}</p>
             </div>
           ))}
         </section>
 
         <section className="resume-sec">
           <h2>Service</h2>
-          {experience.map((xp) => (
+          {RESUME_SERVICE.map((xp) => (
             <div key={xp.role} className="resume-item">
               <div className="resume-item-hd">
                 <h3>
@@ -71,42 +123,35 @@ export default function ResumePage() {
                 </h3>
                 <span className="resume-period">{xp.period}</span>
               </div>
-              <ul>
-                {xp.bullets.map((b, i) => (
-                  <li key={i}>{b}</li>
-                ))}
-              </ul>
+              <p className="resume-line">{xp.line}</p>
             </div>
           ))}
         </section>
 
         <section className="resume-sec">
           <h2>Education & Programs</h2>
-          {education.map((e) => (
-            <div key={e.degree} className="resume-item">
+          {RESUME_EDUCATION.map((e) => (
+            <div key={e.line} className="resume-item resume-item-tight">
               <div className="resume-item-hd">
-                <h3>
-                  {e.degree} <span>— {e.institution}</span>
-                </h3>
+                <h3 className="resume-edu">{e.line}</h3>
                 <span className="resume-period">{e.period}</span>
               </div>
-              {e.note && <p className="resume-tagline">{e.note}</p>}
             </div>
           ))}
         </section>
 
         <section className="resume-sec">
-          <h2>Skills</h2>
+          <h2>Skills & Languages</h2>
           <ul className="resume-skills">
-            {skillCategories.map((c) => (
+            {RESUME_SKILLS.map((c) => (
               <li key={c.name}>
-                <b>{c.name}:</b> {c.items.join(", ")}
+                <b>{c.name}:</b> {c.items}
               </li>
             ))}
+            <li>
+              <b>Languages:</b> {profile.languages.join(" · ")}
+            </li>
           </ul>
-          <p className="resume-langs">
-            <b>Languages:</b> {profile.languages.join(" · ")}
-          </p>
         </section>
       </article>
     </div>
