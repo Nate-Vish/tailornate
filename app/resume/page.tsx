@@ -28,8 +28,8 @@ const RESUME_WORK = [
   },
   {
     title: "Bet Hadar Portal - medical center client",
-    status: "delivering",
-    line: "Replaced a lock-prone shared Excel with an intranet portal: instant Hebrew search, a read-tracking audit trail with CSV export, manager roles. ASP.NET Core on the client's own IIS.",
+    status: "in production",
+    line: "Replaced a lock-prone shared Excel with an intranet portal: instant Hebrew search, a read-tracking audit trail with Excel export, manager roles. Deployed end-to-end on the client's own Windows Server and IIS, staff trained. Live in production.",
   },
   {
     title: "LOS - Lawyers Operating System",
