@@ -46,7 +46,10 @@ export const projects: Project[] = [
     branch: "production",
     glow: "#2f5f5a",
     glowBg: "rgba(47,95,90,0.15)",
-    links: [{ label: "Bet Hadar Medical Center · client delivery" }],
+    links: [
+      { href: "/work/bet-hadar", label: "full case study" },
+      { label: "Bet Hadar Medical Center · client delivery" },
+    ],
     highlight: "live in production · deployed on-prem by me · staff trained",
   },
   {
