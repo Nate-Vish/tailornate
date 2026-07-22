@@ -329,9 +329,9 @@ html[data-theme="dark"] body::after {
 .hero h1 {
   font-family: var(--font-fraunces), serif;
   font-weight: 400;
-  font-size: clamp(64px, 11vw, 168px);
-  line-height: 0.92;
-  letter-spacing: -0.035em;
+  font-size: clamp(48px, 8vw, 118px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
   margin: 0;
   font-variation-settings: "SOFT" 30, "opsz" 144;
 }
