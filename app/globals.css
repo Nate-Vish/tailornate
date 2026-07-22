@@ -329,9 +329,9 @@ html[data-theme="dark"] body::after {
 .hero h1 {
   font-family: var(--font-fraunces), serif;
   font-weight: 400;
-  font-size: clamp(64px, 11vw, 168px);
-  line-height: 0.92;
-  letter-spacing: -0.035em;
+  font-size: clamp(48px, 8vw, 118px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
   margin: 0;
   font-variation-settings: "SOFT" 30, "opsz" 144;
 }
@@ -1927,4 +1927,251 @@ html[data-theme="dark"] .tcard[data-project="madko"] .highlight::before {
   object-fit: cover;
   object-position: 50% 18%;
   display: block;
+}
+
+/* ============================================================
+   FLOATING CHAT — Nathan's representative, docked bottom-right
+   ============================================================ */
+.fbot {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+}
+.fbot-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 14px 40px -12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  animation: fbot-rise 0.4s ease both;
+}
+.fbot-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 50px -14px rgba(0, 0, 0, 0.6);
+}
+.fbot-pill .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #35c77a;
+  box-shadow: 0 0 10px #35c77a;
+  animation: breathe 2.6s ease-in-out infinite;
+}
+html[data-theme="dark"] .fbot-pill {
+  background: #241d15;
+  color: #f0e6d2;
+  border-color: rgba(232, 223, 200, 0.18);
+}
+
+.fbot-panel {
+  width: min(384px, calc(100vw - 32px));
+  height: min(560px, calc(100vh - 120px));
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--terminal);
+  border: 1px solid var(--terminal-border);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
+  animation: fbot-rise 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+@keyframes fbot-rise {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.fbot-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 15px;
+  background: linear-gradient(180deg, var(--terminal-2), var(--terminal));
+  border-bottom: 1px solid var(--terminal-border);
+}
+.fbot-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 18%;
+  border: 1.5px solid rgba(201, 168, 106, 0.5);
+}
+.fbot-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.fbot-id b {
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 12.5px;
+  color: var(--terminal-text);
+}
+.fbot-id span {
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 10.5px;
+  color: #35c77a;
+}
+.fbot-x {
+  background: none;
+  border: none;
+  color: var(--terminal-dim);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.fbot-x:hover { color: var(--terminal-text); }
+
+.fbot-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fbot-hello {
+  direction: rtl;
+  text-align: right;
+}
+.fbot-hello-en {
+  display: block;
+  direction: ltr;
+  text-align: left;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--terminal-dim);
+}
+.fbot-chips {
+  direction: rtl;
+  margin-top: 4px;
+}
+
+.fbot-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(232, 223, 200, 0.04);
+  border: 1px solid var(--terminal-border);
+  direction: rtl;
+}
+.fbot-lead b {
+  font-size: 13px;
+  color: var(--terminal-text);
+}
+.fbot-lead input,
+.fbot-lead textarea {
+  padding: 9px 11px;
+  border-radius: 9px;
+  border: 1px solid var(--terminal-border);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--terminal-text);
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 13px;
+  resize: none;
+}
+.fbot-lead input:focus,
+.fbot-lead textarea:focus {
+  outline: none;
+  border-color: rgba(201, 168, 106, 0.5);
+}
+.fbot-lead button[type="submit"] {
+  padding: 10px;
+  border-radius: 9px;
+  border: none;
+  background: #35c77a;
+  color: #08210f;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fbot-lead button[type="submit"]:disabled { opacity: 0.6; }
+.fbot-privacy {
+  font-size: 11px;
+  color: var(--terminal-dim);
+}
+.fbot-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+}
+.fbot-sent {
+  direction: rtl;
+  text-align: right;
+  color: #7fe0a6;
+}
+
+.fbot-foot {
+  border-top: 1px solid var(--terminal-border);
+  padding: 11px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fbot-inputrow {
+  display: flex;
+  gap: 8px;
+}
+.fbot-inputrow input {
+  flex: 1;
+  padding: 10px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--terminal-border);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--terminal-text);
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 13px;
+  direction: rtl;
+  text-align: right;
+}
+.fbot-inputrow input:focus {
+  outline: none;
+  border-color: rgba(201, 168, 106, 0.5);
+}
+.fbot-inputrow button {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: none;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 16px;
+  cursor: pointer;
+}
+.fbot-inputrow button:disabled { opacity: 0.4; }
+.fbot-leadbtn {
+  padding: 9px;
+  border-radius: 10px;
+  border: 1px dashed rgba(201, 168, 106, 0.45);
+  background: transparent;
+  color: #d8b878;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 12px;
+  cursor: pointer;
+}
+.fbot-leadbtn:hover {
+  background: rgba(201, 168, 106, 0.08);
+}
+
+@media (max-width: 560px) {
+  .fbot { right: 12px; bottom: 12px; left: 12px; }
+  .fbot-pill { width: 100%; justify-content: center; }
+  .fbot-panel { width: 100%; height: min(70vh, 540px); }
 }

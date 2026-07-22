@@ -1,3 +1,5 @@
+"use client"
+
 import { profile } from "@/content/profile"
 import { Shelf, Guitar } from "@/components/decor/HomeOffice"
 
@@ -7,13 +9,13 @@ export default function Hero() {
       <div className="wrap">
         <div className="hero-text">
           <div className="eyebrow in d1">
-            {profile.name} <span style={{ margin: "0 10px" }}>·</span> AI Engineer
+            AI Engineer <span style={{ margin: "0 10px" }}>·</span> Multi-Agent Systems
           </div>
 
           <h1 id="hero-title" className="in d2">
-            Tailor
+            Nathan Hai
             <br />
-            Nate<span className="amp">.</span>
+            Vishnevski<span className="amp">.</span>
           </h1>
 
           <p className="sub in d3">{profile.oneliner}</p>
@@ -35,12 +37,16 @@ export default function Hero() {
                 <path d="M12 5v14M5 12l7 7 7-7" />
               </svg>
             </a>
-            <a href="#chat" className="btn btn-ghost">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => window.dispatchEvent(new Event("tn-open-bot"))}
+            >
               Let&apos;s talk
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
-            </a>
+            </button>
           </div>
 
           <div className="contact-row in d6">

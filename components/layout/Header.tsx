@@ -20,9 +20,6 @@ const navLinks = [
   { href: "#stack", label: "stack" },
   { href: "#about", label: "about" },
   { href: "#service", label: "service" },
-  { href: "#education", label: "education" },
-  { href: "#room", label: "community" },
-  { href: "#chat", label: "ask ai" },
   { href: "/resume", label: "resume" },
 ]
 
