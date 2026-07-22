@@ -534,6 +534,12 @@ html[data-theme="dark"] .btn-primary {
     width: 140px;
     height: 140px;
   }
+  /* When the hero stacks, the shelf and guitar sprawl across empty
+     wall and stop meaning anything. The portrait stands alone. */
+  .shelf-decor,
+  .guitar-decor {
+    display: none;
+  }
 }
 
 /* ————— SECTION HEADER ————— */

@@ -33,8 +33,8 @@ export const projects: Project[] = [
     branch: "ibm-israel",
     glow: "#3d5a8b",
     glowBg: "rgba(61,90,139,0.15)",
-    links: [{ label: "Handzone Leaders Program · IBM Israel" }],
-    highlight: "MVP in one sprint · presented to IBM Israel leadership",
+    links: [],
+    highlight: "MVP in one sprint · presented to IBM Israel leadership at demo day",
   },
   {
     id: "bet-hadar",
@@ -50,7 +50,6 @@ export const projects: Project[] = [
     glowBg: "rgba(47,95,90,0.15)",
     links: [
       { href: "/work/bet-hadar", label: "full case study" },
-      { label: "Bet Hadar Medical Center · client delivery" },
     ],
     highlight: "live in production · deployed on-prem by me · staff trained",
   },
@@ -66,8 +65,8 @@ export const projects: Project[] = [
     branch: "first_step",
     glow: "#6b4a2f",
     glowBg: "rgba(107,74,47,0.15)",
-    links: [{ label: "Lawyers Operating System · with founders" }],
-    highlight: "7-agent team designed from the founders' sketches",
+    links: [],
+    highlight: "in development with a founding team · 7 AI agents",
   },
   {
     id: "madko",
@@ -83,7 +82,7 @@ export const projects: Project[] = [
     glow: "#8b6d3d",
     glowBg: "rgba(139,109,61,0.15)",
     links: [{ href: "https://www.tailornate.com", label: "tailornate.com · you are here" }],
-    highlight: "daily driver · AI layer benchmarked 28/28",
+    highlight: "live at tailornate.com · runs my day, every day",
   },
 ]
 
