@@ -13,18 +13,18 @@ export const metadata: Metadata = {
 // density. Titles/dates/contacts come from content/*, the one-line proofs
 // are maintained here.
 const RESUME_SUMMARY =
-  "AI engineer specializing in multi-agent systems, with a delivery record across real organizations: a finance tool presented to IBM Israel leadership, a procedures portal for a medical center, an agentic legal operating system built with a founding team. All of them shipped through AutoMates, my open-source multi-agent framework. Four years as an IDF officer embedded with 18 civilian communities, now a target intelligence officer in reserves. I walk into other people's worlds, learn them fast, and build what they need."
+  "AI engineer specializing in multi-agent systems, with a delivery record across real organizations: a finance tool presented to IBM Israel leadership, a procedures portal for a medical center, an agentic legal operating system built with a founding team. All of them shipped through AutoMates, my multi-agent development method. Four years as an IDF officer embedded with 18 civilian communities, now a target intelligence officer in reserves. I walk into other people's worlds, learn them fast, and build what they need."
 
 const RESUME_WORK = [
   {
     title: "AutoMates",
-    status: "live · open source",
-    line: "Multi-agent AI development framework: specialized agents, a structured pipeline (spec, plan, build, verify), automated quality gates. Continuously evolved as the field moves. The factory that ships every other project on this list, adopted by peers.",
+    status: "live · daily driver",
+    line: "Multi-agent AI development method: specialized agents, a structured pipeline (spec, plan, build, verify), automated quality gates. v1 went open source, v2 became my private working method. The factory that ships every other project on this list.",
   },
   {
-    title: "Polaris - IBM Israel",
-    status: "shipped",
-    line: "Finance dashboard turning raw Excel into narrative insights (Gemini API). MVP in one sprint, presented to IBM Israel leadership. One design rule: code computes every figure, AI writes text only.",
+    title: "Polaris - HIT x IBM Israel",
+    status: "demoed",
+    line: "Finance dashboard turning raw Excel into narrative insights (Gemini API), built in the Handzone Leaders Program. MVP in one sprint, presented to IBM Israel leadership at demo day. One design rule: code computes every figure, AI writes text only.",
   },
   {
     title: "Bet Hadar Portal - medical center client",

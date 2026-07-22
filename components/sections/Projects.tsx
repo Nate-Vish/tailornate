@@ -17,6 +17,7 @@ export default function Projects() {
             <article
               key={p.id}
               className="tcard"
+              data-project={p.id}
               style={{ "--glow": p.glow, "--glow-bg": p.glowBg } as React.CSSProperties}
             >
               <div className="card-inner">

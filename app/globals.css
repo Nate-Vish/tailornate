@@ -1644,3 +1644,136 @@ footer a:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(139, 104, 71, 0.5);
 }
+
+/* ---------- Per-project card identities ----------
+   Each card wears its product's real design language, sourced from the
+   product itself: automate-s.com, IBM Carbon (Polaris), the Bet Hadar
+   portal, the LOS brand palette, and Madko's Sidra theme. */
+
+/* AutoMates: automate-s.com purple, gold headline, terminal chrome stays
+   (it is a dev tool; the terminal is its native habitat). */
+.tcard[data-project="automates"] {
+  --glow: #9068b0;
+  --glow-bg: rgba(144, 104, 176, 0.18);
+  --terminal-text: #efe6f7;
+  --terminal-dim: #b0a0be;
+  background: linear-gradient(180deg, #241a33 0%, #191125 100%);
+}
+.tcard[data-project="automates"] .card-title {
+  color: #f0c75e;
+}
+
+/* Polaris: IBM Carbon. White canvas, hairlines, sharp corners, IBM blue. */
+.tcard[data-project="polaris"] {
+  --glow: #0f62fe;
+  --glow-bg: rgba(15, 98, 254, 0.08);
+  --terminal-text: #161616;
+  --terminal-dim: #525252;
+  background: #ffffff;
+  border-radius: 0;
+  border: 1px solid #e0e0e0;
+  border-top: 3px solid #0f62fe;
+}
+.tcard[data-project="polaris"]::before {
+  background-image: none;
+}
+.tcard[data-project="polaris"] .trafik,
+.tcard[data-project="polaris"] .card-top .path {
+  display: none;
+}
+.tcard[data-project="polaris"] .card-title {
+  font-family: var(--font-jakarta), sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.tcard[data-project="polaris"] .stack span,
+.tcard[data-project="polaris"] .link {
+  border-radius: 0;
+  background: #f4f4f4;
+  border-color: #e0e0e0;
+}
+.tcard[data-project="polaris"] .highlight {
+  color: #0043ce;
+}
+
+/* Bet Hadar: the portal's clinical steel blue on a clean light canvas. */
+.tcard[data-project="bet-hadar"] {
+  --glow: #1a5276;
+  --glow-bg: rgba(26, 82, 118, 0.08);
+  --terminal-text: #12303f;
+  --terminal-dim: #51728a;
+  background: #f7f9fb;
+  border: 1px solid #d7e3ec;
+  border-top: 3px solid #1a5276;
+  border-radius: 14px;
+}
+.tcard[data-project="bet-hadar"]::before {
+  background-image: none;
+}
+.tcard[data-project="bet-hadar"] .trafik,
+.tcard[data-project="bet-hadar"] .card-top .path {
+  display: none;
+}
+.tcard[data-project="bet-hadar"] .stack span {
+  background: #eaf2f8;
+  color: #1a5276;
+  border-color: rgba(26, 82, 118, 0.25);
+}
+.tcard[data-project="bet-hadar"] .link {
+  background: #eaf2f8;
+  border-color: rgba(26, 82, 118, 0.18);
+}
+
+/* LOS: deep legal navy, warm gold, serif gravitas. */
+.tcard[data-project="los"] {
+  --glow: #c9a24b;
+  --glow-bg: rgba(201, 162, 75, 0.14);
+  --terminal-text: #faf5e9;
+  --terminal-dim: #b9c5d6;
+  background: linear-gradient(180deg, #1e3a5f 0%, #14283f 100%);
+  border-top: 3px double #c9a24b;
+}
+.tcard[data-project="los"] .trafik,
+.tcard[data-project="los"] .card-top .path {
+  display: none;
+}
+.tcard[data-project="los"] .card-title {
+  color: #e0c27a;
+}
+
+/* Madko: the Sidra theme. Warm cream, rounded, playful, XP-bar highlight. */
+.tcard[data-project="madko"] {
+  --glow: #2d5a3d;
+  --glow-bg: rgba(45, 90, 61, 0.1);
+  --terminal-text: #1a1510;
+  --terminal-dim: #6b5f4e;
+  background: #f0e9d6;
+  border: 1px solid rgba(26, 21, 16, 0.12);
+  border-radius: 22px;
+}
+.tcard[data-project="madko"]::before {
+  background-image: none;
+}
+.tcard[data-project="madko"] .trafik,
+.tcard[data-project="madko"] .card-top .path {
+  display: none;
+}
+.tcard[data-project="madko"] .stack span {
+  background: #ddd4bb;
+  color: #1a1510;
+  border-color: rgba(26, 21, 16, 0.15);
+}
+.tcard[data-project="madko"] .link {
+  background: #e4dbc4;
+  border-color: rgba(26, 21, 16, 0.12);
+}
+.tcard[data-project="madko"] .highlight {
+  background: linear-gradient(90deg, #2d5a3d, #57905f);
+  color: #f2ead8;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+.tcard[data-project="madko"] .highlight::before {
+  background: #f2ead8;
+  box-shadow: none;
+}

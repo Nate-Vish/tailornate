@@ -4,9 +4,9 @@ export const projects: Project[] = [
   {
     id: "automates",
     title: "AutoMates",
-    tagline: "Open-source multi-agent AI development framework.",
+    tagline: "My multi-agent AI development method.",
     description:
-      "Specialized AI agents in a structured pipeline (spec, plan, build, verify), with knowledge-first protocols, cross-session memory, and automated quality gates. Continuously evolved as the field moves. Started as my own workflow problem, and now it's the factory that ships every other project on this page.",
+      "Specialized AI agents in a structured pipeline (spec, plan, build, verify), with knowledge-first protocols, cross-session memory, and automated quality gates. Started as my own workflow problem and keeps evolving as the field moves: v1 went open source, v2 became my private working method. It's the factory that ships every other project on this page.",
     tech: ["Claude Code", "TypeScript", "MCP", "Multi-Agent", "Context Engineering"],
     status: "live",
     path: "~/automates",
@@ -17,12 +17,12 @@ export const projects: Project[] = [
       { href: "https://automate-s.com/", label: "automate-s.com" },
       { href: "https://github.com/Nate-Vish/Auto-Mates", label: "github.com/Nate-Vish/Auto-Mates" },
     ],
-    highlight: "12 agents · 5 quality gates · adopted by peers",
+    highlight: "used daily · v1 open source · v2 is my private working method",
   },
   {
     id: "polaris",
     title: "Polaris",
-    tagline: "Finance insight tool built for IBM Israel.",
+    tagline: "Finance insight tool, demoed to IBM Israel leadership.",
     description:
       "A dashboard that reads raw Excel financials and writes the story behind the numbers. One rule I refused to break: code computes every figure, AI writes text only. Nobody presents a hallucinated number to finance people.",
     tech: ["Gemini API", "Next.js", "SheetJS", "Vercel", "AutoMates"],
