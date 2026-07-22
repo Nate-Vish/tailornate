@@ -83,37 +83,13 @@ export default function Hero() {
           <Shelf />
           <div className="portrait-ring">
             <div className="portrait-inner">
-              <svg viewBox="0 0 180 180" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-                <defs>
-                  <pattern id="p-stripe" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                    <rect width="8" height="8" fill="#2a2017" />
-                    <line x1="0" y1="0" x2="0" y2="8" stroke="#33281c" strokeWidth="3" />
-                  </pattern>
-                </defs>
-                <rect width="180" height="180" fill="url(#p-stripe)" />
-                <text
-                  x="50%"
-                  y="48%"
-                  textAnchor="middle"
-                  fill="#e8dfc8"
-                  fontFamily="JetBrains Mono, monospace"
-                  fontSize="9"
-                  letterSpacing="1"
-                >
-                  PORTRAIT
-                </text>
-                <text
-                  x="50%"
-                  y="58%"
-                  textAnchor="middle"
-                  fill="#9c9077"
-                  fontFamily="JetBrains Mono, monospace"
-                  fontSize="7"
-                  letterSpacing="1"
-                >
-                  drop photo here
-                </text>
-              </svg>
+              <img
+                src="/portrait.jpg"
+                alt="Nathan Hai Vishnevski"
+                className="portrait-photo"
+                width={600}
+                height={900}
+              />
             </div>
           </div>
           <div className="portrait-caption">

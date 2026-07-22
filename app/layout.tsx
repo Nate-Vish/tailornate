@@ -33,6 +33,13 @@ export const metadata: Metadata = {
     siteName: "Tailor Nate",
     locale: "en_US",
     type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Nathan Hai Vishnevski, AI Engineer" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tailor Nate | Nathan Hai Vishnevski",
+    description: "I deliver AI systems that ship.",
+    images: ["/og.png"],
   },
   metadataBase: new URL("https://tailornate.com"),
 }
