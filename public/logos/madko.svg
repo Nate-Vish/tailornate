@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#5c4a32"/>
+  <!-- compass ring -->
+  <circle cx="256" cy="256" r="168" fill="none" stroke="#f0e9d6" stroke-width="22"/>
+  <!-- cardinal ticks -->
+  <g stroke="#f0e9d6" stroke-width="16" stroke-linecap="round">
+    <path d="M256 52v34M256 426v34M52 256h34M426 256h34"/>
+  </g>
+  <!-- minor diagonal ticks -->
+  <g stroke="#cbbd9c" stroke-width="10" stroke-linecap="round" opacity="0.8">
+    <path d="M112 112l24 24M400 112l-24 24M112 400l24-24M400 400l-24-24"/>
+  </g>
+  <!-- N marker -->
+  <text x="256" y="132" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="800" fill="#f0e9d6">N</text>
+  <!-- needle, rotated so it reads as a compass -->
+  <g transform="rotate(38 256 256)">
+    <path d="M256 118 L286 256 L256 268 L226 256 z" fill="#c25b45"/>
+    <path d="M256 394 L226 256 L256 244 L286 256 z" fill="#e8dfc8"/>
+  </g>
+  <!-- pivot -->
+  <circle cx="256" cy="256" r="26" fill="#f0e9d6" stroke="#5c4a32" stroke-width="8"/>
+</svg>

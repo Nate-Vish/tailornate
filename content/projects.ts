@@ -71,7 +71,7 @@ export const projects: Project[] = [
   {
     id: "madko",
     title: "Madko",
-    logo: "/logos/madko.png",
+    logo: "/logos/madko.svg",
     tagline: "The task manager this site runs on.",
     description:
       "A full-stack task-management product that runs my actual life, with an AI layer for task analysis, voice capture, a calendar feed and gamified XP. You're looking at it right now: tailornate.com is Madko's home. Next milestone: accounts, multi-device sync, web-push reminders.",
