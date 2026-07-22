@@ -7,13 +7,13 @@ export default function Hero() {
       <div className="wrap">
         <div className="hero-text">
           <div className="eyebrow in d1">
-            {profile.name} <span style={{ margin: "0 10px" }}>·</span> AI Engineer
+            AI Engineer <span style={{ margin: "0 10px" }}>·</span> Multi-Agent Systems
           </div>
 
           <h1 id="hero-title" className="in d2">
-            Tailor
+            Nathan Hai
             <br />
-            Nate<span className="amp">.</span>
+            Vishnevski<span className="amp">.</span>
           </h1>
 
           <p className="sub in d3">{profile.oneliner}</p>
