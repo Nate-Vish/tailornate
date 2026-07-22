@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+<defs>
+<linearGradient id="g" x1="0%" y1="50%" x2="100%" y2="50%">
+<stop offset="0%" stop-color="#9068b0"/><stop offset="40%" stop-color="#d4736a"/><stop offset="75%" stop-color="#e09a3a"/><stop offset="100%" stop-color="#f0c75e"/>
+</linearGradient>
+<linearGradient id="f" x1="0%" y1="100%" x2="100%" y2="0%">
+<stop offset="0%" stop-color="#7a5295"/><stop offset="50%" stop-color="#d4736a"/><stop offset="100%" stop-color="#f0c75e"/>
+</linearGradient>
+</defs>
+<rect width="300" height="300" rx="60" fill="#0f0a23"/>
+<polygon points="150,24 236,66 236,174 150,216 64,174 64,66" fill="rgba(120,80,160,0.15)" stroke="url(#f)" stroke-width="6"/>
+<text x="150" y="155" text-anchor="middle" font-family="Arial,sans-serif" font-size="100" font-weight="900" fill="url(#g)">AM</text>
+</svg>

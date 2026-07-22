@@ -4,6 +4,7 @@ export const projects: Project[] = [
   {
     id: "automates",
     title: "AutoMates",
+    logo: "/logos/automates.svg",
     tagline: "My multi-agent AI development method.",
     description:
       "Specialized AI agents in a structured pipeline (spec, plan, build, verify), with knowledge-first protocols, cross-session memory, and automated quality gates. Started as my own workflow problem and keeps evolving as the field moves: v1 went open source, v2 became my private working method. It's the factory that ships every other project on this page.",
@@ -22,6 +23,7 @@ export const projects: Project[] = [
   {
     id: "polaris",
     title: "Polaris",
+    logo: "/logos/polaris.png",
     tagline: "Finance insight tool, demoed to IBM Israel leadership.",
     description:
       "A dashboard that reads raw Excel financials and writes the story behind the numbers. One rule I refused to break: code computes every figure, AI writes text only. Nobody presents a hallucinated number to finance people.",
@@ -70,6 +72,7 @@ export const projects: Project[] = [
   {
     id: "madko",
     title: "Madko",
+    logo: "/logos/madko.png",
     tagline: "The task manager this site runs on.",
     description:
       "A full-stack task-management product that runs my actual life, with an AI layer for task analysis, voice capture, a calendar feed and gamified XP. You're looking at it right now: tailornate.com is Madko's home. Next milestone: accounts, multi-device sync, web-push reminders.",

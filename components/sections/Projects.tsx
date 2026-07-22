@@ -33,7 +33,10 @@ export default function Projects() {
                     </span>
                     <span className="status">{statusLabels[p.status]}</span>
                   </div>
-                  <h3 className="card-title">{p.title}</h3>
+                  <div className="card-title-row">
+                    {p.logo && <img className="card-logo" src={p.logo} alt="" aria-hidden="true" />}
+                    <h3 className="card-title">{p.title}</h3>
+                  </div>
                   <div className="card-tag">{p.tagline}</div>
                   <p className="card-desc">{p.description}</p>
                   {p.highlight && (

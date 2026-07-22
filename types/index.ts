@@ -6,6 +6,7 @@ export interface ProjectLink {
 export interface Project {
   id: string
   title: string
+  logo?: string
   tagline: string
   description: string
   tech: string[]
