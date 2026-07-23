@@ -16,11 +16,23 @@ export default function FloatingChat() {
   const [leadState, setLeadState] = useState<"idle" | "sending" | "sent" | "error" | "limit">("idle")
   const [input, setInput] = useState("")
   const [rateLimited, setRateLimited] = useState(false)
+  const [injectionWarned, setInjectionWarned] = useState(false)
+  const [chatLocked, setChatLocked] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const { messages, sendMessage, status } = useChat({
     onError: (err) => {
-      if (err.message?.includes("429") || err.message?.includes("Rate")) setRateLimited(true)
+      const m = err.message || ""
+      if (m.includes("423") || m.includes("CHAT_LOCKED")) {
+        setChatLocked(true)
+        try {
+          localStorage.setItem("tn.bot.locked", String(Date.now() + 24 * 60 * 60 * 1000))
+        } catch {}
+      } else if (m.includes("403") || m.includes("INJECTION_WARNING")) {
+        setInjectionWarned(true)
+      } else if (m.includes("429") || m.includes("Rate")) {
+        setRateLimited(true)
+      }
     },
   })
   const isLoading = status === "submitted" || status === "streaming"
@@ -49,8 +61,17 @@ export default function FloatingChat() {
     return () => window.removeEventListener("tn-open-bot", openBot)
   }, [])
 
+  // Restore an active lockout on reload (server also enforces it by IP for 24h).
+  useEffect(() => {
+    try {
+      const until = Number(localStorage.getItem("tn.bot.locked") || 0)
+      if (until && Date.now() < until) setChatLocked(true)
+      else if (until) localStorage.removeItem("tn.bot.locked")
+    } catch {}
+  }, [])
+
   const send = (text: string) => {
-    if (!text.trim() || isLoading || rateLimited) return
+    if (!text.trim() || isLoading || rateLimited || chatLocked) return
     sendMessage({ text: text.trim() })
     setInput("")
   }
@@ -114,7 +135,7 @@ export default function FloatingChat() {
             {messages.length === 0 && (
               <div className="chip-suggest fbot-chips">
                 {CHIPS.map((c) => (
-                  <button key={c.en} onClick={() => send(c.he + " / " + c.en)} disabled={isLoading || rateLimited}>
+                  <button key={c.en} onClick={() => send(c.he + " / " + c.en)} disabled={isLoading || rateLimited || chatLocked}>
                     {c.he}
                   </button>
                 ))}
@@ -125,6 +146,22 @@ export default function FloatingChat() {
 
             {rateLimited && (
               <div className="chat-alert">הגעת למגבלת ההודעות לשעה. אפשר פשוט להשאיר פרטים למטה.</div>
+            )}
+
+            {injectionWarned && !chatLocked && (
+              <div className="chat-alert">
+                זוהה ניסיון לתמרן את העוזר. ניסיון נוסף ינעל את הצ'אט ל-24 שעות.
+                <br />
+                <span dir="ltr">That looked like an attempt to manipulate the assistant. One more and the chat locks for 24 hours.</span>
+              </div>
+            )}
+
+            {chatLocked && (
+              <div className="chat-alert">
+                הצ'אט ננעל ל-24 שעות בעקבות ניסיונות תמרון חוזרים. אפשר ליצור קשר ישירות: natan.vish100@gmail.com
+                <br />
+                <span dir="ltr">Chat locked for 24 hours after repeated manipulation attempts. Reach Nathan at natan.vish100@gmail.com</span>
+              </div>
             )}
 
             {showForm && leadState !== "sent" && (
@@ -166,10 +203,10 @@ export default function FloatingChat() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="שאלו אותי משהו · ask me anything"
-                disabled={rateLimited}
+                disabled={rateLimited || chatLocked}
                 maxLength={500}
               />
-              <button type="submit" disabled={isLoading || rateLimited || !input.trim()} aria-label="Send">
+              <button type="submit" disabled={isLoading || rateLimited || chatLocked || !input.trim()} aria-label="Send">
                 ↑
               </button>
             </form>
