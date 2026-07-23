@@ -1,5 +1,5 @@
 export const RATE_LIMIT = {
-  maxMessages: 10,
+  maxMessages: 400, // TEMP raised for persona UX test, restore to 10
   windowMs: 60 * 60 * 1000, // 1 hour
 }
 
