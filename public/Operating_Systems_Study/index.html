@@ -342,7 +342,7 @@ body.mlock{overflow:hidden}
   <div class="brand"><span>OS 61206 · HIT</span>מעבדת מערכות הפעלה</div>
   <p class="lead">12 נושאים, כל אחד עם סימולציה שאפשר להזיז, הסבר מתחתיה ושאלון. בסוף — מבחן מסכם משאלות אמת.</p>
   <ul class="toc" id="toc"></ul>
-  <div class="side-foot">התקדמות בשאלונים<div class="bar"><i id="prog"></i></div><div id="progtxt" style="margin-top:6px">0 / 13</div></div>
+  <div class="side-foot"><div id="buildTag" style="margin-bottom:8px;color:var(--blue)"></div>התקדמות בשאלונים<div class="bar"><i id="prog"></i></div><div id="progtxt" style="margin-top:6px">0 / 13</div></div>
 </aside>
 <main id="main">
 <!-- ============ 0 ============ -->
@@ -1452,6 +1452,10 @@ body.mlock{overflow:hidden}
   <div class="navbtns"><button class="b" data-go="12">→ הקודם</button><button class="b" data-go="0">חזרה לדף הפתיחה</button></div>
 
 
+</section>
+</main>
+</div>
+
 <div class="modal-src" id="mNum" data-title="מספרים שחייבים לזכור">
   <p>כל מספר כאן הופיע בפועל בשאלה, ובכל אחד יש היגיון שאפשר לשחזר גם אם שוכחים את המספר עצמו.</p>
   <h4>סמפורים</h4>
@@ -1570,10 +1574,14 @@ body.mlock{overflow:hidden}
     <div class="mbody" id="modalBody"></div>
   </div>
 </div>
-</section>
-</main>
-</div>
+
 <script>
+/* scrolling can never stay locked, whatever happens later in the page */
+document.body.classList.remove('mlock','locked');
+setInterval(function(){ if(!document.querySelector('.modal.on'))document.body.classList.remove('mlock','locked'); },800);
+window.addEventListener('error',function(){ document.body.classList.remove('mlock','locked'); });
+const BUILD='2026-07-30 · 15';
+
 /* ---------- helpers ---------- */
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const el=(t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!==undefined)e.innerHTML=h; return e;};
@@ -1643,6 +1651,7 @@ function markDone(qid){
   $('#progtxt').textContent=doneQuiz.size+' / '+QUIZ_TOTAL;
 }
 $('#progtxt').textContent='0 / '+QUIZ_TOTAL;
+if($('#buildTag'))$('#buildTag').textContent='build '+BUILD;
 const norm=s=>s.toLowerCase().replace(/[^a-zא-ת0-9\u0590-\u05FF ]/g,'').replace(/\s+/g,' ').trim();
 $$('[data-quiz]').forEach(quiz=>{
   const qid=quiz.dataset.quiz, qs=$$('.q',quiz); let answered=0;
