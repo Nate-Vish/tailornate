@@ -1,8 +1,21 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { BoostMode, Category, Chain, Priority, Size, Status, Tag, Task, ViewName, Weights } from "./types"
+import type {
+  BoostMode,
+  Category,
+  Chain,
+  Goal,
+  Priority,
+  Size,
+  Status,
+  Tag,
+  Task,
+  ViewName,
+  Weights,
+} from "./types"
 import { defaultWeights, seedCategories, seedTags, seedTasks } from "./seed"
 import { calcScore } from "./scoring"
+import { isDueOn, isHabitDoneOn, tickHabit, untickHabit } from "./habits"
 
 export type Award = {
   xp: number
@@ -20,6 +33,7 @@ type State = {
   categories: Category[]
   tags: Tag[]
   chains: Chain[]
+  goals: Goal[]
   weights: Weights
   view: ViewName
   drilldownCategoryId: string | null
@@ -49,6 +63,18 @@ type State = {
   addTag: (input: { name: string; categoryId: string; color: string; icon: string }) => Tag
   updateTag: (id: string, patch: Partial<Pick<Tag, "name" | "color" | "icon" | "categoryId">>) => void
   deleteTag: (id: string) => void
+  // Goals — the "why" a task exists.
+  addGoal: (input: { title: string; categoryId: string; identity?: string; targetDate?: string }) => Goal
+  updateGoal: (id: string, patch: Partial<Omit<Goal, "id" | "createdAt">>) => void
+  deleteGoal: (id: string) => void
+  // Checklist — lightweight ticks inside one task.
+  addChecklistItem: (taskId: string, text: string) => void
+  toggleChecklistItem: (taskId: string, itemId: string) => void
+  removeChecklistItem: (taskId: string, itemId: string) => void
+  // Time axis — used by the timeline and by drag-to-reschedule.
+  setTaskTime: (id: string, startAt: string | null, durationMinutes?: number) => void
+  // Dependencies.
+  setBlockedBy: (id: string, blockerIds: string[]) => void
   setView: (v: ViewName) => void
   openDrilldown: (categoryId: string) => void
   setAIOpen: (open: boolean) => void
@@ -80,6 +106,7 @@ export const useTasksStore = create<State>()(
   persist(
     (set, get) => ({
       tasks: seedTasks,
+      goals: [],
       categories: seedCategories,
       tags: seedTags,
       chains: [],
@@ -117,6 +144,40 @@ export const useTasksStore = create<State>()(
           if (task.status !== "completed" && isChainLocked(task, s.tasks)) return {}
           const nowIso = new Date().toISOString()
 
+          // A habit is never "done" for good — it recurs. Ticking it records
+          // today in its history and moves the streak; the task itself stays
+          // active so it comes back tomorrow. Status is normalised here too, so
+          // a habit that was somehow marked completed heals instead of becoming
+          // permanently invisible.
+          if (task.habit) {
+            const today = todayISO()
+            const alreadyDone = task.habit.history.includes(today)
+            const habit = alreadyDone
+              ? untickHabit(task.habit, today)
+              : tickHabit(task.habit, today)
+            return {
+              tasks: s.tasks.map((t) =>
+                t.id === id
+                  ? {
+                      ...t,
+                      habit,
+                      status: t.status === "completed" ? ("not_started" as Status) : t.status,
+                      completedAt: undefined,
+                    }
+                  : t,
+              ),
+              lastAward: alreadyDone
+                ? null
+                : {
+                    xp: taskXP(task),
+                    tagId: task.tagId,
+                    categoryId: task.categoryId,
+                    leveledUp: false,
+                    taskTitle: task.title,
+                  },
+            }
+          }
+
           if (task.status === "completed") {
             // Reopen. If it was a sub-task of a completed parent, reopen the parent too.
             const reopenIds = new Set([id])
@@ -135,7 +196,12 @@ export const useTasksStore = create<State>()(
 
           // Complete: cascade down to children, and up to parent when it was the last sibling.
           const completeIds = new Set([id])
-          for (const child of s.tasks.filter((t) => t.parentId === id && t.status !== "completed")) {
+          // A recurring child is never "completed" by a parent — marking it so
+          // would trap it: it recurs, so it would never return to the list and
+          // never show as done either.
+          for (const child of s.tasks.filter(
+            (t) => t.parentId === id && t.status !== "completed" && !t.habit,
+          )) {
             completeIds.add(child.id)
           }
           if (task.parentId) {
@@ -376,6 +442,83 @@ export const useTasksStore = create<State>()(
           tasks: s.tasks.map((t) => (t.tagId === id ? { ...t, tagId: undefined } : t)),
         })),
 
+      addGoal: (input) => {
+        const goal: Goal = { id: uid("goal"), createdAt: new Date().toISOString(), ...input }
+        set((s) => ({ goals: [...s.goals, goal] }))
+        return goal
+      },
+
+      updateGoal: (id, patch) =>
+        set((s) => ({ goals: s.goals.map((g) => (g.id === id ? { ...g, ...patch } : g)) })),
+
+      // Deleting a goal never deletes its work — the tasks simply lose the link.
+      deleteGoal: (id) =>
+        set((s) => ({
+          goals: s.goals.filter((g) => g.id !== id),
+          tasks: s.tasks.map((t) => (t.goalId === id ? { ...t, goalId: undefined } : t)),
+        })),
+
+      addChecklistItem: (taskId, text) =>
+        set((s) => ({
+          tasks: s.tasks.map((t) =>
+            t.id === taskId
+              ? {
+                  ...t,
+                  checklist: [...(t.checklist ?? []), { id: uid("ci"), text: text.trim(), done: false }],
+                }
+              : t,
+          ),
+        })),
+
+      toggleChecklistItem: (taskId, itemId) =>
+        set((s) => ({
+          tasks: s.tasks.map((t) =>
+            t.id === taskId
+              ? {
+                  ...t,
+                  checklist: (t.checklist ?? []).map((c) =>
+                    c.id === itemId ? { ...c, done: !c.done } : c,
+                  ),
+                }
+              : t,
+          ),
+        })),
+
+      removeChecklistItem: (taskId, itemId) =>
+        set((s) => ({
+          tasks: s.tasks.map((t) =>
+            t.id === taskId
+              ? { ...t, checklist: (t.checklist ?? []).filter((c) => c.id !== itemId) }
+              : t,
+          ),
+        })),
+
+      // Placing a task on the clock. Passing null frees it back to the planner.
+      setTaskTime: (id, startAt, durationMinutes) =>
+        set((s) => ({
+          tasks: s.tasks.map((t) =>
+            t.id === id
+              ? {
+                  ...t,
+                  startAt: startAt ?? undefined,
+                  durationMinutes: durationMinutes ?? t.durationMinutes,
+                }
+              : t,
+          ),
+        })),
+
+      // A task can't block itself, and unknown ids are dropped rather than
+      // stranding the task behind a blocker that doesn't exist.
+      setBlockedBy: (id, blockerIds) =>
+        set((s) => {
+          const valid = blockerIds.filter((b) => b !== id && s.tasks.some((t) => t.id === b))
+          return {
+            tasks: s.tasks.map((t) =>
+              t.id === id ? { ...t, blockedBy: valid.length ? valid : undefined } : t,
+            ),
+          }
+        }),
+
       setView: (v) => set({ view: v, drilldownCategoryId: null }),
       openDrilldown: (categoryId) => set({ view: "projects", drilldownCategoryId: categoryId }),
       setAIOpen: (open) => set({ aiOpen: open }),
@@ -387,12 +530,13 @@ export const useTasksStore = create<State>()(
       // `if (version < N)` block in migrate() below. The contract: every
       // release LOADS AND PRESERVES data written by any previous release —
       // migrations are additive and never drop or replace the user's data.
-      version: 1,
+      version: 2,
       partialize: (s) => ({
         tasks: s.tasks,
         categories: s.categories,
         tags: s.tags,
         chains: s.chains,
+        goals: s.goals,
         weights: s.weights,
       }),
       migrate: (persisted, version) => {
@@ -401,10 +545,13 @@ export const useTasksStore = create<State>()(
           categories?: Category[]
           tags?: Tag[]
           chains?: Chain[]
+          goals?: Goal[]
           weights?: Weights
         }
-        // Future schema changes go here as additive steps, e.g.:
-        //   if (version < 2) { /* transform p.tasks, keep everything else */ }
+        // v1 → v2 added the planning fields (startAt, durationMinutes, fixed,
+        // blockedBy, checklist, goalId, habit, areaIds) plus the goals list.
+        // Every one is OPTIONAL, so a v1 payload is already valid v2 — there is
+        // nothing to transform, only the new `goals` array to backfill below.
         void version
         // Preserve the user's data as-is; only backfill true gaps so an older
         // or partial payload can't crash a newer build. A task's own fields
@@ -421,6 +568,7 @@ export const useTasksStore = create<State>()(
           categories: p.categories?.length ? p.categories : seedCategories,
           tags: Array.isArray(p.tags) ? p.tags : seedTags,
           chains: Array.isArray(p.chains) ? p.chains : [],
+          goals: Array.isArray(p.goals) ? p.goals : [],
           weights: p.weights ?? defaultWeights,
         }
       },
@@ -455,10 +603,17 @@ export function isSnoozed(t: Task): boolean {
 // The "today" list: top-level tasks only (children render nested under their
 // parent), chains surface only their current step, snoozed tasks wait it out.
 export function selectTodayList(s: Pick<State, "tasks" | "weights">): Task[] {
+  const today = todayISO()
   return selectSortedActive(s).filter((t) => {
     if (t.parentId) return false
     if (t.chainId && isChainLocked(t, s.tasks)) return false
     if (isSnoozed(t)) return false
+    if (t.habit) {
+      // Ticked today → done for today. Not due today → not today's business:
+      // a Sunday-only habit must not sit in the list all week.
+      if (isHabitDoneOn(t, today)) return false
+      if (!isDueOn(t.habit, today)) return false
+    }
     return true
   })
 }
@@ -467,7 +622,12 @@ export function selectTodayList(s: Pick<State, "tasks" | "weights">): Task[] {
 export function selectDoneToday(s: Pick<State, "tasks">): Task[] {
   const today = todayISO()
   return s.tasks
-    .filter((t) => t.status === "completed" && t.completedAt && localDateOf(t.completedAt) === today)
+    .filter((t) => {
+      // A habit never carries status "completed" — it recurs — but ticking one
+      // is still a win, and seeing it land is the whole point of the streak.
+      if (t.habit) return isHabitDoneOn(t, today)
+      return t.status === "completed" && !!t.completedAt && localDateOf(t.completedAt) === today
+    })
     .sort((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? ""))
 }
 

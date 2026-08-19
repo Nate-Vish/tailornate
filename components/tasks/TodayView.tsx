@@ -25,6 +25,10 @@ import { TaskCard } from "./TaskCard"
 import { SquadStrip } from "./SquadStrip"
 import { WeekView } from "./WeekView"
 import { MonthView } from "./MonthView"
+import { DayTimeline } from "./DayTimeline"
+import { ConcernStrip } from "./ConcernStrip"
+import { usePlan, type PlanState } from "./usePlan"
+import { minutesOfDay } from "@/lib/tasks/planner"
 import { Icon } from "./Icon"
 import { PriorityPill, ColorPill, scoreColor, cvar } from "./pills"
 import type { Task } from "@/lib/tasks/types"
@@ -224,14 +228,37 @@ function DoneTodayStrip() {
 }
 
 // The day dashboard: hero, squad, the ranked "later" list, snoozed, done-today.
-function DayBody({ onActions }: { onActions: (task: Task) => void }) {
+function DayBody({
+  onActions,
+  state,
+}: {
+  onActions: (task: Task) => void
+  state: PlanState
+}) {
   const tasks = useTasksStore((s) => s.tasks)
   const weights = useTasksStore((s) => s.weights)
   const boostTask = useTasksStore((s) => s.boostTask)
 
   const active = useMemo(() => selectTodayList({ tasks, weights }), [tasks, weights])
-  const hero = active[0]
-  const rest = useMemo(() => active.slice(1, 7), [active])
+
+  // "What now" is the engine's answer, not a second opinion: of everything
+  // still ahead today, the one it ranked highest. Picking whatever sits next on
+  // the clock would demote the most pressing task into "אחר כך" as the day
+  // wears on. Falls back to the plain list before the plan has a clock.
+  const hero = useMemo(() => {
+    if (!state.ready) return active[0]
+    const nowMin = minutesOfDay(state.now)
+    const ahead = state.plan.blocks.filter((b) => b.end > nowMin)
+    const best = [...(ahead.length ? ahead : state.plan.blocks)].sort(
+      (a, b) => b.score - a.score || a.start - b.start,
+    )[0]
+    return tasks.find((t) => t.id === best?.taskId) ?? active[0]
+  }, [state, tasks, active])
+
+  const rest = useMemo(
+    () => active.filter((t) => t.id !== hero?.id).slice(0, 6),
+    [active, hero],
+  )
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
@@ -246,8 +273,14 @@ function DayBody({ onActions }: { onActions: (task: Task) => void }) {
     const neighborAbove = reordered[newIndex - 1]
     if (neighborAbove) {
       boostTask(moved.id, "until_done", calcScore(neighborAbove, weights) + 1)
-    } else if (hero) {
-      boostTask(moved.id, "until_done", calcScore(hero, weights) + 1)
+    } else {
+      // Dropped at the top: beat the highest score actually on screen. Anchoring
+      // to the hero would silently revert the drop whenever the hero is not the
+      // top-scored task.
+      const ceiling = Math.max(
+        ...[hero, ...rest].filter(Boolean).map((t) => calcScore(t as Task, weights)),
+      )
+      boostTask(moved.id, "until_done", ceiling + 1)
     }
   }
 
@@ -298,6 +331,9 @@ function DayBody({ onActions }: { onActions: (task: Task) => void }) {
 
 export function TodayView({ onActions }: { onActions: (task: Task) => void }) {
   const [span, setSpan] = useState<"day" | "week" | "month">("day")
+  // Within the day: the calm answer by default, the clock when you want it.
+  const [dayMode, setDayMode] = useState<"order" | "hours">("order")
+  const state = usePlan()
 
   return (
     <div className="pb-32">
@@ -328,7 +364,32 @@ export function TodayView({ onActions }: { onActions: (task: Task) => void }) {
         </div>
       </div>
 
-      {span === "day" && <DayBody onActions={onActions} />}
+      {/* The agent speaks here — and only when something is worth a second thought. */}
+      {span === "day" && state.ready && <ConcernStrip concerns={state.concerns} />}
+
+      {span === "day" && (
+        <div className="flex items-center gap-1.5 px-4 pb-3">
+          {(["order", "hours"] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => setDayMode(m)}
+              className={
+                dayMode === m
+                  ? "rounded-full border px-3 py-1 text-[12px] font-medium text-foreground"
+                  : "rounded-full border border-transparent px-3 py-1 text-[12px] text-muted-foreground"
+              }
+              style={dayMode === m ? { borderColor: "var(--accent)" } : undefined}
+            >
+              {m === "order" ? "מה עכשיו" : "שעות"}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {span === "day" && dayMode === "order" && <DayBody onActions={onActions} state={state} />}
+      {span === "day" && dayMode === "hours" && (
+        <DayTimeline state={state} onActions={onActions} />
+      )}
       {span === "week" && <WeekView onActions={onActions} />}
       {span === "month" && <MonthView onActions={onActions} />}
     </div>

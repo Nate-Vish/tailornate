@@ -22,19 +22,22 @@ const statusScore: Record<Task["status"], number> = {
   completed: 0,
 }
 
-function daysUntil(iso?: string): number | null {
+// `now` is injected so scoring is a pure function of its inputs — the planner
+// depends on that to stay deterministic and testable. It defaults to the real
+// clock so every existing UI caller keeps working unchanged.
+function daysUntil(iso: string | undefined, now: Date): number | null {
   if (!iso) return null
-  const now = new Date()
-  now.setHours(0, 0, 0, 0)
+  const from = new Date(now)
+  from.setHours(0, 0, 0, 0)
   // Parse YYYY-MM-DD as LOCAL midnight — new Date("YYYY-MM-DD") is UTC and
   // shifts the calendar day for anyone west of UTC.
   const [y, m, d] = iso.slice(0, 10).split("-").map(Number)
   const target = new Date(y, m - 1, d)
-  return Math.round((target.getTime() - now.getTime()) / 86_400_000)
+  return Math.round((target.getTime() - from.getTime()) / 86_400_000)
 }
 
-function deadlineScore(iso?: string): number {
-  const d = daysUntil(iso)
+function deadlineScore(iso: string | undefined, now: Date): number {
+  const d = daysUntil(iso, now)
   if (d === null) return 0
   if (d <= 0) return 100
   if (d === 1) return 85
@@ -45,12 +48,12 @@ function deadlineScore(iso?: string): number {
   return 5
 }
 
-export function calcScore(task: Task, w: Weights): number {
+export function calcScore(task: Task, w: Weights, now: Date = new Date()): number {
   if (task.status === "completed") return 0
   const total = w.priority + w.deadline + w.status + w.size || 1
   const raw =
     (priorityScore[task.priority] * w.priority +
-      deadlineScore(task.dueDate) * w.deadline +
+      deadlineScore(task.dueDate, now) * w.deadline +
       statusScore[task.status] * w.status +
       sizeScore[task.size] * w.size) /
     total
@@ -78,9 +81,9 @@ export const statusLabel: Record<Task["status"], string> = {
   blocked: "חסום",
 }
 
-export function formatRelativeDue(iso?: string): string | null {
+export function formatRelativeDue(iso?: string, now: Date = new Date()): string | null {
   if (!iso) return null
-  const d = daysUntil(iso)
+  const d = daysUntil(iso, now)
   if (d === null) return null
   if (d < 0) return `באיחור ${-d} ימים`
   if (d === 0) return "היום"

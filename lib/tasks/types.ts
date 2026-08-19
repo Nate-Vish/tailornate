@@ -25,6 +25,47 @@ export type Chain = {
   title: string
 }
 
+// A goal is the "why" behind tasks — the identity you're building toward.
+export type Goal = {
+  id: string
+  title: string
+  categoryId: string
+  // Identity statement, Atomic Habits style: "אני אדם שמנגן"
+  identity?: string
+  targetDate?: string
+  archived?: boolean
+  createdAt: string
+}
+
+export type ChecklistItem = { id: string; text: string; done: boolean }
+
+// How often a habit should happen.
+export type Cadence =
+  | { kind: "daily" }
+  | { kind: "weekly"; days: number[] } // 0 = Sunday
+  | { kind: "times_per_week"; times: number }
+
+// A habit turns a goal into repeated action. Streaks are forgiving by design:
+// one miss keeps it alive ("at risk"), two consecutive misses break it.
+export type Habit = {
+  cadence: Cadence
+  // Quota per occurrence, e.g. 30 minutes of guitar.
+  quotaMinutes?: number
+  // The 2-minute-rule fallback offered on hard days.
+  minVersion?: string
+  // Implementation intention / environment cue: "אחרי הקפה של הבוקר".
+  cue?: string
+  // The day the habit began. Nothing before it can count as a miss — a habit
+  // created today must never open with "you missed it".
+  startedOn?: string // YYYY-MM-DD
+  streak: number
+  longestStreak: number
+  lastDoneDate?: string // YYYY-MM-DD
+  history: string[] // completion dates, newest first
+  // How hard the coach pushes for THIS habit.
+  intensity?: "gentle" | "normal" | "firm"
+}
+
 export type Task = {
   id: string
   title: string
@@ -45,6 +86,24 @@ export type Task = {
   // Chain: ordered membership in a chain. chainOrder is 0-based.
   chainId?: string
   chainOrder?: number
+  // ── Time axis ──────────────────────────────────────────────────────────
+  // A concrete block on the clock. startAt is a LOCAL ISO datetime.
+  startAt?: string
+  durationMinutes?: number
+  // An immovable commitment (meeting, appointment) — never moved by the planner.
+  fixed?: boolean
+  // ── Dependencies ───────────────────────────────────────────────────────
+  // This task is ready only once every blocker is completed.
+  blockedBy?: string[]
+  // ── Lightweight parts ──────────────────────────────────────────────────
+  // Ticks inside ONE task (groceries) — notes, not tasks. No XP, not in Today.
+  checklist?: ChecklistItem[]
+  // ── Meaning ────────────────────────────────────────────────────────────
+  goalId?: string
+  habit?: Habit
+  // Extra life-areas beyond the primary categoryId (a dinner that is both
+  // career and personal). Balance counts primary + secondary.
+  areaIds?: string[]
 }
 
 export type Weights = {
