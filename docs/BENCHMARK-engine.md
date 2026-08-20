@@ -164,7 +164,15 @@ semantics rather than the code being bent back to pass them.
 - Zero AI calls, zero network, zero new dependencies in the engine
 - Deterministic: identical output across runs *and* across input order
 
-### Section I (surface) — verified by reading, not by browser
+### Build gate — PASSED on Vercel
+`next dev` is broken in this environment (hangs with no output while
+`next --version` works) — a known local tooling problem, not app code. The
+authoritative gate is therefore the Vercel deployment, and it is green:
+deployment `dpl_32m7K122` (branch `engine`, commit `7594e3d`) built **READY**,
+and `/tasks` serves 200 with the passcode gate intercepting correctly. The
+engine compiles under a real production Next build, not just `tsc`.
+
+### Section I (surface) — code-reviewed; visual check still owed
 `next dev` is broken in this environment (hangs with no output while
 `next --version` works) — a known local tooling problem in this project, not
 app code. Per the standing rule, the authoritative build gate is the Vercel
