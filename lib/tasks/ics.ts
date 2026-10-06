@@ -21,21 +21,22 @@ export function tasksToICS(tasks: Task[], categories: Category[]): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Madko//Tasks//HE",
+    "PRODID:-//Tailornate Tasks//Tasks//HE",
     "CALSCALE:GREGORIAN",
-    "X-WR-CALNAME:Madko Tasks",
+    "X-WR-CALNAME:Tailornate Tasks",
   ]
   for (const t of withDue) {
     const cat = categories.find((c) => c.id === t.categoryId)
     lines.push(
       "BEGIN:VEVENT",
+      // Stable legacy namespace prevents duplicate events after the product rename.
       `UID:${t.id}@madko.tailornate.com`,
       `DTSTAMP:${icsDate(t.createdAt.slice(0, 10))}T000000Z`,
       `DTSTART;VALUE=DATE:${icsDate(t.dueDate!)}`,
       `DTEND;VALUE=DATE:${icsDate(nextDay(t.dueDate!))}`,
       `SUMMARY:${escapeICS(t.title)}`,
       `DESCRIPTION:${escapeICS(
-        `Madko · ${cat?.name ?? ""} · ${priorityLabel[t.priority]} · ${statusLabel[t.status]}`,
+        `Tailornate Tasks · ${cat?.name ?? ""} · ${priorityLabel[t.priority]} · ${statusLabel[t.status]}`,
       )}`,
       "END:VEVENT",
     )
@@ -49,7 +50,7 @@ export function downloadICS(tasks: Task[], categories: Category[]): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
   a.href = url
-  a.download = "madko-tasks.ics"
+  a.download = "tailornate-tasks.ics"
   a.click()
   URL.revokeObjectURL(url)
 }
@@ -63,7 +64,7 @@ export function googleCalendarUrl(task: Task): string {
     action: "TEMPLATE",
     text: task.title,
     dates: `${icsDate(date)}/${icsDate(nextDay(date))}`,
-    details: "מתוך Madko — tailornate.com/tasks",
+    details: "מתוך Tailornate Tasks — tailornate.com/tasks",
   })
   return `https://calendar.google.com/calendar/render?${params.toString()}`
 }

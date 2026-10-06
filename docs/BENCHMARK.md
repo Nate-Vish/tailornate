@@ -1,4 +1,4 @@
-# Madko Product Benchmark
+# Tailornate Tasks Product Benchmark
 
 The bar every release must clear. Scores: ✅ pass · ⚠️ pass with noted gaps · ❌ fail.
 Re-run after every significant change; a ❌ blocks deploy.

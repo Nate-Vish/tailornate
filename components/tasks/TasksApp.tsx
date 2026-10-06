@@ -21,7 +21,7 @@ import { ActionsSheet, type TaskSheetAction } from "./ActionsSheet"
 import { BranchSheet } from "./BranchSheet"
 import { ChainSheet } from "./ChainSheet"
 
-// Madko's theme is scoped to the app wrapper (.sidra-dark legacy class), independent
+// Tailornate Tasks's theme is scoped to the app wrapper (.sidra-dark legacy class), independent
 // of however the host site manages its own theme. Initial value follows the
 // stored choice, then the site's current theme, then the OS preference.
 function useDarkToggle() {
@@ -82,7 +82,7 @@ export function TasksApp() {
           >
             <Icon name="compass" size={22} />
           </motion.div>
-          <p className="text-[13px] font-semibold text-foreground">Madko</p>
+          <p className="text-[13px] font-semibold text-foreground">Tailornate Tasks</p>
           <p suppressHydrationWarning className="max-w-[260px] text-[12px] leading-relaxed text-muted-foreground">
             {tipOfTheDay(todayISO())}
           </p>
@@ -94,7 +94,7 @@ export function TasksApp() {
   return (
     <div
       dir="rtl"
-      className={`sidra ${isDark ? "sidra-dark" : ""} madko-topo flex min-h-dvh items-stretch justify-center bg-[var(--background)] sm:items-center sm:py-8`}
+      className={`sidra ${isDark ? "sidra-dark" : ""} tailornate-tasks-topo flex min-h-dvh items-stretch justify-center bg-[var(--background)] sm:items-center sm:py-8`}
     >
       <div className="fixed left-4 top-4 z-50 hidden flex-col gap-2 sm:flex" dir="ltr">
         <Link

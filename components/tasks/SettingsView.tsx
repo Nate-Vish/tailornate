@@ -154,12 +154,13 @@ export function SettingsView() {
           תנאי שימוש
         </a>
         <span aria-hidden="true">·</span>
-        <span>Madko Beta</span>
+        <span>Tailornate Tasks Beta</span>
       </div>
     </div>
   )
 }
 
+// Keep the legacy storage key so existing calendar connections survive the rename.
 const CALENDAR_URL_KEY = "madko-calendar-ics"
 
 // Read-only calendar link: the user pastes Google Calendar's "secret address

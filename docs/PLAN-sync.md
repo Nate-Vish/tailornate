@@ -1,6 +1,6 @@
 # Plan: Accounts + Cloud Sync (Supabase) — v2, post red-team
 
-Implementation-ready spec for turning Madko from a single-device local tool into
+Implementation-ready spec for turning Tailornate Tasks from a single-device local tool into
 a synced, multi-device product with real accounts. Grounded in 2026 research
 (Supabase auth security + local-first sync engines) and hardened by a 4-lens
 adversarial red-team (21 confirmed gaps folded in below). Builds on

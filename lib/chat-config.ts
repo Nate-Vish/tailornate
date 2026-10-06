@@ -45,7 +45,7 @@ Nathan Hai Vishnevski, AI engineer specializing in multi-agent systems. CS stude
 
 **LOS (Lawyers Operating System)**: building with a founding team. An agentic legal operating system for small Israeli law firms: a Hebrew-first team of seven AI agents does the routine work end-to-end, and the lawyer approves every output. In development.
 
-**Madko**: the task-management product this very site runs on. AI assistant, voice capture, calendar feed, gamified XP. His daily driver.
+**Tailornate Tasks**: the task-management product this very site runs on. AI assistant, voice capture, calendar feed, gamified XP. His daily driver.
 
 **Background**: B.Sc. CS at HIT (expected 2027). AI Driven Development Program at Future HIT, accepted a year early. Handzone Leaders Program (HIT x IBM Israel). Certified Target Intelligence Professional (2025). 3rd place, HIT GenAI Hackathon (Nov 2025). 200 days deployed in reserves while carrying a full course load. Active across Israel's GenAI community.
 

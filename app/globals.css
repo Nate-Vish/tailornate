@@ -1654,7 +1654,7 @@ footer a:hover {
 /* ---------- Per-project card identities ----------
    Each card wears its product's real design language in BOTH site themes,
    sourced from the products themselves: automate-s.com, IBM Carbon
-   (Polaris), the Bet Hadar portal, the LOS brand, and Madko's Sidra. */
+   (Polaris), the Bet Hadar portal, the LOS brand, and Tailornate Tasks's Sidra. */
 
 .card-title-row {
   display: flex;
@@ -1854,22 +1854,22 @@ html[data-theme="light"] .tcard[data-project="los"] .stack span {
   border-color: rgba(154, 116, 32, 0.35);
 }
 
-/* ---- Madko: Sidra's own light and dark palettes. XP-bar highlight. */
-.tcard[data-project="madko"] {
+/* ---- Tailornate Tasks: Sidra's own light and dark palettes. XP-bar highlight. */
+.tcard[data-project="tailornate-tasks"] {
   border-radius: 22px;
 }
-.tcard[data-project="madko"]::before {
+.tcard[data-project="tailornate-tasks"]::before {
   background-image: none;
 }
-.tcard[data-project="madko"] .trafik,
-.tcard[data-project="madko"] .card-top .path {
+.tcard[data-project="tailornate-tasks"] .trafik,
+.tcard[data-project="tailornate-tasks"] .card-top .path {
   display: none;
 }
-.tcard[data-project="madko"] .highlight {
+.tcard[data-project="tailornate-tasks"] .highlight {
   padding: 6px 14px;
   border-radius: 999px;
 }
-html[data-theme="light"] .tcard[data-project="madko"] {
+html[data-theme="light"] .tcard[data-project="tailornate-tasks"] {
   --glow: #2d5a3d;
   --glow-bg: rgba(45, 90, 61, 0.12);
   --terminal-text: #1a1510;
@@ -1877,24 +1877,24 @@ html[data-theme="light"] .tcard[data-project="madko"] {
   background: linear-gradient(180deg, #efe7d0 0%, #e0d0a8 100%);
   border: 1px solid rgba(26, 21, 16, 0.18);
 }
-html[data-theme="light"] .tcard[data-project="madko"] .stack span {
+html[data-theme="light"] .tcard[data-project="tailornate-tasks"] .stack span {
   background: rgba(255, 253, 245, 0.6);
   color: #1a1510;
   border-color: rgba(26, 21, 16, 0.15);
 }
-html[data-theme="light"] .tcard[data-project="madko"] .link {
+html[data-theme="light"] .tcard[data-project="tailornate-tasks"] .link {
   background: rgba(255, 253, 245, 0.5);
   border-color: rgba(26, 21, 16, 0.15);
 }
-html[data-theme="light"] .tcard[data-project="madko"] .highlight {
+html[data-theme="light"] .tcard[data-project="tailornate-tasks"] .highlight {
   background: linear-gradient(90deg, #2d5a3d, #57905f);
   color: #f2ead8;
 }
-html[data-theme="light"] .tcard[data-project="madko"] .highlight::before {
+html[data-theme="light"] .tcard[data-project="tailornate-tasks"] .highlight::before {
   background: #f2ead8;
   box-shadow: none;
 }
-html[data-theme="dark"] .tcard[data-project="madko"] {
+html[data-theme="dark"] .tcard[data-project="tailornate-tasks"] {
   --glow: #57905f;
   --glow-bg: rgba(87, 144, 95, 0.14);
   --terminal-text: #f2ead8;
@@ -1902,20 +1902,20 @@ html[data-theme="dark"] .tcard[data-project="madko"] {
   background: #1e1812;
   border: 1px solid rgba(242, 234, 216, 0.14);
 }
-html[data-theme="dark"] .tcard[data-project="madko"] .stack span {
+html[data-theme="dark"] .tcard[data-project="tailornate-tasks"] .stack span {
   background: #2b2318;
   color: #e8dcc2;
   border-color: rgba(242, 234, 216, 0.18);
 }
-html[data-theme="dark"] .tcard[data-project="madko"] .link {
+html[data-theme="dark"] .tcard[data-project="tailornate-tasks"] .link {
   background: #262015;
   border-color: rgba(242, 234, 216, 0.14);
 }
-html[data-theme="dark"] .tcard[data-project="madko"] .highlight {
+html[data-theme="dark"] .tcard[data-project="tailornate-tasks"] .highlight {
   background: linear-gradient(90deg, #2d5a3d, #57905f);
   color: #f2ead8;
 }
-html[data-theme="dark"] .tcard[data-project="madko"] .highlight::before {
+html[data-theme="dark"] .tcard[data-project="tailornate-tasks"] .highlight::before {
   background: #f2ead8;
   box-shadow: none;
 }

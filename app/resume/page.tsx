@@ -6,7 +6,7 @@ import "./resume.css"
 export const metadata: Metadata = {
   title: "Resume - Nathan Hai Vishnevski",
   description:
-    "Resume of Nathan Hai Vishnevski, AI engineer specializing in multi-agent systems. AutoMates, Polaris (IBM Israel), Bet Hadar, LOS, Madko.",
+    "Resume of Nathan Hai Vishnevski, AI engineer specializing in multi-agent systems. AutoMates, Polaris (IBM Israel), Bet Hadar, LOS, Tailornate Tasks.",
 }
 
 // One-page constraint: this page condenses the site content into resume
@@ -37,7 +37,7 @@ const RESUME_WORK = [
     line: "With a founding team: an agentic legal operating system for small Israeli law firms. A Hebrew-first team of seven AI agents does the routine work end-to-end, and the lawyer approves every output.",
   },
   {
-    title: "Madko",
+    title: "Tailornate Tasks",
     status: "live",
     line: "Full-stack task-management product live at tailornate.com, with an AI assistant, voice capture, a calendar feed and gamified XP. My daily driver.",
   },
