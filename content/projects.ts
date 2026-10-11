@@ -2,6 +2,40 @@ import type { Project } from "@/types"
 
 export const projects: Project[] = [
   {
+    id: "bet-hadar",
+    title: "Bet Hadar Portal",
+    tagline: "Procedures portal for a medical center, now growing into their management portal.",
+    description:
+      "Their procedures index lived in one shared Excel file that locked whenever two people opened it. I replaced it with an intranet portal, live in production since July 2026 and updated twice since: instant Hebrew search, a read-tracking audit trail with Excel export, manager roles. I deployed it myself on their Windows Server (IIS, Active Directory, firewall) and trained the staff with an interactive Hebrew training module. In September 2026 the engagement grew: I specified and demonstrated a portal that puts this system and two new ones, employee file and inventory, under one login with a management control panel. The build is the next delivery.",
+    tech: ["ASP.NET Core", "C#", "Hebrew RTL", "IIS", "AutoMates"],
+    status: "live",
+    path: "~/bet-hadar",
+    branch: "production",
+    glow: "#2f5f5a",
+    glowBg: "rgba(47,95,90,0.15)",
+    links: [
+      { href: "/work/bet-hadar", label: "full case study" },
+    ],
+    highlight: "live in production since July 2026 · deployed on-prem by me · growing into a portal",
+  },
+  {
+    id: "circlez",
+    title: "Circlez.ai",
+    tagline: "Software engineer in a startup's R&D team, as my academic project at HIT.",
+    description:
+      "Circlez.ai, a Rishon LeZion startup, builds Smart Match AI: a business-matching platform for B2B companies in local markets. I joined its engineering team in October 2026 as my academic project at HIT. Real work items in the company's developer platform, pull requests reviewed by the R&D lead, daily status with the team.",
+    tech: ["PowerShell", "GitHub", "Developer Tooling"],
+    status: "in-progress",
+    path: "~/circlez",
+    branch: "dev",
+    glow: "#5a3f8b",
+    glowBg: "rgba(90,63,139,0.15)",
+    links: [
+      { href: "https://www.linkedin.com/company/circlez-ai", label: "Circlez.ai on LinkedIn" },
+    ],
+    highlight: "started October 2026 · my academic project from HIT · engineer in the R&D team",
+  },
+  {
     id: "automates",
     title: "AutoMates",
     logo: "/logos/automates.svg",
@@ -35,54 +69,6 @@ export const projects: Project[] = [
     glowBg: "rgba(61,90,139,0.15)",
     links: [],
     highlight: "MVP in one sprint · presented to IBM Israel leadership at demo day",
-  },
-  {
-    id: "bet-hadar",
-    title: "Bet Hadar Portal",
-    tagline: "Procedures portal for a medical center.",
-    description:
-      "Their procedures index lived in one shared Excel file that locked whenever two people opened it. I replaced it with an intranet portal, now live in production: instant Hebrew search, a read-tracking audit trail with Excel export, manager roles. I deployed it myself on their Windows Server (IIS, Active Directory, firewall) and trained the staff with an interactive Hebrew training module.",
-    tech: ["ASP.NET Core", "C#", "Hebrew RTL", "IIS", "AutoMates"],
-    status: "shipped",
-    path: "~/bet-hadar",
-    branch: "production",
-    glow: "#2f5f5a",
-    glowBg: "rgba(47,95,90,0.15)",
-    links: [
-      { href: "/work/bet-hadar", label: "full case study" },
-    ],
-    highlight: "live in production · deployed on-prem by me · staff trained",
-  },
-  {
-    id: "los",
-    title: "LOS",
-    tagline: "Agentic legal operating system for lawyers.",
-    description:
-      "Building with a founding team: a Hebrew-first team of seven AI agents that does a small law firm's routine work end-to-end: drafting, research, review, office ops. AI drafts, the lawyer decides. Hard legal-safety rules mean the AI never pretends to be the lawyer.",
-    tech: ["Next.js", "TypeScript", "Multi-Agent", "Hebrew RTL", "AutoMates"],
-    status: "in-progress",
-    path: "~/los",
-    branch: "first_step",
-    glow: "#6b4a2f",
-    glowBg: "rgba(107,74,47,0.15)",
-    links: [],
-    highlight: "in development with a founding team · 7 AI agents",
-  },
-  {
-    id: "tailornate-tasks",
-    title: "Tailornate Tasks",
-    logo: "/logos/tailornate-tasks.svg",
-    tagline: "A personal task manager with an AI assistant.",
-    description:
-      "A full-stack task-management product that runs my actual life, with an AI layer for task analysis, voice capture, a calendar feed and gamified XP. You're looking at it right now: tailornate.com is Tailornate Tasks's home. Next milestone: accounts, multi-device sync, web-push reminders.",
-    tech: ["Next.js 16", "TypeScript", "Vercel AI SDK", "PWA", "Zustand"],
-    status: "live",
-    path: "~/tailornate-tasks",
-    branch: "main",
-    glow: "#8b6d3d",
-    glowBg: "rgba(139,109,61,0.15)",
-    links: [{ href: "/tasks", label: "Open Tailornate Tasks" }],
-    highlight: "live at tailornate.com · runs my day, every day",
   },
 ]
 
