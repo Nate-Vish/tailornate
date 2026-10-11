@@ -29,6 +29,7 @@ const suggestions = [
 ]
 
 const CALENDAR_KEYWORDS = /יומן|לוח.{0,2}שנה|calendar|קלנדר/i
+// Must match SettingsView's legacy key to preserve existing calendar connections.
 const CALENDAR_URL_KEY = "madko-calendar-ics"
 
 // Short-lived cache so one conversation doesn't refetch the feed per message

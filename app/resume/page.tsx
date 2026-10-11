@@ -6,7 +6,7 @@ import "./resume.css"
 export const metadata: Metadata = {
   title: "Resume - Nathan Hai Vishnevski",
   description:
-    "Resume of Nathan Hai Vishnevski, AI engineer specializing in multi-agent systems. AutoMates, Polaris (IBM Israel), Bet Hadar, LOS, Madko.",
+    "Resume of Nathan Hai Vishnevski, AI engineer specializing in multi-agent systems. Bet Hadar, Circlez.ai, AutoMates, Polaris (IBM Israel).",
 }
 
 // One-page constraint: this page condenses the site content into resume
@@ -17,6 +17,16 @@ const RESUME_SUMMARY =
 
 const RESUME_WORK = [
   {
+    title: "Bet Hadar Portal - medical center client",
+    status: "in production since Jul 2026",
+    line: "Replaced a lock-prone shared Excel with an intranet portal: instant Hebrew search, a read-tracking audit trail with Excel export, manager roles. Deployed end-to-end on the client's own Windows Server and IIS, staff trained. In September 2026 the engagement grew into a management portal: spec and working mockup delivered, build next.",
+  },
+  {
+    title: "Circlez.ai - software engineer, HIT academic project",
+    status: "since Oct 2026",
+    line: "Engineering work inside a Rishon LeZion startup building Smart Match AI, a B2B business-matching platform: real work items in the developer platform, pull requests reviewed by the R&D lead, daily status with the team.",
+  },
+  {
     title: "AutoMates",
     status: "live · daily driver",
     line: "Multi-agent AI development method: specialized agents, a structured pipeline (spec, plan, build, verify), automated quality gates. v1 went open source, v2 became my private working method. The factory that ships every other project on this list.",
@@ -25,21 +35,6 @@ const RESUME_WORK = [
     title: "Polaris - HIT x IBM Israel",
     status: "demoed",
     line: "Finance dashboard turning raw Excel into narrative insights (Gemini API), built in the Handzone Leaders Program. MVP in one sprint, presented to IBM Israel leadership at demo day. One design rule: code computes every figure, AI writes text only.",
-  },
-  {
-    title: "Bet Hadar Portal - medical center client",
-    status: "in production",
-    line: "Replaced a lock-prone shared Excel with an intranet portal: instant Hebrew search, a read-tracking audit trail with Excel export, manager roles. Deployed end-to-end on the client's own Windows Server and IIS, staff trained. Live in production.",
-  },
-  {
-    title: "LOS - Lawyers Operating System",
-    status: "in development",
-    line: "With a founding team: an agentic legal operating system for small Israeli law firms. A Hebrew-first team of seven AI agents does the routine work end-to-end, and the lawyer approves every output.",
-  },
-  {
-    title: "Madko",
-    status: "live",
-    line: "Full-stack task-management product live at tailornate.com, with an AI assistant, voice capture, a calendar feed and gamified XP. My daily driver.",
   },
 ]
 

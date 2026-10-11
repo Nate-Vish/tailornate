@@ -1,6 +1,6 @@
-# Madko AI Benchmark
+# Tailornate Tasks AI Benchmark
 
-The behavioral bar for Madko's assistant (chat + analyze). Unlike
+The behavioral bar for Tailornate Tasks's assistant (chat + analyze). Unlike
 `BENCHMARK.md` (whole-product), this measures the AI's decisions: does it pick
 the right action with the right fields, categorize correctly, analyze from
 ground truth, stay safe, and converse well. It is **executable** — the harness

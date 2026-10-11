@@ -85,8 +85,9 @@ function EnglishContent() {
 
       <h2>Outcome</h2>
       <p>
-        The system is live in production and used by the staff. The institution is evaluating
-        follow-up expansions.
+        The system has been live in production since July 2026 and updated twice since, with the
+        client's data untouched by every update. The institution came back for more: a portal that
+        puts this system and two new ones under one login, with the build as the next delivery.
       </p>
 
       <div className="cs-tags">

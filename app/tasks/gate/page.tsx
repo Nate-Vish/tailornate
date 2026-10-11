@@ -54,7 +54,7 @@ function GateForm() {
       </div>
       <h1 className="mt-3 text-[18px] font-semibold text-foreground">אזור פרטי</h1>
       <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-        Madko היא מערכת המשימות האישית של נתן.
+        Tailornate Tasks היא מערכת המשימות האישית של נתן.
         <br />
         יש לך קוד? יאללה.
       </p>
@@ -100,7 +100,7 @@ export default function GatePage() {
   return (
     <div
       dir="rtl"
-      className={`sidra ${dark ? "sidra-dark" : ""} madko-topo flex min-h-dvh items-center justify-center bg-[var(--background)] px-4`}
+      className={`sidra ${dark ? "sidra-dark" : ""} tailornate-tasks-topo flex min-h-dvh items-center justify-center bg-[var(--background)] px-4`}
     >
       <Suspense>
         <GateForm />

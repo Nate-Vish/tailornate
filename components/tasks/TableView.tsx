@@ -126,7 +126,7 @@ export function TableView({ onActions }: { onActions: (task: Task) => void }) {
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = "madko-tasks.csv"
+    a.download = "tailornate-tasks.csv"
     a.click()
     URL.revokeObjectURL(url)
   }

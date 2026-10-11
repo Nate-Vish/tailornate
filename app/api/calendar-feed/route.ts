@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
   try {
     const res = await fetch(url, {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      headers: { "User-Agent": "Madko-Calendar/1.0" },
+      headers: { "User-Agent": "Tailornate-Tasks-Calendar/1.0" },
       // A redirect could point anywhere (SSRF); the allowlist only checked
       // the first hop, so refuse to follow.
       redirect: "manual",

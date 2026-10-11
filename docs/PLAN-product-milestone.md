@@ -1,4 +1,4 @@
-# Plan: Madko Product Milestone — Accounts, Sync, Reminders, Recurrence
+# Plan: Tailornate Tasks Product Milestone — Accounts, Sync, Reminders, Recurrence
 
 Turns the single-device personal tool into a multi-device product with a nudge.
 Every phase ships independently; the app works at the end of each.
@@ -59,7 +59,7 @@ Email-OTP and Google login carry real risks; each item below is a task, not a no
 10. [ ] Push plumbing: VAPID keys, service worker (`public/sw.js`), subscribe flow in Settings (+ iOS install-detection guide), `push_subscriptions` upsert — files: `public/sw.js`, `lib/push.ts`, `SettingsView.tsx`, `app/api/push-subscribe/route.ts` — verify: test notification button rings phone + desktop
 11. [ ] Sender: Supabase Edge Function + pg_cron (5 min) → web-push → mark reminded_at; notification deep-links to /tasks — files: `supabase/functions/remind/` — verify: reminder fires ≤5 min after remind_at on installed iOS PWA and Android/desktop
 12. [ ] Quiet hours = a SET-TIME confirmation guard, never a silent mute (Nathan, 2026-07-11):
-    - User-set reminders always fire at their chosen time; if the time falls inside quiet hours (default 22:00-08:00), Madko asks "this is in your quiet hours — sure?" at set-time, then honors it.
+    - User-set reminders always fire at their chosen time; if the time falls inside quiet hours (default 22:00-08:00), Tailornate Tasks asks "this is in your quiet hours — sure?" at set-time, then honors it.
     - Auto-generated reminders (task-due default, planner nudges) never self-schedule into the night — snap to a daytime slot. A task whose deadline is literally at night counts as an explicit time.
     - Window editable/removable in Settings. Hebrew notification copy.
     - verify: a 03:00 user reminder rings at 03:00 after confirm; an auto reminder never fires in the window
@@ -78,7 +78,7 @@ Email-OTP and Google login carry real risks; each item below is a task, not a no
 
 ## Done When
 - Same tasks on iPhone + laptop within seconds of an edit
-- A reminder set in Madko rings the installed iPhone PWA
+- A reminder set in Tailornate Tasks rings the installed iPhone PWA
 - "כל יום ראשון" task recreates itself on completion
 - Login required; passcode gate retired; legal pages updated
 - `pnpm test` green; BENCHMARK scorecard has no ❌ and B3 loses its "zero tests" note
