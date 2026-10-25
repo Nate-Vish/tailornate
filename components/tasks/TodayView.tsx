@@ -11,7 +11,6 @@ import {
 } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable"
 import { AnimatePresence, motion } from "framer-motion"
-import { clsx } from "clsx"
 import {
   useTasksStore,
   selectTodayList,
@@ -24,6 +23,8 @@ import { calcScore, formatRelativeDue } from "@/lib/tasks/scoring"
 import { tipOfTheDay } from "@/lib/tasks/tips"
 import { TaskCard } from "./TaskCard"
 import { SquadStrip } from "./SquadStrip"
+import { WeekView } from "./WeekView"
+import { MonthView } from "./MonthView"
 import { Icon } from "./Icon"
 import { PriorityPill, ColorPill, scoreColor, cvar } from "./pills"
 import type { Task } from "@/lib/tasks/types"
@@ -222,21 +223,15 @@ function DoneTodayStrip() {
   )
 }
 
-export function TodayView({ onActions }: { onActions: (task: Task) => void }) {
+// The day dashboard: hero, squad, the ranked "later" list, snoozed, done-today.
+function DayBody({ onActions }: { onActions: (task: Task) => void }) {
   const tasks = useTasksStore((s) => s.tasks)
   const weights = useTasksStore((s) => s.weights)
   const boostTask = useTasksStore((s) => s.boostTask)
 
   const active = useMemo(() => selectTodayList({ tasks, weights }), [tasks, weights])
-  const [span, setSpan] = useState<"day" | "week" | "month">("day")
-
   const hero = active[0]
-  const rest = useMemo(() => {
-    const tail = active.slice(1)
-    if (span === "day") return tail.slice(0, 6)
-    if (span === "week") return tail.slice(0, 13)
-    return tail
-  }, [active, span])
+  const rest = useMemo(() => active.slice(1, 7), [active])
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }))
 
@@ -251,10 +246,58 @@ export function TodayView({ onActions }: { onActions: (task: Task) => void }) {
     const neighborAbove = reordered[newIndex - 1]
     if (neighborAbove) {
       boostTask(moved.id, "until_done", calcScore(neighborAbove, weights) + 1)
-    } else {
+    } else if (hero) {
       boostTask(moved.id, "until_done", calcScore(hero, weights) + 1)
     }
   }
+
+  return (
+    <>
+      <div className="px-4">
+        {hero ? (
+          <NextTaskCard task={hero} onActions={onActions} />
+        ) : (
+          <p className="rounded-2xl bg-[var(--muted)] px-3 py-8 text-center text-[13px] text-muted-foreground">
+            אין משימות פתוחות. תיהנה מהשקט — או תוסיף אחת ב-＋
+          </p>
+        )}
+      </div>
+
+      <div className="py-4">
+        <SquadStrip />
+      </div>
+
+      {rest.length > 0 && (
+        <div className="border-t border-border px-4 pb-2 pt-4">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-[14px] font-medium text-foreground">אחר כך</p>
+            <span className="text-[11px] text-muted-foreground">ממוין לפי ציון חכם</span>
+          </div>
+
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={rest.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+              <AnimatePresence initial={false}>
+                <div className="space-y-2">
+                  {rest.map((t) => (
+                    <TaskCard key={t.id} task={t} onActions={onActions} />
+                  ))}
+                </div>
+              </AnimatePresence>
+            </SortableContext>
+          </DndContext>
+        </div>
+      )}
+
+      <div className="px-4">
+        <SnoozedStrip />
+        <DoneTodayStrip />
+      </div>
+    </>
+  )
+}
+
+export function TodayView({ onActions }: { onActions: (task: Task) => void }) {
+  const [span, setSpan] = useState<"day" | "week" | "month">("day")
 
   return (
     <div className="pb-32">
@@ -285,47 +328,9 @@ export function TodayView({ onActions }: { onActions: (task: Task) => void }) {
         </div>
       </div>
 
-      <div className="px-4">
-        {hero ? (
-          <NextTaskCard task={hero} onActions={onActions} />
-        ) : (
-          <p className="rounded-2xl bg-[var(--muted)] px-3 py-8 text-center text-[13px] text-muted-foreground">
-            אין משימות פתוחות. תיהנה מהשקט — או תוסיף אחת ב-＋
-          </p>
-        )}
-      </div>
-
-      <div className="py-4">
-        <SquadStrip />
-      </div>
-
-      {rest.length > 0 && (
-        <div className={clsx("border-t border-border px-4 pt-4", "pb-2")}>
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-[14px] font-medium text-foreground">
-              {span === "day" ? "אחר כך" : span === "week" ? "השבוע" : "הכל"}
-            </p>
-            <span className="text-[11px] text-muted-foreground">ממוין לפי ציון חכם</span>
-          </div>
-
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={rest.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-              <AnimatePresence initial={false}>
-                <div className="space-y-2">
-                  {rest.map((t) => (
-                    <TaskCard key={t.id} task={t} onActions={onActions} />
-                  ))}
-                </div>
-              </AnimatePresence>
-            </SortableContext>
-          </DndContext>
-        </div>
-      )}
-
-      <div className="px-4">
-        <SnoozedStrip />
-        <DoneTodayStrip />
-      </div>
+      {span === "day" && <DayBody onActions={onActions} />}
+      {span === "week" && <WeekView onActions={onActions} />}
+      {span === "month" && <MonthView onActions={onActions} />}
     </div>
   )
 }
