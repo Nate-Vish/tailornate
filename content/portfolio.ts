@@ -61,5 +61,5 @@ export const background: Milestone[] = [
   { when: "2019 to 2023", what: "IDF officer", detail: "Worked with 18 civilian communities. Commanded 50 soldiers." },
   { when: "2024", what: "B.Sc. Computer Science, HIT", detail: "Graduating 2027." },
   { when: "2026", what: "Handzone Leaders, HIT and IBM Israel", detail: "Plus the AI Driven Development program at Future HIT." },
-  { when: "Oct 2026", what: "Independent, as Tailor Nate", detail: "Working with healthcare institutions and startups." },
+  { when: "Oct 2026", what: "Self-employed", detail: "Working with healthcare institutions and startups." },
 ]

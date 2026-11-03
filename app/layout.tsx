@@ -27,16 +27,16 @@ export const metadata: Metadata = {
   description:
     "Founder building health tech in Israel. Software live at a medical center with a staff of about 400. Built end to end with a team of AI agents and private local models.",
   openGraph: {
-    title: "Tailor Nate | Nathan Hai Vishnevski",
+    title: "Nathan Hai Vishnevski | Health tech",
     description: "I build the software care teams use every day.",
     url: "https://tailornate.com",
-    siteName: "Tailor Nate",
+    siteName: "Nathan Hai Vishnevski",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tailor Nate | Nathan Hai Vishnevski",
+    title: "Nathan Hai Vishnevski | Health tech",
     description: "I build the software care teams use every day.",
   },
   metadataBase: new URL("https://tailornate.com"),
