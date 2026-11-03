@@ -12,7 +12,7 @@ export default function Hero() {
           </p>
           <h1 id="hero-title">{profile.oneliner}</h1>
           <p className="pf-lede">
-            I&apos;m Nathan Hai Vishnevski, a founder building health tech in Israel. My first
+            I&apos;m Nathan Hai Vishnevski, a health tech entrepreneur in Israel. My first
             system is used by the staff of a medical center, about 400 people. I build with a
             team of AI agents I designed myself.
           </p>
