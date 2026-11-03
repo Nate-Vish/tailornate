@@ -1,29 +1,30 @@
-import SkipNav from "@/components/layout/SkipNav"
-import Header from "@/components/layout/Header"
-import Footer from "@/components/layout/Footer"
-import Hero from "@/components/sections/Hero"
-import Projects from "@/components/sections/Projects"
-import Stack from "@/components/sections/Stack"
-import About from "@/components/sections/About"
-import Experience from "@/components/sections/Experience"
-import Education from "@/components/sections/Education"
+import Nav from "@/components/portfolio/Nav"
+import Hero from "@/components/portfolio/Hero"
+import BetHadar from "@/components/portfolio/BetHadar"
+import HowIBuild from "@/components/portfolio/HowIBuild"
+import OtherWork from "@/components/portfolio/OtherWork"
+import About from "@/components/portfolio/About"
+import Contact from "@/components/portfolio/Contact"
 import FloatingChat from "@/components/chat/FloatingChat"
+import { grotesk, heebo } from "./fonts"
+import "./portfolio.css"
 
-export default function Home() {
+export default function Portfolio() {
   return (
-    <>
-      <SkipNav />
-      <Header />
+    <div className={`pf ${grotesk.variable} ${heebo.variable}`}>
+      <a href="#main-content" className="pf-skip">
+        Skip to content
+      </a>
+      <Nav />
       <main id="main-content">
         <Hero />
-        <Projects />
-        <Stack />
+        <BetHadar />
+        <HowIBuild />
+        <OtherWork />
         <About />
-        <Experience />
-        <Education />
+        <Contact />
       </main>
-      <Footer />
       <FloatingChat />
-    </>
+    </div>
   )
 }

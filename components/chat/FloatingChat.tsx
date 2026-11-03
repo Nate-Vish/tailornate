@@ -1,13 +1,15 @@
 "use client"
 
 import { useChat } from "@ai-sdk/react"
-import { useEffect, useRef, useState, type FormEvent } from "react"
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import ChatMessages from "./ChatMessages"
+import { profile } from "@/content/profile"
 
+// Each chip sends one language, so the bot answers in that language.
 const CHIPS = [
-  { he: "מה נתן עושה?", en: "What does Nathan do?" },
-  { he: "הוא יכול לעזור לפרויקט שלי?", en: "Can he help my project?" },
-  { he: "רק תחברו אותי אליו", en: "Just connect me" },
+  { label: "What does Nathan build?", text: "What does Nathan build?" },
+  { label: "Could he help my organization?", text: "Could Nathan help my organization?" },
+  { label: "בעברית, בבקשה", text: "היי, אפשר בעברית? ספר לי בקצרה מה נתן עושה." },
 ]
 
 export default function FloatingChat() {
@@ -37,38 +39,26 @@ export default function FloatingChat() {
   })
   const isLoading = status === "submitted" || status === "streaming"
 
-  // Auto-open once per session, a few seconds after arrival (research: delayed
-  // proactive beats instant popup and passive badge).
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    if (window.innerWidth < 900) return
-    if (sessionStorage.getItem("tn.bot.seen")) return
-    const t = setTimeout(() => {
-      setOpen(true)
-      sessionStorage.setItem("tn.bot.seen", "1")
-    }, 4500)
-    return () => clearTimeout(t)
-  }, [])
-
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" })
   }, [messages, showForm, leadState])
 
-  // Hero "Let's talk" button and any other trigger open the panel.
-  useEffect(() => {
-    const openBot = () => setOpen(true)
-    window.addEventListener("tn-open-bot", openBot)
-    return () => window.removeEventListener("tn-open-bot", openBot)
-  }, [])
-
-  // Restore an active lockout on reload (server also enforces it by IP for 24h).
-  useEffect(() => {
+  // Opening restores an active lockout from a previous visit (the server also
+  // enforces it by IP for 24h).
+  const openPanel = useCallback(() => {
     try {
       const until = Number(localStorage.getItem("tn.bot.locked") || 0)
       if (until && Date.now() < until) setChatLocked(true)
       else if (until) localStorage.removeItem("tn.bot.locked")
     } catch {}
+    setOpen(true)
   }, [])
+
+  // Any "Ask my assistant" button on the page opens the panel.
+  useEffect(() => {
+    window.addEventListener("tn-open-bot", openPanel)
+    return () => window.removeEventListener("tn-open-bot", openPanel)
+  }, [openPanel])
 
   const send = (text: string) => {
     if (!text.trim() || isLoading || rateLimited || chatLocked) return
@@ -102,41 +92,41 @@ export default function FloatingChat() {
   return (
     <div className={`fbot ${open ? "fbot-open" : ""}`}>
       {!open && (
-        <button className="fbot-pill" onClick={() => setOpen(true)} aria-label="Chat with Nathan's bot">
-          <span className="dot" aria-hidden="true" />
-          <span>דברו איתי · Talk to me</span>
+        <button className="fbot-pill" onClick={openPanel} aria-label="Open Nathan's assistant">
+          <img src={profile.portrait} alt="" className="fbot-pill-avatar" />
+          <span>Ask my assistant</span>
         </button>
       )}
 
       {open && (
-        <div className="fbot-panel" role="dialog" aria-label="Nathan's bot">
+        <div className="fbot-panel" role="dialog" aria-label="Nathan's assistant">
           <div className="fbot-head">
-            <img src="/portrait.jpg" alt="" className="fbot-avatar" />
+            <img src={profile.portrait} alt="" className="fbot-avatar" />
             <div className="fbot-id">
-              <b>הבוט של נתן · Nathan&apos;s bot</b>
-              <span>● online · replies instantly</span>
+              <b>Nathan&apos;s assistant</b>
+              <span>AI, answers about Nathan&apos;s work</span>
             </div>
-            <button className="fbot-x" onClick={() => setOpen(false)} aria-label="Minimize chat">
-              ×
+            <button className="fbot-x" onClick={() => setOpen(false)} aria-label="Close assistant">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M6 6l12 12M18 6 6 18" />
+              </svg>
             </button>
           </div>
 
           <div className="fbot-body" role="log" aria-live="polite">
-            <div className="msg fbot-hello">
-              היי, אני כאן בשם נתן. רוצים את גרסת 20 השניות של מה שהוא עושה, או שכבר יודעים
-              ורוצים פשוט ליצור קשר?
-              <br />
-              <span className="fbot-hello-en">
-                Hi, I&apos;m here on Nathan&apos;s behalf. Want the 20 second version of what he
-                does, or shall I just connect you?
+            <div className="fbot-msg fbot-hello">
+              Hi, I answer questions about Nathan&apos;s work. Ask me anything, or leave your
+              details and he&apos;ll get back to you.
+              <span className="fbot-hello-he" dir="rtl" lang="he">
+                אפשר גם לכתוב לי בעברית.
               </span>
             </div>
 
             {messages.length === 0 && (
               <div className="chip-suggest fbot-chips">
                 {CHIPS.map((c) => (
-                  <button key={c.en} onClick={() => send(c.he + " / " + c.en)} disabled={isLoading || rateLimited || chatLocked}>
-                    {c.he}
+                  <button key={c.label} onClick={() => send(c.text)} disabled={isLoading || rateLimited || chatLocked}>
+                    {c.label}
                   </button>
                 ))}
               </div>
@@ -145,12 +135,12 @@ export default function FloatingChat() {
             <ChatMessages messages={messages} isLoading={isLoading} />
 
             {rateLimited && (
-              <div className="chat-alert">הגעת למגבלת ההודעות לשעה. אפשר פשוט להשאיר פרטים למטה.</div>
+              <div className="chat-alert">Message limit reached for this hour. You can still leave your details below.</div>
             )}
 
             {injectionWarned && !chatLocked && (
               <div className="chat-alert">
-                זוהה ניסיון לתמרן את העוזר. ניסיון נוסף ינעל את הצ'אט ל-24 שעות.
+                זוהה ניסיון לתמרן את העוזר. ניסיון נוסף ינעל את הצ&apos;אט ל-24 שעות.
                 <br />
                 <span dir="ltr">That looked like an attempt to manipulate the assistant. One more and the chat locks for 24 hours.</span>
               </div>
@@ -158,7 +148,7 @@ export default function FloatingChat() {
 
             {chatLocked && (
               <div className="chat-alert">
-                הצ'אט ננעל ל-24 שעות בעקבות ניסיונות תמרון חוזרים. אפשר ליצור קשר ישירות: natan.vish100@gmail.com
+                הצ&apos;אט ננעל ל-24 שעות בעקבות ניסיונות תמרון חוזרים. אפשר ליצור קשר ישירות: natan.vish100@gmail.com
                 <br />
                 <span dir="ltr">Chat locked for 24 hours after repeated manipulation attempts. Reach Nathan at natan.vish100@gmail.com</span>
               </div>
@@ -166,26 +156,26 @@ export default function FloatingChat() {
 
             {showForm && leadState !== "sent" && (
               <form className="fbot-lead" onSubmit={submitLead}>
-                <b>נתן יחזור אליכם אישית, בדרך כלל תוך 24 שעות.</b>
-                <input name="name" placeholder="שם / Name" required minLength={2} maxLength={80} />
-                <input name="email" type="email" placeholder="אימייל / Email" required maxLength={254} />
-                <textarea name="note" placeholder="על מה מדובר? (לא חובה)" maxLength={600} rows={2} />
+                <b>Nathan replies personally, usually within 24 hours.</b>
+                <input name="name" placeholder="Name / שם" required minLength={2} maxLength={80} />
+                <input name="email" type="email" placeholder="Email / אימייל" required maxLength={254} />
+                <textarea name="note" placeholder="What is it about? (optional)" maxLength={600} rows={2} />
                 <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="fbot-hp" />
                 <button type="submit" disabled={leadState === "sending"}>
-                  {leadState === "sending" ? "שולח..." : "שלח לנתן · Send to Nathan"}
+                  {leadState === "sending" ? "Sending..." : "Send to Nathan"}
                 </button>
-                <span className="fbot-privacy">הולך ישירות לנתן. בלי ספאם, בלי רשימות תפוצה.</span>
+                <span className="fbot-privacy">Goes straight to Nathan. No mailing lists.</span>
                 {leadState === "error" && (
-                  <span className="chat-alert">משהו השתבש. אפשר גם במייל: natan.vish100@gmail.com</span>
+                  <span className="chat-alert">The form did not send. Email natan.vish100@gmail.com instead.</span>
                 )}
                 {leadState === "limit" && (
-                  <span className="chat-alert">הגעת למגבלה היומית. נשמח לשמוע ממך במייל.</span>
+                  <span className="chat-alert">Daily limit reached. Email natan.vish100@gmail.com instead.</span>
                 )}
               </form>
             )}
 
             {leadState === "sent" && (
-              <div className="msg fbot-sent">נשלח! נתן יחזור אליכם בקרוב. תודה.</div>
+              <div className="fbot-msg fbot-sent">Sent. Nathan will get back to you soon.</div>
             )}
 
             <div ref={bottomRef} aria-hidden="true" />
@@ -202,16 +192,19 @@ export default function FloatingChat() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="שאלו אותי משהו · ask me anything"
+                placeholder="Ask about Nathan's work"
+                aria-label="Message"
                 disabled={rateLimited || chatLocked}
                 maxLength={500}
               />
               <button type="submit" disabled={isLoading || rateLimited || chatLocked || !input.trim()} aria-label="Send">
-                ↑
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+                  <path d="M12 19V5M5 12l7-7 7 7" />
+                </svg>
               </button>
             </form>
             <button className="fbot-leadbtn" onClick={() => setShowForm((v) => !v)}>
-              {showForm ? "סגירת טופס" : "השארת פרטים · Leave details"}
+              {showForm ? "Close form" : "Leave details"}
             </button>
           </div>
         </div>

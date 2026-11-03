@@ -8,7 +8,8 @@ import {
   detectInjection,
 } from "@/lib/chat-config"
 
-const MAX_MESSAGES = 20
+const MAX_MESSAGES = 40 // hard cap on what a client may send
+const HISTORY_WINDOW = 16 // turns the model actually sees
 const MAX_MESSAGE_LENGTH = 2000
 
 // In-memory rate limiter (resets on cold start — fine for portfolio scale)
@@ -99,11 +100,13 @@ function extractText(msg: unknown): string {
   if (typeof msg !== "object" || msg === null) return ""
   const m = msg as Record<string, unknown>
   if (Array.isArray(m.parts)) {
-    const part = (m.parts as unknown[])[0]
-    if (typeof part === "object" && part !== null) {
-      const p = part as Record<string, unknown>
-      if (typeof p.text === "string") return p.text
-    }
+    return (m.parts as unknown[])
+      .map((part) => {
+        if (typeof part !== "object" || part === null) return ""
+        const p = part as Record<string, unknown>
+        return p.type === "text" && typeof p.text === "string" ? p.text : ""
+      })
+      .join("")
   }
   if (typeof m.content === "string") return m.content
   return ""
@@ -142,13 +145,30 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Strip fabricated assistant messages — only trust user turns from the client
-  const userMessages = rawMessages.filter(
-    (m: unknown) =>
-      typeof m === "object" && m !== null && (m as Record<string, unknown>).role === "user"
-  )
+  // Rebuild the history from plain text only. Assistant turns are kept so the
+  // bot remembers what it already said; anything else a client might inject
+  // (system roles, tool parts, files) is dropped.
+  const history = rawMessages
+    .filter((m: unknown) => {
+      const role = typeof m === "object" && m !== null ? (m as Record<string, unknown>).role : null
+      return role === "user" || role === "assistant"
+    })
+    .map((m: unknown, i: number) => {
+      const r = m as Record<string, unknown>
+      return {
+        id: typeof r.id === "string" ? r.id : String(i),
+        role: r.role as "user" | "assistant",
+        parts: [{ type: "text" as const, text: extractText(m) }],
+      }
+    })
+    .filter((m) => m.parts[0].text.trim().length > 0)
+    .slice(-HISTORY_WINDOW)
 
-  if (userMessages.length === 0) {
+  // The model must see a user turn first and last.
+  while (history.length && history[0].role !== "user") history.shift()
+  const userMessages = history.filter((m) => m.role === "user")
+
+  if (userMessages.length === 0 || history[history.length - 1].role !== "user") {
     return new Response("Invalid request", { status: 400 })
   }
 
@@ -168,8 +188,9 @@ export async function POST(req: NextRequest) {
     const result = streamText({
       model: google("gemini-flash-lite-latest"),
       system: SYSTEM_PROMPT,
-      messages: await convertToModelMessages(userMessages),
-      maxOutputTokens: 512,
+      messages: await convertToModelMessages(history),
+      maxOutputTokens: 400,
+      temperature: 0.6,
     })
 
     return result.toUIMessageStreamResponse()
