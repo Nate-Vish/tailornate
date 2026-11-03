@@ -43,7 +43,7 @@ export default async function OpenGraphImage() {
             }}
           >
             <div style={{ width: 14, height: 14, borderRadius: 7, background: "#1f9d58" }} />
-            Live at Bet Hadar medical center
+            Live at a medical center
           </div>
           <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.04, letterSpacing: -2 }}>
             I build the software care teams use every day.

@@ -7,7 +7,8 @@ export default function Contact() {
       <div className="pf-wrap">
         <h2 id="contact-title">Let&apos;s build the next one.</h2>
         <p>
-          I&apos;m looking for the next rehabilitation and geriatric centers to work with. I&apos;m
+          I&apos;m looking for the next medical institutions to work with, from rehabilitation
+          centers to hospitals. I&apos;m
           also open to good problems in other fields, and to partnerships with people building in
           health tech.
         </p>

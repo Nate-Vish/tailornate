@@ -23,9 +23,9 @@ const jetbrains = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Nathan Hai Vishnevski | Software for healthcare, built with AI agents",
+  title: "Nathan Hai Vishnevski | Health tech, built with AI agents",
   description:
-    "Independent software engineer in Israel. Live at Bet Hadar, a geriatric and rehabilitation medical center with a staff of about 400. Builds end to end with a team of AI agents and private local models.",
+    "Founder building health tech in Israel. Software live at a medical center with a staff of about 400. Built end to end with a team of AI agents and private local models.",
   openGraph: {
     title: "Tailor Nate | Nathan Hai Vishnevski",
     description: "I build the software care teams use every day.",

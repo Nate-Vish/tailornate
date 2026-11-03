@@ -4,8 +4,9 @@ import type { Fact, Milestone, WorkItem } from "@/types"
 // count). "About 400" is the center's staff, not measured active users.
 
 export const betHadar = {
-  name: "Bet Hadar, Ashdod",
-  kind: "Geriatric and rehabilitation medical center. 11 departments, a staff of about 400.",
+  // Headings stay generic; the client is named once, in the line under the heading.
+  name: "A procedures system for a medical center",
+  kind: "Client: Bet Hadar, Ashdod. Geriatric and rehabilitation medical center, 11 departments, a staff of about 400.",
   story: [
     "Their clinical procedures lived in one shared Excel file that locked whenever two people opened it. No access control, no record of who read what.",
     "I replaced it with a Hebrew procedures system that runs on their own servers. Nurses and caregivers find any procedure in seconds, and managers see exactly who read it.",
@@ -20,7 +21,7 @@ export const betHadar = {
     { when: "Jul 2026", what: "Procedures system goes live", detail: "On-site discovery, build, deployment on their Windows Server, staff training." },
     { when: "Aug 2026", what: "Two updates in five weeks", detail: "Versions 1.1 and 1.2, shipped while the staff kept working." },
     { when: "Now", what: "One portal for the whole center", detail: "Single sign-on, employee files and digital forms, permissions and audit. Designed against the Ministry of Health cyber circular." },
-    { when: "Next", what: "More rehabilitation and geriatric centers", detail: "The same system, adapted to each institution.", upcoming: true },
+    { when: "Next", what: "More medical institutions", detail: "From rehabilitation centers to hospitals, adapted to each one.", upcoming: true },
   ] satisfies Milestone[],
   caseStudy: "/work/bet-hadar",
 }
