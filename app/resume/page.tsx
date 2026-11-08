@@ -1,148 +1,228 @@
 import type { Metadata } from "next"
 import { profile } from "@/content/profile"
+import { betHadar } from "@/content/portfolio"
+import SubNav from "@/components/portfolio/SubNav"
+import { grotesk, heebo } from "../portfolio/fonts"
 import PrintButton from "./PrintButton"
+import "../portfolio/portfolio.css"
 import "./resume.css"
 
 export const metadata: Metadata = {
-  title: "Resume - Nathan Hai Vishnevski",
+  title: "Resume | Nathan Hai Vishnevski",
   description:
-    "Resume of Nathan Hai Vishnevski, independent software engineer for healthcare. Bet Hadar, Circlez.ai, AutoMates, Polaris (IBM Israel).",
+    "Resume of Nathan Hai Vishnevski, health tech entrepreneur in Israel. Software live at a medical center, built end to end with a team of AI agents.",
 }
 
-// One-page constraint: this page condenses the site content into resume
-// density. Titles/dates/contacts come from content/*, the one-line proofs
-// are maintained here.
-const RESUME_SUMMARY =
-  "Independent software engineer building for healthcare. My first system is live at a geriatric and rehabilitation medical center with a staff of about 400, deployed on their own servers. I take projects end to end: on-site discovery, design, build, deployment and staff training, with a team of AI agents I designed myself. Four years as an IDF officer working with 18 civilian communities taught me to learn other people's worlds fast and build what they actually need."
+// The public resume. It condenses the portfolio into one printable page.
+// Headings stay generic; the client is named once, in the line under the heading.
+// The private CV is a separate document and is not this page.
+const SUMMARY =
+  "I build software for medical institutions, end to end. I start on the floor with the staff to find the real problem, write the spec, design the architecture, and build it with a team of AI agents I designed myself. Then I deploy it on the client's own servers and train the people who use it. Four years as an IDF officer working with 18 civilian communities taught me to learn other people's worlds fast."
 
-const RESUME_WORK = [
+const ROLES = [
   {
-    title: "Bet Hadar - geriatric and rehabilitation medical center, Ashdod",
-    status: "live since Jul 2026",
-    line: "Replaced a lock-prone shared Excel index with a Hebrew procedures system: instant search, read confirmations with Excel export, manager roles. ASP.NET Core on the center's own Windows Server and IIS, 100+ procedures migrated, staff trained, 455 read confirmations in the first 30 days. Now building one portal for the whole center: single sign-on, employee files, permissions and audit.",
+    when: "Jul 2026 to now",
+    title: "Health Tech Entrepreneur",
+    org: "Self-employed",
+    live: true,
+    projects: [
+      {
+        name: "A procedures system for a medical center",
+        client: "Client: Bet Hadar, Ashdod. Geriatric and rehabilitation medical center, 11 departments, a staff of about 400.",
+        points: [
+          "Replaced a shared Excel index that locked whenever two people opened it with a Hebrew procedures system: instant search, read confirmations with Excel export, manager roles.",
+          "On-site discovery, spec and architecture, build, deployment on the center's Windows Server and IIS, staff training. Over 100 procedures migrated automatically.",
+          "Live since July 2026, two updates in the first five weeks, 455 read confirmations in the first 30 days.",
+        ],
+      },
+      {
+        name: "One portal for the whole center",
+        status: "In development",
+        points: [
+          "Single sign-on, employee files and digital forms, permissions and audit, designed against the Ministry of Health cyber circular.",
+        ],
+      },
+    ],
   },
   {
-    title: "Circlez.ai - software engineer, HIT degree project",
-    status: "since Oct 2026",
-    line: "Engineer in the R&D team of an AI startup building B2B business matching: real work items, pull requests reviewed by the R&D lead, daily status with the team.",
+    when: "Oct 2026 to now",
+    title: "Software engineer, R&D team",
+    org: "Circlez.ai",
+    line: "AI startup building B2B business matching. Real work items and pull requests reviewed by the R&D lead. My HIT degree project.",
   },
   {
-    title: "AutoMates",
-    status: "open source",
-    line: "Multi-agent development framework for Claude Code: specialized agents in a structured pipeline (spec, plan, build, verify) with quality gates. The open first version of the method I build everything with, now including security review, an internal pentest agent and local models.",
-  },
-  {
-    title: "Polaris - HIT x IBM Israel",
-    status: "demoed",
-    line: "Finance dashboard turning raw Excel into narrative insights (Gemini API), built in the Handzone Leaders Program. MVP in one sprint, presented to IBM Israel leadership at demo day. One design rule: code computes every figure, AI writes text only.",
+    when: "2019 to 2023",
+    title: "Officer",
+    org: "Israel Defense Forces",
+    line: "Worked with 18 civilian communities, bridging their needs to army systems and resources. Commanded 50 soldiers.",
   },
 ]
 
-const RESUME_SERVICE = [
+const PROJECTS = [
   {
-    role: "Officer",
-    org: "IDF",
-    period: "2019 - 2023",
-    line: "Worked with 18 civilian communities, bridging their needs to army systems and resources. Commanded 50 soldiers, with weekly briefings reaching 1,200+.",
+    name: "AutoMates",
+    tag: "Open source",
+    line: "A multi-agent framework for Claude Code: spec, plan, build and verify agents with quality gates. The first public version of the method I build with every day.",
+  },
+  {
+    name: "Polaris for IBM Israel",
+    tag: "Handzone Leaders",
+    line: "A finance tool that turns raw Excel into a written story. Code computes every number, AI only writes the text. Presented to IBM Israel leadership.",
   },
 ]
 
-const RESUME_EDUCATION = [
-  { line: "B.Sc. Computer Science - HIT, Holon Institute of Technology", period: "2024 - 2027 (exp.)" },
-  { line: "AI Driven Development Program - Future HIT · accepted a year early", period: "2026" },
-  { line: "Handzone Leaders Program - Future HIT · IBM Israel (where Polaris was built)", period: "2026" },
-  { line: "3rd place, HIT GenAI Hackathon", period: "2025" },
+const SKILLS = [
+  { group: "Product", items: ["On-site discovery", "Specification", "Requirements", "Staff training"] },
+  { group: "Architecture", items: ["System design", "On-prem deployment", "Windows Server and IIS", "Active Directory", "SSO and audit"] },
+  { group: "AI", items: ["Multi-agent orchestration", "Local LLMs", "RAG", "MCP", "Evals"] },
+  { group: "Security", items: ["Security review", "Internal pentest", "MoH cyber circular"] },
+  { group: "Stack", items: ["C#", "ASP.NET Core", "TypeScript", "Next.js", "Python", "SQL"] },
 ]
 
-const RESUME_SKILLS = [
-  { name: "AI & Agents", items: "Multi-agent orchestration, context engineering, LLMs, RAG, MCP, prompt engineering, evals & quality gates" },
-  { name: "Code", items: "C#, ASP.NET Core, TypeScript, Python, Java, C/C++, SQL · Next.js, React" },
-  { name: "Tooling & Infra", items: "Claude Code, Codex, local models (Ollama), Gemini API, Vercel AI SDK · IIS, Active Directory, Windows Server, Linux, Docker, Git" },
+const EDUCATION = [
+  { when: "2024 to 2027", what: "B.Sc. Computer Science", where: "HIT, Holon Institute of Technology" },
+  { when: "2026", what: "AI Driven Development program", where: "Future HIT" },
+  { when: "2026", what: "Handzone Leaders program", where: "Future HIT with IBM Israel" },
+  { when: "2025", what: "Third place, GenAI Hackathon", where: "HIT" },
+]
+
+// The four numbers the portfolio leads with, minus the date (it is in the role line).
+const FACTS = [
+  { value: "~400", label: "Staff at the first client" },
+  ...betHadar.facts.filter((f) => f.value !== "Jul 2026"),
 ]
 
 export default function ResumePage() {
   return (
-    <div className="resume-page">
-      <a href="/" className="resume-back">
-        back to tailornate.com
-      </a>
-      <PrintButton />
-      <article className="resume-sheet">
-        <header className="resume-hd">
-          <h1>{profile.name}</h1>
-          <p className="resume-role">Software engineer for healthcare · AI agents · CS @ HIT</p>
-          <ul className="resume-contact">
-            <li>{profile.location}</li>
-            <li>
-              <a href={`mailto:${profile.email}`}>{profile.email}</a>
-            </li>
-            <li>
-              <a href={profile.linkedin}>LinkedIn: nathan-hai-vishnevski</a>
-            </li>
-            <li>
-              <a href={profile.github}>GitHub: Nate-Vish</a>
-            </li>
-            <li>
-              <a href="https://www.tailornate.com">tailornate.com</a>
-            </li>
-          </ul>
-          <p className="resume-summary">{RESUME_SUMMARY}</p>
-        </header>
+    <div className={`pf pf-resume ${grotesk.variable} ${heebo.variable}`}>
+      <SubNav current="/resume">
+        <PrintButton />
+      </SubNav>
 
-        <section className="resume-sec">
-          <h2>Selected Work</h2>
-          {RESUME_WORK.map((w) => (
-            <div key={w.title} className="resume-item">
-              <div className="resume-item-hd">
-                <h3>{w.title}</h3>
-                <span className="resume-period">{w.status}</span>
-              </div>
-              <p className="resume-line">{w.line}</p>
+      <main className="rs-stage">
+        <article className="rs-sheet">
+          <header className="rs-head">
+            <div>
+              <h1>{profile.name}</h1>
+              <p className="rs-role">Health Tech Entrepreneur</p>
+              <p className="rs-tagline">Software for medical institutions, from the problem on the floor to production.</p>
             </div>
-          ))}
-        </section>
-
-        <section className="resume-sec">
-          <h2>Service</h2>
-          {RESUME_SERVICE.map((xp) => (
-            <div key={xp.role} className="resume-item">
-              <div className="resume-item-hd">
-                <h3>
-                  {xp.role} <span>- {xp.org}</span>
-                </h3>
-                <span className="resume-period">{xp.period}</span>
-              </div>
-              <p className="resume-line">{xp.line}</p>
-            </div>
-          ))}
-        </section>
-
-        <section className="resume-sec">
-          <h2>Education & Programs</h2>
-          {RESUME_EDUCATION.map((e) => (
-            <div key={e.line} className="resume-item resume-item-tight">
-              <div className="resume-item-hd">
-                <h3 className="resume-edu">{e.line}</h3>
-                <span className="resume-period">{e.period}</span>
-              </div>
-            </div>
-          ))}
-        </section>
-
-        <section className="resume-sec">
-          <h2>Skills & Languages</h2>
-          <ul className="resume-skills">
-            {RESUME_SKILLS.map((c) => (
-              <li key={c.name}>
-                <b>{c.name}:</b> {c.items}
+            <ul className="rs-contact">
+              <li>
+                <a href={`mailto:${profile.email}`}>{profile.email}</a>
               </li>
+              <li>
+                <a href="https://www.tailornate.com">tailornate.com</a>
+              </li>
+              <li>
+                <a href={profile.linkedin}>linkedin.com/in/nathan-hai-vishnevski</a>
+              </li>
+              <li>
+                <a href={profile.github}>github.com/Nate-Vish</a>
+              </li>
+              <li>{profile.location}</li>
+            </ul>
+          </header>
+
+          <p className="rs-summary">{SUMMARY}</p>
+
+          <dl className="rs-facts">
+            {FACTS.map((f) => (
+              <div key={f.label}>
+                <dt>{f.label}</dt>
+                <dd>{f.value}</dd>
+              </div>
             ))}
-            <li>
-              <b>Languages:</b> {profile.languages.join(" · ")}
-            </li>
-          </ul>
-        </section>
-      </article>
+          </dl>
+
+          <div className="rs-body">
+            <div className="rs-main">
+              <section aria-labelledby="rs-exp">
+                <h2 id="rs-exp">Experience</h2>
+                <ol className="rs-roles">
+                  {ROLES.map((r) => (
+                    <li key={r.title} className={r.live ? "is-live" : undefined}>
+                      <span className="rs-when">{r.when}</span>
+                      <h3>
+                        {r.title}
+                        <span>{r.org}</span>
+                      </h3>
+                      {r.line && <p>{r.line}</p>}
+                      {r.projects?.map((p) => (
+                        <div key={p.name} className="rs-project">
+                          <h4>
+                            {p.name}
+                            {p.status && <em>{p.status}</em>}
+                          </h4>
+                          {p.client && <p className="rs-client">{p.client}</p>}
+                          <ul>
+                            {p.points.map((pt) => (
+                              <li key={pt}>{pt}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </li>
+                  ))}
+                </ol>
+              </section>
+
+              <section aria-labelledby="rs-proj">
+                <h2 id="rs-proj">Projects</h2>
+                <ul className="rs-rows">
+                  {PROJECTS.map((p) => (
+                    <li key={p.name}>
+                      <h3>
+                        {p.name}
+                        <span>{p.tag}</span>
+                      </h3>
+                      <p>{p.line}</p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+
+            <aside className="rs-side">
+              <section aria-labelledby="rs-skills">
+                <h2 id="rs-skills">What I do</h2>
+                {SKILLS.map((s) => (
+                  <div key={s.group} className="rs-skill">
+                    <h3>{s.group}</h3>
+                    <ul className="rs-chips">
+                      {s.items.map((i) => (
+                        <li key={i}>{i}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </section>
+
+              <section aria-labelledby="rs-edu">
+                <h2 id="rs-edu">Education</h2>
+                <ul className="rs-edu">
+                  {EDUCATION.map((e) => (
+                    <li key={e.what}>
+                      <span className="rs-when">{e.when}</span>
+                      <b>{e.what}</b>
+                      <span>{e.where}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section aria-labelledby="rs-lang">
+                <h2 id="rs-lang">Languages</h2>
+                <ul className="rs-langs">
+                  {profile.languages.map((l) => (
+                    <li key={l}>{l}</li>
+                  ))}
+                </ul>
+              </section>
+            </aside>
+          </div>
+        </article>
+      </main>
     </div>
   )
 }

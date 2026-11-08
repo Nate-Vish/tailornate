@@ -16,10 +16,17 @@ const TAGS = [
 function EnglishContent() {
   return (
     <>
-      <div className="cs-eyebrow">Case Study · Bet Hadar Medical Center</div>
-      <h1>Procedures Portal for a Rehabilitation Medical Center</h1>
+      <p className="cs-eyebrow">Case study</p>
+      <h1>A procedures portal for a rehabilitation medical center</h1>
       <p className="cs-sub">From discovery to production, end to end.</p>
-      <span className="cs-status">● live in production, in daily use</span>
+      <p className="cs-client">
+        Client: Bet Hadar, Ashdod. Geriatric and rehabilitation medical center, 11 departments, a
+        staff of about 400.
+      </p>
+      <p className="pf-live cs-status">
+        <span className="pf-dot" aria-hidden="true" />
+        Live in production since July 2026
+      </p>
 
       <h2>The problem</h2>
       <p>
@@ -86,7 +93,7 @@ function EnglishContent() {
       <h2>Outcome</h2>
       <p>
         The system has been live in production since July 2026 and updated twice since, with the
-        client's data untouched by every update. The institution came back for more: a portal that
+        client&apos;s data untouched by every update. The institution came back for more: a portal that
         puts this system and two new ones under one login, with the build as the next delivery.
       </p>
 
@@ -102,10 +109,16 @@ function EnglishContent() {
 function HebrewContent() {
   return (
     <div className="cs-he" lang="he" dir="rtl">
-      <div className="cs-eyebrow">קייס סטאדי · מרכז רפואי בית הדר</div>
+      <p className="cs-eyebrow">קייס סטאדי</p>
       <h1>פורטל נהלים למרכז רפואי שיקומי</h1>
       <p className="cs-sub">מאפיון ועד פרודקשן, מקצה לקצה.</p>
-      <span className="cs-status">● חי בפרודקשן, בשימוש יומיומי</span>
+      <p className="cs-client">
+        הלקוח: בית הדר, אשדוד. מרכז רפואי גריאטרי ושיקומי, 11 מחלקות וצוות של כ-400 עובדים.
+      </p>
+      <p className="pf-live cs-status">
+        <span className="pf-dot" aria-hidden="true" />
+        חי בפרודקשן מיולי 2026
+      </p>
 
       <h2>הבעיה</h2>
       <p>
@@ -132,7 +145,7 @@ function HebrewContent() {
 
       <h2>מנגנונים מרכזיים</h2>
       <ul>
-        <li>מעקב קריאה מלא (שם, ת"ז, מחלקה, חותמת זמן) עם מסך ביקורת למנהלים הכולל סינון ויצוא לאקסל.</li>
+        <li>מעקב קריאה מלא (שם, ת&quot;ז, מחלקה, חותמת זמן) עם מסך ביקורת למנהלים הכולל סינון ויצוא לאקסל.</li>
         <li>ניהול קטלוג ומשתמשים מהדפדפן.</li>
         <li>הקשחת אבטחה ופרטיות: נעילת התחברות, מיסוך תעודות זהות, הגנת CSV, ומחיקת נתונים אוטומטית לפי מדיניות שמירה.</li>
         <li>ארכיטקטורה בטוחה-לעדכון: הנתונים מופרדים מהקוד, והסכמה מנוהלת ב-EF Core Migrations. עדכון עתידי לעולם לא מוחק את מה שהמוסד צבר.</li>
@@ -149,12 +162,15 @@ function HebrewContent() {
 
       <h2>מסירה והדרכה</h2>
       <p>
-        מדריך התקנה מלא ל-IT, מצגת, צ'קליסט קבלה (QA), לומדה אינטראקטיבית בעברית עם בוחן, ותיעוד
-        "כמו-שהותקן" מלא ברפו פרטי.
+        מדריך התקנה מלא ל-IT, מצגת, צ&apos;קליסט קבלה (QA), לומדה אינטראקטיבית בעברית עם בוחן, ותיעוד
+        &quot;כמו-שהותקן&quot; מלא ברפו פרטי.
       </p>
 
       <h2>תוצאה</h2>
-      <p>המערכת חיה בפרודקשן ובשימוש הצוות. המוסד בוחן הרחבות המשך.</p>
+      <p>
+        המערכת חיה בפרודקשן מיולי 2026 ועודכנה פעמיים מאז, בלי לגעת בנתונים שהמוסד צבר. המוסד
+        חזר להמשך: פורטל שמאחד את המערכת הזאת ושתי מערכות חדשות תחת התחברות אחת, והוא בבנייה עכשיו.
+      </p>
 
       <div className="cs-tags">
         {TAGS.map((t) => (
@@ -169,15 +185,12 @@ export default function CaseStudy() {
   const [lang, setLang] = useState<"en" | "he">("en")
 
   return (
-    <div className="cs-page">
-      <div className="cs-wrap">
+    <main className="cs-stage">
+      <article className="cs-wrap">
         <div className="cs-topbar">
-          <a href="/" className="cs-back">
-            {lang === "en" ? "back to tailornate.com" : "חזרה ל-tailornate.com"}
-          </a>
           <button
             type="button"
-            className="cs-lang"
+            className="pf-btn pf-btn-small"
             onClick={() => setLang((l) => (l === "en" ? "he" : "en"))}
             aria-label={lang === "en" ? "Switch to Hebrew" : "החלף לאנגלית"}
           >
@@ -186,7 +199,7 @@ export default function CaseStudy() {
         </div>
 
         {lang === "en" ? <EnglishContent /> : <HebrewContent />}
-      </div>
-    </div>
+      </article>
+    </main>
   )
 }

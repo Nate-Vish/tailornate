@@ -2,7 +2,7 @@ import type { Profile } from "@/types"
 
 export const profile: Profile = {
   name: "Nathan Hai Vishnevski",
-  title: "Software engineer for healthcare | AI agents",
+  title: "Health tech entrepreneur | AI agents",
   oneliner: "I build the software care teams use every day.",
   email: "natan.vish100@gmail.com",
   linkedin: "https://www.linkedin.com/in/nathan-hai-vishnevski-564aaa1ba/",

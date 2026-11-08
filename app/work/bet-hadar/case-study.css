@@ -1,139 +1,122 @@
-.cs-page {
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--fg);
-  padding: 48px 20px 80px;
+/* ============================================================
+   /work/bet-hadar, in the portfolio's system. Tokens come from
+   .pf in portfolio.css; this file only sets the reading layout.
+   ============================================================ */
+
+.pf-subnav .pf-nav-links a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.cs-stage {
+  padding: clamp(32px, 6vw, 72px) var(--gutter) clamp(64px, 9vw, 112px);
 }
 
 .cs-wrap {
-  max-width: 780px;
+  max-width: 760px;
   margin: 0 auto;
 }
 
 .cs-topbar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 28px;
+  justify-content: flex-end;
+  margin-bottom: 8px;
 }
 
-.cs-back {
-  display: inline-block;
-  font-family: var(--font-jetbrains, ui-monospace, monospace);
-  font-size: 12px;
-  color: var(--mut);
+.pf .cs-eyebrow {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 14px;
 }
 
-.cs-lang {
-  flex: 0 0 auto;
-  font-family: var(--font-jetbrains, ui-monospace, monospace);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--fg);
-  background: transparent;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: 6px 16px;
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+.pf .cs-wrap h1 {
+  font-size: clamp(34px, 5.4vw, 56px);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
 }
 
-.cs-lang:hover {
-  border-color: #2d5a3d;
-  background: rgba(45, 90, 61, 0.08);
+.pf .cs-sub {
+  margin-top: 18px;
+  font-size: clamp(18px, 1.8vw, 21px);
+  color: var(--ink-2);
 }
 
-.cs-eyebrow {
-  font-family: var(--font-jetbrains, ui-monospace, monospace);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--mut);
-  margin-bottom: 10px;
+.pf .cs-client {
+  margin-top: 6px;
+  font-size: 16px;
+  color: var(--ink-2);
 }
 
-.cs-wrap h1 {
-  font-family: var(--font-fraunces, Georgia, serif);
-  font-size: clamp(28px, 5vw, 40px);
-  line-height: 1.15;
-  margin-bottom: 6px;
+.pf .cs-status {
+  margin: 28px 0 8px !important;
 }
 
-.cs-sub {
-  font-size: 17px;
-  color: var(--mut);
-  font-style: italic;
-  margin-bottom: 30px;
+.pf .cs-wrap h2 {
+  font-size: clamp(22px, 2.4vw, 28px);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin: 48px 0 14px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
 }
 
-.cs-status {
-  display: inline-block;
-  font-family: var(--font-jetbrains, ui-monospace, monospace);
-  font-size: 11.5px;
-  color: #2d5a3d;
-  border: 1px solid rgba(45, 90, 61, 0.4);
-  border-radius: 999px;
-  padding: 4px 12px;
-  margin-bottom: 34px;
-}
-
-.cs-wrap h2 {
-  font-family: var(--font-jetbrains, ui-monospace, monospace);
-  font-size: 12px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--mut);
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 6px;
-  margin: 30px 0 12px;
-}
-
-.cs-wrap p,
+.pf .cs-wrap p,
 .cs-wrap li {
-  font-size: 15.5px;
-  line-height: 1.75;
-  margin-bottom: 12px;
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--ink);
 }
 
 .cs-wrap ul {
-  padding-left: 20px;
+  margin: 0;
+  padding-left: 22px;
+  list-style: disc;
 }
-
-.cs-wrap ul li {
-  margin-bottom: 8px;
+.cs-wrap ul li + li {
+  margin-top: 10px;
+}
+.cs-wrap ul li::marker {
+  color: var(--accent);
 }
 
 .cs-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 26px;
+  gap: 8px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1.5px solid var(--ink);
 }
-
 .cs-tags span {
-  font-family: var(--font-jetbrains, ui-monospace, monospace);
-  font-size: 11.5px;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  padding: 3px 9px;
-  color: var(--mut);
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
 
+/* Hebrew version */
 .cs-he {
   direction: rtl;
   text-align: right;
+  font-family: var(--font-heebo), var(--font-grotesk), system-ui, sans-serif;
 }
-
-.cs-he h2 {
-  letter-spacing: 0;
+.pf .cs-he h1,
+.pf .cs-he h2 {
+  letter-spacing: -0.01em;
 }
-
-.cs-he .cs-eyebrow {
-  letter-spacing: 0.1em;
-}
-
 .cs-he ul {
   padding-left: 0;
-  padding-right: 20px;
+  padding-right: 22px;
+}
+.cs-he .cs-tags {
+  direction: ltr;
+  justify-content: flex-end;
+}
+
+@media (max-width: 860px) {
+  .pf-subnav .pf-nav-links {
+    display: none;
+  }
 }
