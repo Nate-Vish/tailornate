@@ -25,7 +25,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Nathan Hai Vishnevski | Health tech, built with AI agents",
   description:
-    "Health tech entrepreneur in Israel. Software live at a medical center with a staff of about 400. Built end to end with a team of AI agents and private local models.",
+    "Health tech entrepreneur in Israel. Software for medical institutions, in daily use by hundreds of medical staff. Built end to end with a team of AI agents and private local models.",
   openGraph: {
     title: "Nathan Hai Vishnevski | Health tech",
     description: "I build the software care teams use every day.",

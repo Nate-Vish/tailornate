@@ -12,14 +12,14 @@ export const betHadar = {
     "I replaced it with a Hebrew procedures system that runs on their own servers. Nurses and caregivers find any procedure in seconds, and managers see exactly who read it.",
   ],
   facts: [
-    { value: "Jul 2026", label: "Live in production" },
-    { value: "455", label: "Read confirmations in the first 30 days" },
+    { value: "Hundreds", label: "Medical staff using it every day" },
+    { value: "455", label: "Read confirmations in a single month" },
     { value: "100+", label: "Procedures migrated from the old index" },
     { value: "0", label: "Bytes in the cloud. It runs on their network." },
   ] satisfies Fact[],
   milestones: [
-    { when: "Jul 2026", what: "Procedures system goes live", detail: "On-site discovery, build, deployment on their Windows Server, staff training." },
-    { when: "Aug 2026", what: "Two updates in five weeks", detail: "Versions 1.1 and 1.2, shipped while the staff kept working." },
+    { when: "Launch", what: "Procedures system goes live", detail: "On-site discovery, build, deployment on their Windows Server, staff training." },
+    { when: "Iterate", what: "Updates in production", detail: "New versions shipped while the staff kept working, with their data untouched." },
     { when: "Now", what: "One portal for the whole center", detail: "Single sign-on, employee files and digital forms, permissions and audit. Designed against the Ministry of Health cyber circular." },
     { when: "Next", what: "More medical institutions", detail: "From rehabilitation centers to hospitals, adapted to each one.", upcoming: true },
   ] satisfies Milestone[],
@@ -39,7 +39,7 @@ export const localModels = ["gpt-oss 120B", "Qwen 27B", "Gemma 31B", "DictaLM 3.
 export const otherWork: WorkItem[] = [
   {
     title: "Circlez.ai",
-    line: "Software engineer in the R&D team of an AI startup building B2B matching. My degree project, since October 2026.",
+    line: "Software engineer in the R&D team of an AI startup building B2B matching. My degree project.",
   },
   {
     title: "Polaris for IBM Israel",
@@ -61,5 +61,5 @@ export const background: Milestone[] = [
   { when: "2019 to 2023", what: "IDF officer", detail: "Worked with 18 civilian communities. Commanded 50 soldiers." },
   { when: "2024", what: "B.Sc. Computer Science, HIT", detail: "Graduating 2027." },
   { when: "2026", what: "Handzone Leaders, HIT and IBM Israel", detail: "Plus the AI Driven Development program at Future HIT." },
-  { when: "Oct 2026", what: "Self-employed", detail: "Working with healthcare institutions and startups." },
+  { when: "Now", what: "Health tech entrepreneur", detail: "Working with healthcare institutions and startups." },
 ]

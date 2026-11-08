@@ -21,7 +21,7 @@ const SUMMARY =
 
 const ROLES = [
   {
-    when: "Jul 2026 to now",
+    when: "Current",
     title: "Health Tech Entrepreneur",
     org: "Self-employed",
     live: true,
@@ -32,7 +32,7 @@ const ROLES = [
         points: [
           "Replaced a shared Excel index that locked whenever two people opened it with a Hebrew procedures system: instant search, read confirmations with Excel export, manager roles.",
           "On-site discovery, spec and architecture, build, deployment on the center's Windows Server and IIS, staff training. Over 100 procedures migrated automatically.",
-          "Live since July 2026, two updates in the first five weeks, 455 read confirmations in the first 30 days.",
+          "In daily use by the staff, updated in production without touching their data, 455 read confirmations in a single month.",
         ],
       },
       {
@@ -45,7 +45,7 @@ const ROLES = [
     ],
   },
   {
-    when: "Oct 2026 to now",
+    when: "Current",
     title: "Software engineer, R&D team",
     org: "Circlez.ai",
     line: "AI startup building B2B business matching. Real work items and pull requests reviewed by the R&D lead. My HIT degree project.",
@@ -86,11 +86,8 @@ const EDUCATION = [
   { when: "2025", what: "Third place, GenAI Hackathon", where: "HIT" },
 ]
 
-// The four numbers the portfolio leads with, minus the date (it is in the role line).
-const FACTS = [
-  { value: "~400", label: "Staff at the first client" },
-  ...betHadar.facts.filter((f) => f.value !== "Jul 2026"),
-]
+// Same four numbers the portfolio leads with.
+const FACTS = betHadar.facts
 
 export default function ResumePage() {
   return (

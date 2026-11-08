@@ -8,13 +8,13 @@ export default function Hero() {
         <div className="pf-hero-text">
           <p className="pf-live">
             <span className="pf-dot" aria-hidden="true" />
-            Live at a medical center since July 2026
+            In daily use by hundreds of medical staff
           </p>
           <h1 id="hero-title">{profile.oneliner}</h1>
           <p className="pf-lede">
-            I&apos;m Nathan Hai Vishnevski, a health tech entrepreneur in Israel. My first
-            system is used by the staff of a medical center, about 400 people. I build with a
-            team of AI agents I designed myself.
+            I&apos;m Nathan Hai Vishnevski, a health tech entrepreneur in Israel. I build
+            software for medical institutions, end to end, with a team of AI agents I designed
+            myself.
           </p>
           <div className="pf-actions">
             <AskButton />

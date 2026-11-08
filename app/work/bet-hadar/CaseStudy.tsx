@@ -25,7 +25,7 @@ function EnglishContent() {
       </p>
       <p className="pf-live cs-status">
         <span className="pf-dot" aria-hidden="true" />
-        Live in production since July 2026
+        Live in production, in daily use
       </p>
 
       <h2>The problem</h2>
@@ -92,8 +92,8 @@ function EnglishContent() {
 
       <h2>Outcome</h2>
       <p>
-        The system has been live in production since July 2026 and updated twice since, with the
-        client&apos;s data untouched by every update. The institution came back for more: a portal that
+        The system is live in production and in daily use, and has been updated in place with
+        the client&apos;s data untouched by every update. The institution came back for more: a portal that
         puts this system and two new ones under one login, with the build as the next delivery.
       </p>
 
@@ -117,7 +117,7 @@ function HebrewContent() {
       </p>
       <p className="pf-live cs-status">
         <span className="pf-dot" aria-hidden="true" />
-        חי בפרודקשן מיולי 2026
+        חי בפרודקשן, בשימוש יומיומי
       </p>
 
       <h2>הבעיה</h2>
@@ -168,7 +168,7 @@ function HebrewContent() {
 
       <h2>תוצאה</h2>
       <p>
-        המערכת חיה בפרודקשן מיולי 2026 ועודכנה פעמיים מאז, בלי לגעת בנתונים שהמוסד צבר. המוסד
+        המערכת חיה בפרודקשן ובשימוש יומיומי, ועודכנה בלי לגעת בנתונים שהמוסד צבר. המוסד
         חזר להמשך: פורטל שמאחד את המערכת הזאת ושתי מערכות חדשות תחת התחברות אחת, והוא בבנייה עכשיו.
       </p>
 
