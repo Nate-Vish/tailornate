@@ -38,10 +38,6 @@ export const localModels = ["gpt-oss 120B", "Qwen 27B", "Gemma 31B", "DictaLM 3.
 
 export const otherWork: WorkItem[] = [
   {
-    title: "Circlez.ai",
-    line: "Software engineer in the R&D team of an AI startup building B2B matching. My degree project.",
-  },
-  {
     title: "Polaris for IBM Israel",
     line: "A finance tool that turns raw Excel into a written story. Code computes every number, AI only writes the text. Presented to IBM Israel leadership.",
   },

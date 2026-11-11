@@ -53,7 +53,6 @@ Bet Hadar is a geriatric and rehabilitation medical center in Ashdod with 11 dep
 
 ## Other work
 
-- Circlez.ai: software engineer in the R&D team of an AI startup building B2B matching, as his degree project.
 - Polaris: a finance insight tool built in the Handzone Leaders program (HIT with IBM Israel). Code computes every number, AI only writes the text. Presented to IBM Israel leadership.
 - 3rd place, HIT GenAI Hackathon, November 2025.
 

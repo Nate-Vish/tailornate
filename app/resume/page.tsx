@@ -10,14 +10,14 @@ import "./resume.css"
 export const metadata: Metadata = {
   title: "Resume | Nathan Hai Vishnevski",
   description:
-    "Resume of Nathan Hai Vishnevski, health tech entrepreneur in Israel. Software live at a medical center, built end to end with a team of AI agents.",
+    "Resume of Nathan Hai Vishnevski, health tech entrepreneur in Israel. Selected client work, leadership experience and education.",
 }
 
 // The public resume. It condenses the portfolio into one printable page.
 // Headings stay generic; the client is named once, in the line under the heading.
 // The private CV is a separate document and is not this page.
 const SUMMARY =
-  "I build software for medical institutions, end to end. I start on the floor with the staff to find the real problem, write the spec, design the architecture, and build it with a team of AI agents I designed myself. Then I deploy it on the client's own servers and train the people who use it. Four years as an IDF officer working with 18 civilian communities taught me to learn other people's worlds fast."
+  "I work with the people responsible for a service, from the manager who needs a clear picture to the person doing the work each day. Together we identify where time is lost, decide what needs to change, and build a system the team can rely on. I stay involved through rollout and improvements."
 
 const ROLES = [
   {
@@ -30,8 +30,8 @@ const ROLES = [
         name: "A procedures system for a medical center",
         client: "Client: Bet Hadar, Ashdod. Geriatric and rehabilitation medical center, 11 departments, a staff of about 400.",
         points: [
-          "Replaced a shared Excel index that locked whenever two people opened it with a Hebrew procedures system: instant search, read confirmations with Excel export, manager roles.",
-          "On-site discovery, spec and architecture, build, deployment on the center's Windows Server and IIS, staff training. Over 100 procedures migrated automatically.",
+          "Staff can find the current procedure and managers can see who has read it. The previous shared index regularly locked during use.",
+          "Worked directly with staff, moved more than 100 procedures to the new system and introduced it on the center’s own servers.",
           "In daily use by the staff, updated in production without touching their data, 455 read confirmations in a single month.",
         ],
       },
@@ -39,16 +39,10 @@ const ROLES = [
         name: "One portal for the whole center",
         status: "In development",
         points: [
-          "Single sign-on, employee files and digital forms, permissions and audit, designed against the Ministry of Health cyber circular.",
+          "Extending the work to employee records and digital forms so the center can manage them in one place.",
         ],
       },
     ],
-  },
-  {
-    when: "Current",
-    title: "Software engineer, R&D team",
-    org: "Circlez.ai",
-    line: "AI startup building B2B business matching. Real work items and pull requests reviewed by the R&D lead. My HIT degree project.",
   },
   {
     when: "2019 to 2023",
@@ -62,7 +56,7 @@ const PROJECTS = [
   {
     name: "AutoMates",
     tag: "Open source",
-    line: "A multi-agent framework for Claude Code: spec, plan, build and verify agents with quality gates. The first public version of the method I build with every day.",
+    line: "Published the development method I use to plan, review and test work before handing it to a client.",
   },
   {
     name: "Polaris for IBM Israel",
@@ -71,13 +65,6 @@ const PROJECTS = [
   },
 ]
 
-const SKILLS = [
-  { group: "Product", items: ["On-site discovery", "Specification", "Requirements", "Staff training"] },
-  { group: "Architecture", items: ["System design", "On-prem deployment", "Windows Server and IIS", "Active Directory", "SSO and audit"] },
-  { group: "AI", items: ["Multi-agent orchestration", "Local LLMs", "RAG", "MCP", "Evals"] },
-  { group: "Security", items: ["Security review", "Internal pentest", "MoH cyber circular"] },
-  { group: "Stack", items: ["C#", "ASP.NET Core", "TypeScript", "Next.js", "Python", "SQL"] },
-]
 
 const EDUCATION = [
   { when: "2024 to 2027", what: "B.Sc. Computer Science", where: "HIT, Holon Institute of Technology" },
@@ -102,7 +89,7 @@ export default function ResumePage() {
             <div>
               <h1>{profile.name}</h1>
               <p className="rs-role">Health Tech Entrepreneur</p>
-              <p className="rs-tagline">Software for medical institutions, from the problem on the floor to production.</p>
+              <p className="rs-tagline">Independent software development for organizations.</p>
             </div>
             <ul className="rs-contact">
               <li>
@@ -181,19 +168,6 @@ export default function ResumePage() {
             </div>
 
             <aside className="rs-side">
-              <section aria-labelledby="rs-skills">
-                <h2 id="rs-skills">What I do</h2>
-                {SKILLS.map((s) => (
-                  <div key={s.group} className="rs-skill">
-                    <h3>{s.group}</h3>
-                    <ul className="rs-chips">
-                      {s.items.map((i) => (
-                        <li key={i}>{i}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </section>
 
               <section aria-labelledby="rs-edu">
                 <h2 id="rs-edu">Education</h2>
